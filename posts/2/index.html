@@ -346,6 +346,40 @@ ie:document.idname或者document.getElementById(“idName”).
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2015/03/05/android-app/">Android应用开发浅谈</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-05T19:29:47+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:29 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>Android应用程序运行的移动设备受限于其运算能力，存储空间，及电池续航。由此，它必须是高效的。电池续航可能是一个促使你优化程序的原因，即使他看起来已经运行的足够快了。由于续航对用户的重要性，当电量耗损陡增时，意味这用户迟早会发现是由于你的程序。</h3>
+
+<p>虽然这份文档主要包含着细微的优化，但这些绝不能成为你软件成败的关键。选择合适的算法和数据结构永远是你最先应该考虑的事情，但这超出这份文档之外。</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2015/03/05/android-app/">阅读更多 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2014/07/22/computer/">电脑配置详解</a></h1>
     
     
@@ -429,60 +463,6 @@ ie:document.idname或者document.getElementById(“idName”).
   
     <footer>
       <a rel="full-article" href="/blog/2014/07/19/java-multithreading/">阅读更多 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/07/07/androidUtils/">Android项目开发实践功能收集</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-07-07T22:56:26+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>10:56 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h4>以下主要是整理了一些在项目中经常遇到的功能</h4>
-
-<h5>1.判断APP是否在后台运行</h5>
-
-<pre><code>  public static boolean isBackground(Context context) {
-    ActivityManager activityManager = (ActivityManager) context
-            .getSystemService(Context.ACTIVITY_SERVICE);//获取管理应用程序的系统状态
-    List&lt;ActivityManager.RunningAppProcessInfo&gt; appProcesses = activityManager
-            .getRunningAppProcesses();//获取当前系统进程列表
-    for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
-        if (appProcess.processName.equals(context.getPackageName())) {//判断是否是当前app进程
-            if (appProcess.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {//判断进程状态是否在前台运行
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
-    return false;
-}
-</code></pre>
-
-<h5>2.判断系统网络状态及监听网络状态变化  </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/07/07/androidUtils/">阅读更多 &rarr;</a>
     </footer>
   
 

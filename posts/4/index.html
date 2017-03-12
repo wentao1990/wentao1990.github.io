@@ -9,7 +9,8 @@
   <meta name="author" content="武文涛">
 
   
-  <meta name="description" content="Android应用程序运行的移动设备受限于其运算能力，存储空间，及电池续航。由此，它必须是高效的。电池续航可能是一个促使你优化程序的原因，即使他看起来已经运行的足够快了。由于续航对用户的重要性，当电量耗损陡增时，意味这用户迟早会发现是由于你的程序。 虽然这份文档主要包含着细微的优化， &hellip;">
+  <meta name="description" content="图片加载在Android开发中是非常重要，好的图片加载库也比比皆是。ImageLoader、Picasso、Glide、Fresco均是优秀的图片加载库。
+以上提到的几种图片加载库各有特色。用法与比较，网上已经很多了。 出于学习的角度，个人认为从Picasso入手较好。代码量小，同时API优美， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -72,7 +73,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/03/05/android-app/">Android应用开发浅谈</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/03/19/android-picasso/">Android之图片加载库Picasso源码分析</a></h1>
     
     
       <p class="meta">
@@ -81,20 +82,33 @@
 
 
 
-<time class='entry-date' datetime='2013-03-05T19:29:47+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>7:29 pm</span></time>
+<time class='entry-date' datetime='2013-03-19T23:08:20+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>11:08 pm</span></time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><h3>Android应用程序运行的移动设备受限于其运算能力，存储空间，及电池续航。由此，它必须是高效的。电池续航可能是一个促使你优化程序的原因，即使他看起来已经运行的足够快了。由于续航对用户的重要性，当电量耗损陡增时，意味这用户迟早会发现是由于你的程序。</h3>
+  <div class="entry-content"><p>图片加载在Android开发中是非常重要，好的图片加载库也比比皆是。ImageLoader、Picasso、Glide、Fresco均是优秀的图片加载库。
+以上提到的几种图片加载库各有特色。用法与比较，网上已经很多了。</p>
 
-<p>虽然这份文档主要包含着细微的优化，但这些绝不能成为你软件成败的关键。选择合适的算法和数据结构永远是你最先应该考虑的事情，但这超出这份文档之外。</div>
+<p>出于学习的角度，个人认为从Picasso入手较好。代码量小，同时API优美，很适合我们学习。</p>
+
+<h5>PS:建议先大致看一下源码。</h5>
+
+<p>我们对图片加载的要求</p>
+
+<p>● 加载速度要快</p>
+
+<p>● 资源消耗要低</p>
+
+<p>● 加载图片不能错位</p>
+
+<h5>Picasso是否满足要求?   </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2013/03/05/android-app/">阅读更多 &rarr;</a>
+      <a rel="full-article" href="/blog/2013/03/19/android-picasso/">阅读更多 &rarr;</a>
     </footer>
   
 

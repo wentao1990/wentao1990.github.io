@@ -9,7 +9,7 @@
   <meta name="author" content="武文涛">
 
   
-  <meta name="description" content="Context可能是Android应用中最常用的元素，而它也可能是最容易误用的。 Context对象是如此常见和传递使用，它可能会很容易产生并不是你预期的情形。加载资源、启动一个新的Activity、获取系统服务、获取内部文件路径以及创建view(其实还远不止这些) &hellip;">
+  <meta name="description" content="以下主要是整理了一些在项目中经常遇到的功能 1.判断APP是否在后台运行 public static boolean isBackground(Context context) { ActivityManager activityManager = (ActivityManager) &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +66,60 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/07/androidUtils/">Android项目开发实践功能收集</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-07T22:56:26+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>10:56 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h4>以下主要是整理了一些在项目中经常遇到的功能</h4>
+
+<h5>1.判断APP是否在后台运行</h5>
+
+<pre><code>  public static boolean isBackground(Context context) {
+    ActivityManager activityManager = (ActivityManager) context
+            .getSystemService(Context.ACTIVITY_SERVICE);//获取管理应用程序的系统状态
+    List&lt;ActivityManager.RunningAppProcessInfo&gt; appProcesses = activityManager
+            .getRunningAppProcesses();//获取当前系统进程列表
+    for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+        if (appProcess.processName.equals(context.getPackageName())) {//判断是否是当前app进程
+            if (appProcess.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {//判断进程状态是否在前台运行
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+    return false;
+}
+</code></pre>
+
+<h5>2.判断系统网络状态及监听网络状态变化  </div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/07/07/androidUtils/">阅读更多 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -528,53 +582,6 @@ CA证书，就是CA颁发的证书，可用于验证网站是否可信（针对H
   
     <footer>
       <a rel="full-article" href="/blog/2013/04/05/android-start/">阅读更多 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/03/19/android-picasso/">Android之图片加载库Picasso源码分析</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2013-03-19T23:08:20+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>11:08 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>图片加载在Android开发中是非常重要，好的图片加载库也比比皆是。ImageLoader、Picasso、Glide、Fresco均是优秀的图片加载库。
-以上提到的几种图片加载库各有特色。用法与比较，网上已经很多了。</p>
-
-<p>出于学习的角度，个人认为从Picasso入手较好。代码量小，同时API优美，很适合我们学习。</p>
-
-<h5>PS:建议先大致看一下源码。</h5>
-
-<p>我们对图片加载的要求</p>
-
-<p>● 加载速度要快</p>
-
-<p>● 资源消耗要低</p>
-
-<p>● 加载图片不能错位</p>
-
-<h5>Picasso是否满足要求?   </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/03/19/android-picasso/">阅读更多 &rarr;</a>
     </footer>
   
 
