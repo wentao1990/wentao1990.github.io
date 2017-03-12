@@ -322,7 +322,7 @@ Jul 19 2016 posted &hellip;">
 <time datetime="2014-07-22T18:50:47+08:00" pubdate><span class='month'>Jul</span> <span class='day'>22</span> <span class='year'>2014</span></time>
 
 <footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/ying-jian/'>硬件</a></span>
+  <span class="categories">posted in <a class='category' href='/blog/categories/hardware/'>hardware</a></span>
 </footer>
 
 
@@ -461,7 +461,7 @@ Jul 19 2016 posted &hellip;">
 <time datetime="2013-05-11T22:45:58+08:00" pubdate><span class='month'>May</span> <span class='day'>11</span> <span class='year'>2013</span></time>
 
 <footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/mysql/'>mysql</a>, <a class='category' href='/blog/categories/shu-ju-ku/'>数据库</a></span>
+  <span class="categories">posted in <a class='category' href='/blog/categories/mysql/'>mysql</a></span>
 </footer>
 
 
@@ -536,13 +536,12 @@ Jul 19 2016 posted &hellip;">
   <h1>文章分类</h1> 
   <ul id="categories"> 
     <li class='category'><a href='/blog/categories/android/'>android (23)</a></li>
+<li class='category'><a href='/blog/categories/hardware/'>hardware (1)</a></li>
 <li class='category'><a href='/blog/categories/java/'>java (1)</a></li>
 <li class='category'><a href='/blog/categories/mysql/'>mysql (1)</a></li>
 <li class='category'><a href='/blog/categories/server/'>server (1)</a></li>
 <li class='category'><a href='/blog/categories/unity3d/'>unity3d (1)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (2)</a></li>
-<li class='category'><a href='/blog/categories/数据库/'>数据库 (1)</a></li>
-<li class='category'><a href='/blog/categories/硬件/'>硬件 (1)</a></li>
  
   </ul> 
 </section><section>

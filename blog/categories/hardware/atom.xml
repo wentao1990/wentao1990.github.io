@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: 硬件 | 临渊羡鱼不如退而结网]]></title>
-  <link href="http://wentao1990.github.io/blog/categories/ying-jian/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Hardware | 临渊羡鱼不如退而结网]]></title>
+  <link href="http://wentao1990.github.io/blog/categories/hardware/atom.xml" rel="self"/>
   <link href="http://wentao1990.github.io/"/>
-  <updated>2017-03-13T01:12:37+08:00</updated>
+  <updated>2017-03-13T01:18:10+08:00</updated>
   <id>http://wentao1990.github.io/</id>
   <author>
     <name><![CDATA[武文涛]]></name>
