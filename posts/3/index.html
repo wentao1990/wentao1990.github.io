@@ -1,0 +1,939 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>My Octopress Blog</title>
+  <meta name="author" content="Your Name">
+
+  
+  <meta name="description" content="Context可能是Android应用中最常用的元素，而它也可能是最容易误用的。 Context对象是如此常见和传递使用，它可能会很容易产生并不是你预期的情形。加载资源、启动一个新的Activity、获取系统服务、获取内部文件路径以及创建view(其实还远不止这些) &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://wentao1990.github.io/posts/3/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My Octopress Blog</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="wentao1990.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/06/22/androidContent/">Android之Context详解</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-06-22T22:08:10+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>22</span><span class='date-suffix'>nd</span>, <span class='date-year'>2014</span></span> <span class='time'>10:08 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h4>Context可能是Android应用中最常用的元素，而它也可能是最容易误用的。</h4>
+
+<p><strong>Context</strong>对象是如此常见和传递使用，它可能会很容易产生并不是你预期的情形。加载资源、启动一个新的Activity、获取系统服务、获取内部文件路径以及创建view(其实还远不止这些)统统都需要Context对象来完成。我(原文作者)想做的只是给大家提供一些Context是如何工作的见解，以及让大家在应用中更有效的使用Context的技巧。</p>
+
+<h5>Context的类型</h5>
+
+<p>并不是所有的context实例都是等价的。根据Android应用的组件不同，你访问的context推向有些细微的差别。</p>
+
+<p>1.Application - 是一个运行在你的应用进程中的单例。在Activity或者Service中，它可以通过getApplication()函数获得，或者人和继承于context的对象中，通过getApplicationContext()方法获得。不管你是通过何种方法在哪里获得的，在一个进程内，你总是获得到同一个实例。     </div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/06/22/androidContent/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/06/17/androidWebView/">Android之WebView优化</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-06-17T21:38:26+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>9:38 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h5>前言</h5>
+
+<p>随着app的迭代，嵌入的html5界面越来越多了，Webview这个强大组件引起的问题越发的多起来，如下：</p>
+
+<p>● WebView导致的oom问题</p>
+
+<p>● Android版本不同，采用了不同的内核，兼容性crash</p>
+
+<p>● 不同版本实现不同，甚至URI不规范也会引起不同程度的问题</p>
+
+<p><img src="http://i.imgur.com/lXonGh9.jpg" alt="" /></p>
+
+<p>为了解决以上问题，我们把WebView模块做成独立进程</p>
+
+<h5>WebView独立进程</h5>
+
+<p>Android允许一个app同时存在多个进程，可以根据需要把不同的模块放到不同进程中处理。</p>
+
+<p><img src="http://i.imgur.com/fJ61y3x.jpg" alt="" /></p>
+
+<p>比如微信v2.X+版本的时候把Network部分做轻重进程分离，独立到一个单独的进程<strong>(：push)</strong>中，而上面两个层级依然跑在微信的主进程<strong>(:workder)</strong>中。而对于有内存泄露问题的webview或者其他不频繁使用的功能，再把其分离到独立的工具进程(:tools)中。通过分离进程，微信第一次重构解决了系统因为微信资源消耗，主动干掉微信服务的困境。</p>
+
+<h5>WebView独立进程的好处</h5>
+
+<p>1.有效增大App的运存，减少由webview引起的内存泄露对主进程内存的占用。</p>
+
+<p>2.避免WebView的Crash影响App主进程的运行。</p>
+
+<p>3.拥有对WebView独立进程操控权。</p>
+
+<h6>WebView进程与其他进程通讯的方式</h6>
+
+<p>把webview独立进程之后会发现，埋点功能和接收主进程数据都不正常了，这里就涉及到进程间通讯的问题了;</p>
+
+<p>进程通讯无非就是那几种，aidl，messager，content provider，广播;</p>
+
+<p>在这里就不再复述了，我是采用广播的方式来做的。</p>
+
+<h5>WebView硬件加速导致页面渲染闪烁</h5>
+
+<p>4.0以上的系统我们开启硬件加速后，WebView渲染页面更加快速，拖动也更加顺滑。但有个副作用就是，当WebView视图被整体遮住一块，然后突然恢复时(比如使用SlideMenu将WebView从侧边滑出来时)，这个过渡期会出现白块同时界面闪烁。解决这个问题的方法是在过渡期前将WebView的硬件加速临时关闭，过渡期后再开启，代码如下：</p>
+
+<pre><code>if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.HONEYCOMB) {
+    webview.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+}
+</code></pre>
+
+<h5>webview的配置</h5>
+
+<p>下面贴上我自己的配置代码：</p>
+
+<pre><code>WebSettings settings = webview.getSettings();
+settings.setJavaScriptEnabled(true);//启用js
+settings.setJavaScriptCanOpenWindowsAutomatically(true);//js和android交互
+String cacheDirPath = PathCommonDefines.WEBVIEW_CACHE;
+settings.setAppCachePath(cacheDirPath); //设置缓存的指定路径
+settings.setAllowFileAccess(true); // 允许访问文件
+settings.setAppCacheEnabled(true); //设置H5的缓存打开,默认关闭
+settings.setUseWideViewPort(true);//设置webview自适应屏幕大小
+settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);//设置，可能的话使所有列的宽度不超过屏幕宽度
+settings.setLoadWithOverviewMode(true);//设置webview自适应屏幕大小
+settings.setDomStorageEnabled(true);//设置可以使用localStorage
+settings.setSupportZoom(false);//关闭zoom按钮
+settings.setBuiltInZoomControls(false);//关闭zoom
+if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.HONEYCOMB) {
+webview.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+}
+webview.setWebViewClient(new WebViewClient() { @Override public boolean shouldOverrideUrlLoading(WebView view, String url) { view.loadUrl(url); return false; } @Override public void onLoadResource(WebView view, String url) { } @Override public void onPageFinished(WebView view, String url) { } });
+</code></pre>
+
+<h5>html5跳原生界面</h5>
+
+<p>网页跳原生界面的方法有很多种，比如js调Java方法，或者是通过uri scheme啦，也可以通过自己解析url来做。</p>
+
+<p>在这儿，考虑到兼容性，拦截的是url，并且在清单文件中自定义了scheme~</p>
+
+<p><img src="http://i.imgur.com/GcUdeGV.jpg" alt="" /></p>
+
+<pre><code>webview.setWebViewClient(new WebViewClient() {
+    @Override
+    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+        parserURL(url); //解析url,如果存在有跳转原生界面的url规则，则跳转原生。
+        return super.shouldOverrideUrlLoading(view, url);
+    }
+    @Override
+    public void onPageFinished(WebView view, String url) {
+        super.onPageFinished(view, url);
+    }
+    @Override
+        public void onLoadResource(WebView view, String url) {
+        super.onLoadResource(view, url);
+    }
+});
+</code></pre>
+
+<p>清单文件中，声明一下 就可以在自带浏览器通过uri scheme跳到本app页面了，这个activity作为各个页面的分发页面，通过这个界面解析数据决定接下来要跳转哪个页面：</p>
+
+<pre><code>&lt;activity&lt; p="" style="font-family: SimSun; font-size: 12px; margin: 0px auto; padding: 0px; list-style: none;"&gt;
+android:name=".ui.webview.CommWebviewActivity"
+android:configChanges="orientation|keyboardHidden|screenSize"
+android:process=":webview"
+android:screenOrientation="portrait"
+android:windowSoftInputMode="stateHidden"&gt;
+&lt;data&lt; p="" style="font-family: SimSun; font-size: 12px; margin: 0px auto; padding: 0px; list-style: none;"&gt;
+android:host="xxxx.com"
+android:scheme="kingp2p" /&gt;
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/06/15/tcp/">TCP的阻塞和重传机制</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-06-15T21:28:57+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>9:28 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>网络拥堵</h3>
+
+<p>现在网络上大部分的网络请求都是以TCP的方式进行传输的了。网络链路是固定的，各种链路情况也是不一样的。网络拥堵一直是TCP协议设计和使用的时候尽力要避免的。比如，从TCP协议的网络包协议设计来看，TCP使用一发一答的ACK的网络包确认方式，而不是使用NAK这种会增加确认包的方式来做确认机制。这个就是在尽力降低网络上的包传递数量，避免网络拥堵。</p>
+
+<p>还有哪些控制网络拥堵的方式呢？ </div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/06/15/tcp/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/06/14/androidBinder/">Android Binder详解</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-06-14T18:47:59+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>6:47 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>在 Android 系统中，Binder 起着非常重要的作用，它是整个系统 IPC 的基石。网上已经有很多文章讲述 Binder 的原理，有的讲的比较浅显，没有触及到关键，有的讲的太过于深入底层，难以理解，本文会比较全面，以一个比较轻松的方式，从面到点，大处着眼，小处着手的形式去讲述 Binder 在 Android 中是如何使用的。理解 Binder 的基本原理，对学习 Android 也有很大的帮助，很多问题也能够得到解释，例如 ContentProvider 中的 CRUD 是否是线程安全的？又例如在使用 AIDL 的时候，在 Service 中实现的接口是否是线程安全的？</p>
+
+<h5>本文分为以下几个部分去介绍</h5>
+
+<h5>● Android 整体架构</h5>
+
+<h5>● Binder IPC 的架构</h5>
+
+<h5>● 手动实现 Binder IPC</h5>
+
+<h5>● 使用 AIDL 实现 Binder IPC     </div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/06/14/androidBinder/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/05/22/HTTP&HTTPS/">HTTP与HTTPS握手的那些事</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-05-22T20:08:31+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>22</span><span class='date-suffix'>nd</span>, <span class='date-year'>2014</span></span> <span class='time'>8:08 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h5>前言</h5>
+
+<p>HTTP与TCP/IP区别？</p>
+
+<p>TPC/IP协议是传输层协议，主要解决数据如何在网络中传输，而HTTP是应用层协议，主要解决如何包装数据。WEB使用HTTP协议作应用层协议，以封装HTTP 文本信息，然后使用TCP/IP做传输层协议将它发到网络上。</p>
+
+<p>下面的图表试图显示不同的TCP/IP和其他的协议在最初OSI（Open System Interconnect）模型中的位置：</p>
+
+<p><img src="http://i.imgur.com/bFYWVXc.jpg" alt="" /></p>
+
+<h5>CA证书是什么？</h5>
+
+<p>CA（Certificate Authority）是负责管理和签发证书的第三方权威机构，是所有行业和公众都信任的、认可的。
+CA证书，就是CA颁发的证书，可用于验证网站是否可信（针对HTTPS）、验证某文件是否可信（是否被篡改）等，也可以用一个证书来证明另一个证书是真实可信，最顶级的证书称为根证书。除了根证书（自己证明自己是可靠），其它证书都要依靠上一级的证书，来证明自己。</p>
+
+<h5>HTTP三次握手</h5>
+
+<p>HTTP（HyperText Transfer Protocol)超文本传输协议是互联网上应用最为广泛的一种网络协议。由于信息是明文传输，所以被认为是不安全的。而关于HTTP的三次握手，其实就是使用三次TCP握手确认建立一个HTTP连接。</p>
+
+<p>如下图所示，SYN（synchronous）是TCP/IP建立连接时使用的握手信号、Sequence number（序列号）、Acknowledge number（确认号码），三个箭头指向就代表三次握手，完成三次握手，客户端与服务器开始传送数据。</p>
+
+<p><img src="http://i.imgur.com/eQ17iCs.jpg" alt="" /></p>
+
+<p>第一次握手：客户端发送syn包(syn=j)到服务器，并进入SYN_SEND状态，等待服务器确认；</p>
+
+<p>第二次握手：服务器收到syn包，必须确认客户的SYN（ack=j+1），同时自己也发送一个SYN包（syn=k），即SYN+ACK包，此时服务器进入SYN_RECV状态；</p>
+
+<p>第三次握手：客户端收到服务器的SYN＋ACK包，向服务器发送确认包ACK(ack=k+1)，此包发送完毕，客户端和服务器进入ESTABLISHED状态，完成三次握手。</p>
+
+<h5>HTTPS握手过程</h5>
+
+<p>HTTPS在HTTP的基础上加入了SSL协议，SSL依靠证书来验证服务器的身份，并为浏览器和服务器之间的通信加密。具体是如何进行加密，解密，验证的，且看下图，下面的称为一次握手。</p>
+
+<p><img src="http://i.imgur.com/Q6nkYZr.jpg" alt="" /></p>
+
+<ol>
+<li><p>客户端发起HTTPS请求</p></li>
+<li><p>服务端的配置
+采用HTTPS协议的服务器必须要有一套数字证书，可以是自己制作或者CA证书。区别就是自己颁发的证书需要客户端验证通过，才可以继续访问，而使用CA证书则不会弹出提示页面。这套证书其实就是一对公钥和私钥。公钥给别人加密使用，私钥给自己解密使用。</p></li>
+<li><p>传送证书
+这个证书其实就是公钥，只是包含了很多信息，如证书的颁发机构，过期时间等。</p></li>
+<li><p>客户端解析证书
+这部分工作是有客户端的TLS来完成的，首先会验证公钥是否有效，比如颁发机构，过期时间等，如果发现异常，则会弹出一个警告框，提示证书存在问题。如果证书没有问题，那么就生成一个随即值，然后用证书对该随机值进行加密。</p></li>
+<li><p>传送加密信息
+这部分传送的是用证书加密后的随机值，目的就是让服务端得到这个随机值，以后客户端和服务端的通信就可以通过这个随机值来进行加密解密了。</p></li>
+<li><p>服务段解密信息
+服务端用私钥解密后，得到了客户端传过来的随机值(私钥)，然后把内容通过该值进行对称加密。所谓对称加密就是，将信息和私钥通过某种算法混合在一起，这样除非知道私钥，不然无法获取内容，而正好客户端和服务端都知道这个私钥，所以只要加密算法够彪悍，私钥够复杂，数据就够安全。</p></li>
+<li><p>传输加密后的信息
+这部分信息是服务段用私钥加密后的信息，可以在客户端被还原。</p></li>
+<li><p>客户端解密信息
+客户端用之前生成的私钥解密服务段传过来的信息，于是获取了解密后的内容。</p></li>
+</ol>
+
+
+<p>注: 整个握手过程第三方即使监听到了数据，也束手无策。</p>
+
+<h5>总结</h5>
+
+<p>为什么HTTPS是安全的？</p>
+
+<p>在HTTPS握手的第四步中，如果站点的证书是不受信任的，会显示出现下面确认界面，确认了网站的真实性。另外第六和八步，使用客户端私钥加密解密，保证了数据传输的安全。</p>
+
+<p><img src="http://i.imgur.com/dnszInE.jpg" alt="" /></p>
+
+<h5>HTTPS和HTTP的区别</h5>
+
+<ol>
+<li><p>https协议需要到ca申请证书或自制证书。</p></li>
+<li><p>http的信息是明文传输，https则是具有安全性的ssl加密。</p></li>
+<li><p>http是直接与TCP进行数据传输，而https是经过一层SSL（OSI表示层），用的端口也不一样，前者是80（需要国内备案），后者是443。</p></li>
+<li><p>http的连接很简单，是无状态的；HTTPS协议是由SSL+HTTP协议构建的可进行加密传输、身份认证的网络协议，比http协议安全。</p></li>
+</ol>
+
+
+<h5>附录</h5>
+
+<p>HTTPS一般使用的加密与HASH算法如下：</p>
+
+<p>非对称加密算法：RSA，DSA/DSS</p>
+
+<p>对称加密算法：AES，RC4，3DES</p>
+
+<p>HASH算法：MD5，SHA1，SHA256</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/05/11/android-activity/">Android在Activity全屏模式下解决软键盘弹出问题</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-05-11T16:22:25+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>4:22 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h4>现象：由于设置Activity的 getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)（全屏模式），通常因为设置沉浸式状态栏。</h4>
+
+<p>当如上设置后，会导致软键盘不能按照设置的模式弹出，首先我们先看下怎么设置软件盘的弹出模式：</p>
+
+<p>在AndroidManifest.xml的Activity设置属性：android:windowSoftInputMode = &ldquo;"，</p>
+
+<h4>可选值有：</h4>
+
+<p>1：stateUnspecified：软键盘的状态并没有指定，系统将选择一个合适的状态或依赖于主题的设置</p>
+
+<p>2：stateUnchanged：当这个activity出现时，软键盘将一直保持在上一个activity里的状态，无论是隐藏还是显示</p>
+
+<p>3：stateHidden：用户选择activity时，软键盘总是被隐藏</p>
+
+<p>4：stateAlwaysHidden：当该Activity主窗口获取焦点时，软键盘也总是被隐藏的</p>
+
+<p>5：stateVisible：软键盘通常是可见的</p>
+
+<p>6：stateAlwaysVisible：用户选择activity时，软键盘总是显示的状态</p>
+
+<p>7：adjustUnspecified：默认设置，通常由系统自行决定是隐藏还是显示</p>
+
+<p>8：adjustResize：该Activity总是调整屏幕的大小以便留出软键盘的空间（可以显示全部屏幕）</p>
+
+<p>9：adjustPan：当前窗口的内容将自动移动以便当前焦点从不被键盘覆盖和用户能总是看到输入内容的部分（软键盘会遮挡屏幕）</p>
+
+<h4>原因：</h4>
+
+<p>在非全屏模式下，将activity的windowSoftInputMode的属性设置为：adjustResize。同时在View的onSizeChanged(int w, int h, int oldw, int oldh)里可以得到变化后的尺寸，然后根据前后变化的结果来计算屏幕需要移动的距离。</p>
+
+<p>但是在全屏模式下，即使将activity的windowSoftInputMode的属性设置为：adjustResize。在键盘显示时它未将Activity的Screen向上推动，所以你Activity的view的根树的尺寸是没有变化的。在这种情况下，你也就无法得知键盘的尺寸，对根view的作相应的推移。全屏下的键盘无法Resize的问题从2.1就已经存在了，直到现在google还未给予解决。</p>
+
+<h4>解决方案：感谢Ricardo提供的轮子，他在stackoverflow找到了解决方案。有人已经封装好了该类，你只需引用就OK了，我们来看下这个帮助类。</h4>
+
+<pre><code>public class AndroidBug5497Workaround
+{
+    public static void assistActivity (Activity activity) {
+        new AndroidBug5497Workaround(activity);
+    }
+
+    private View mChildOfContent;
+    private int usableHeightPrevious;
+    private FrameLayout.LayoutParams frameLayoutParams;
+
+    private AndroidBug5497Workaround(Activity activity) {
+        FrameLayout content = (FrameLayout) activity.findViewById(android.R.id.content);
+        mChildOfContent = content.getChildAt(0);
+        mChildOfContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            public void onGlobalLayout() {
+                possiblyResizeChildOfContent();
+            }
+        });
+        frameLayoutParams = (FrameLayout.LayoutParams) mChildOfContent.getLayoutParams();
+    }
+
+    private void possiblyResizeChildOfContent() {
+        int usableHeightNow = computeUsableHeight();
+        if (usableHeightNow != usableHeightPrevious) {
+            int usableHeightSansKeyboard = mChildOfContent.getRootView().getHeight();
+            int heightDifference = usableHeightSansKeyboard - usableHeightNow;
+            if (heightDifference &gt; (usableHeightSansKeyboard/4)) {
+                // keyboard probably just became visible
+                frameLayoutParams.height = usableHeightSansKeyboard - heightDifference+50;
+            } else {
+                // keyboard probably just became hidden
+                frameLayoutParams.height = usableHeightSansKeyboard;
+            }
+            mChildOfContent.requestLayout();
+            usableHeightPrevious = usableHeightNow;
+        }
+    }
+
+    private int computeUsableHeight() {
+        Rect r = new Rect();
+        mChildOfContent.getWindowVisibleDisplayFrame(r);
+        return (r.bottom - r.top);
+    }
+
+}
+</code></pre>
+
+<p>可以从源码看到其中的原理。
+1.利用viewTreeobserver来监听View根树的变化。一旦键盘显示或隐藏都会引起addOnGlobalLayoutListener()方法调用。</p>
+
+<p>2.计算Activtiy可视区域的高度，然后与上次可视区域高度进行比较，若相等，界面出现在变化。</p>
+
+<p>3.如果界面出现变化，计算可视区域高度visibleHeight与Activity根view的高度rootHeight之差heightDifference。</p>
+
+<p>4.如果heightDifference > （rootHeight / 4), 则认为键盘显示，否则认为键盘隐藏。</p>
+
+<p>5.根据键盘变化的状态，对Activity的contentView进行高度属性作出改变。</p>
+
+<p>至此，你已经完成了对键盘显示或隐藏对contentView的Resize了。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/03/edittext/">Android之EditText使用技巧</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-08-03T17:51:54+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2013</span></span> <span class='time'>5:51 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h5>1.修改EditText焦点光标样式（颜色、粗细）</h5>
+
+<p>  a：在xml文件中修改。</p>
+
+<pre><code>//在EditText控件里加上textCursorDrawable属性  
+ &lt;EditText
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" 
+    android:textCursorDrawable="@null"/&gt;//null表示光标颜色和textColor颜色一致
+</code></pre>
+
+<p>还可以自定义个样式引用  android:textCursorDrawable=&ldquo;@drawbale&rdquo;</p>
+
+<pre><code>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle"&gt;
+&lt;size android:width="1dp" /&gt;//光标宽
+&lt;size android:height="5dp"/&gt;//光标高 一般用默认的
+&lt;solid android:color="#007aff"  /&gt;
+&lt;/shape&gt;
+</code></pre>
+
+<p>b:在代码中设置。</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/08/03/edittext/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/05/11/mysql-optimize/">Mysql查询优化技巧</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-05-11T22:45:58+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>10:45 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>索引优化，查询优化，查询缓存，服务器设置优化，操作系统和硬件优化，应用层面优化（web服务器，缓存）等等。这里的记录的优化技巧更适用于开发人员，都是从网络上收集和自己整理的，主要是查询语句上面的优化，其它层面的优化技巧在此不做记录。</p>
+
+<h4>查询的开销指标：</h4>
+
+<h4>执行时间</h4>
+
+<h4>检查的行数</h4>
+
+<h4>返回的行数</h4>
+
+<h4>建立索引的几个准则： </div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/05/11/mysql-optimize/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/04/05/android-start/">Android之应用启动优化</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-04-05T22:41:57+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>10:41 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>在 Android 开发中,应用启动速度是一个非常重要的点,应用启动优化也是一个非常重要的过程.对于应用启动优化,其实核心思想就是在启动过程中少做事情,具体实践的时候无非就是下面几种:</h3>
+
+<h4>异步加载</h4>
+
+<h4>延时加载</h4>
+
+<h4>懒加载 </div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/04/05/android-start/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/03/19/android-picasso/">Android之图片加载库Picasso源码分析</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-03-19T23:08:20+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>11:08 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>图片加载在Android开发中是非常重要，好的图片加载库也比比皆是。ImageLoader、Picasso、Glide、Fresco均是优秀的图片加载库。
+以上提到的几种图片加载库各有特色。用法与比较，网上已经很多了。</p>
+
+<p>出于学习的角度，个人认为从Picasso入手较好。代码量小，同时API优美，很适合我们学习。</p>
+
+<h5>PS:建议园友先大致看一下源码。</h5>
+
+<p>我们对图片加载的要求</p>
+
+<p>● 加载速度要快</p>
+
+<p>● 资源消耗要低</p>
+
+<p>● 加载图片不能错位</p>
+
+<h5>Picasso是否满足要求?</h5>
+
+<p>● 加载速度要快</p>
+
+<p>1.标配策略，MemoryCache+DiskCache+Net。提高加载速度，同时保证流量。</p>
+
+<p>2.Net部分，兼顾单请求加载速度与多请求并发能力，从而提高整体加载速度。</p>
+
+<p>3.MemoryCache部分，通过Lru策略提高缓存效率。</p>
+
+<p>● 资源消耗要低</p>
+
+<p>1.渲染适当尺寸图片来减少内存。</p>
+
+<p>2.通过线程池来限制并发的图片加载线程，降低资源消耗。</p>
+
+<p>3.请求相同图片的线程要合并，减少线程数。</p>
+
+<p>● 加载图片不能错位</p>
+
+<p>Adapterview会 复用 View，Picasso通过Map机制保证View展示正确的图。</p>
+
+<p>可见，Picasso已经满足了我们对图片加载的需求。</p>
+
+<h5>Picasso的一些基本策略</h5>
+
+<p>缓存策略 MemoryCache+DiskCache+Net</p>
+
+<p>1.MemoryCache采用的是Lru策略，持有一定数量处理过的图(譬如经过resize/rotate处理，可直接设置到view中)。</p>
+
+<p>2.DiskCache是网络图片在本地的缓存，缓存的是原图，可能需要经过处理才能设置到view中。</p>
+
+<p>3.Net是图片服务器，当MemoryCache和DiskCache均取不到图片时，网络拉取，成本最高。</p>
+
+<h5>图片错位</h5>
+
+<p>为了保证图片不会错位，Picasso维护了Map，每个ImageView均只对应一个Action。</p>
+
+<p>若获取的图片Action与ImageView不符合，则丢弃，等待正确的Action执行完。</p>
+
+<h5>性能</h5>
+
+<p>1.Picasso的线程池是优化过的，根据当前设备网络状况设置ThreadCount。</p>
+
+<p>在网络良好的条件下，线程池持有较多线程，保证下载速度够快。在网络较差的条件下(2G网络等)，线程池减少持有线程，保证带宽不会被多个连接阻塞。</p>
+
+<p>2.Picasso将图片uri、resize、transform等参数糅合为key，将key封装到Action中进行请求。</p>
+
+<p>请求线程Hunter对相同key的Action进行合并，请求完成后，Action依次得到图片。
+以上是Picasso的一些基本策略，可能看不太懂，接下来结合 Picasso加载ImageView图片的场景 来串一下流程。</p>
+
+<h5>流程与源码分析</h5>
+
+<p>● 实例化</p>
+
+<p>picasso的实例化有两种方式</p>
+
+<p>1.Picasso.with(context)
+此方法提供默认方式，生成单例的Picasso对象。</p>
+
+<p>2.new Picasso.Builder(context).build()
+此方式提供自定义线程池、缓存、下载器等方法。</p>
+
+<p>● 获取RequestCreator</p>
+
+<p>picasso作为图片加载库，作用便是下载图片。我们拿到picasso实例后，正常思路便是调用picasso.load()。</p>
+
+<p>load()有四个方法，参数各不相同，不过可以分为两类:uri和resourceId。uri又分为file和net。</p>
+
+<p>load()的返回结果是RequestCreator对象，RequestCreator是用来配置加载参数的。</p>
+
+<p>RequestCreator</p>
+
+<p>● RequestCreator有两个功能</p>
+
+<p>1.配置加载参数。
+包括placeHolder与error图片，加载图片的大小、旋转、居中等属性。</p>
+
+<p>2.执行加载。
+通过调用into(object)方法进行加载。</p>
+
+<p>into方法主流程梳理如下</p>
+
+<p><img src="http://i.imgur.com/gmOCgXZ.jpg" alt="" /></p>
+
+<p>后续的工作就交由Hunter来处理了</p>
+
+<p>● 备注1:(imageview,action)是用来保证imageview与正确action匹配的。</p>
+
+<p>● 备注2:hunterMap通过key持有多个hunter，同一个hunter可以对应多个action</p>
+
+<h5>Hunter</h5>
+
+<p>hunter是一个Runnable，作用是获取图片。</p>
+
+<p>hunter的执行流程:在run()方法中执行hunt()方法尝试获取图片，结果(成功、失败、异常)交给Dispatcher回调。</p>
+
+<p>hunter的基础类是BitmapHunter，但它却是一个模版类，最重要的decode(request)方法交由子类来实现。</p>
+
+<p>hunt()方法主流程梳理如下:</p>
+
+<p><img src="http://i.imgur.com/OwtPtdL.jpg" alt="" /></p>
+
+<h5>Dispatcher</h5>
+
+<p>● Dispatcher是分发器，由Picasso或Hunter来调用。</p>
+
+<p>● Picasso或BitmapHunter只能调用dispatcher**()方法。</p>
+
+<p>原因是不能确定是main线程或Hunter线程在调用，所以Dispatcher索性对所有的调用均经过Dispatcher转发，转发后调用perform**()方法，这样即可保证在main线程中操作事件。</p>
+
+<h5>API如下:</h5>
+
+<p>dispatcherSubmit()和dispatcherCancel()</p>
+
+<p>hunter中加入action便调用dispatcherSubmit()，hunter中取消action便调用dispatcherCancel()</p>
+
+<p>dispatcherComplete()和dispatcherError()</p>
+
+<p>加载结束时调用。均调用batch方法，不过complete操作会将bitmap加入到cache中，以便后续调用。</p>
+
+<p>batch()</p>
+
+<p>起缓冲作用，每隔0.2s执行一次performBatchComplete()批处理。批处理将hunterList回调给Picasso,Picasso对每个hunter的每个action进行结果回调。</p>
+
+<h5>其他</h5>
+
+<p>跟随ImageView的图片加载，应该对Picasso的源码已经有了一定了解。但是还有几个相对独立的模块没有涉及到，园友们直接阅读源码即可。</p>
+
+<p>downloader提供了UrlConnection和OKHttp两种方案，优先选用OKHttp。主要添加了httpCache。</p>
+
+<p>Stats主要用于数据统计，很独立的模块。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/posts/4">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/posts/2">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2017/03/01/android-mvp/">Android开发之架构模式选择</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/08/07/android-performs1/">转：Android最佳性能实践——合理管理内存</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/07/19/server/">如何快速搭建一个完整的移动直播系统？</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/05/23/android-server/">Service与 IntentService 的区别与使用场景</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/04/08/android-imageview/">自定义任意形状的ImageView</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2017 - Your Name -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,350 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Android项目开发实践功能收集 - My Octopress Blog</title>
+  <meta name="author" content="Your Name">
+
+  
+  <meta name="description" content="以下主要是整理了一些在项目中经常遇到的功能 1.判断APP是否在后台运行 public static boolean isBackground(Context context) { ActivityManager activityManager = (ActivityManager) &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://wentao1990.github.io/blog/2014/07/07/androidUtils/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My Octopress Blog</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="wentao1990.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Android项目开发实践功能收集</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-07T22:56:26+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>10:56 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h4>以下主要是整理了一些在项目中经常遇到的功能</h4>
+
+<h5>1.判断APP是否在后台运行</h5>
+
+<pre><code>  public static boolean isBackground(Context context) {
+    ActivityManager activityManager = (ActivityManager) context
+            .getSystemService(Context.ACTIVITY_SERVICE);//获取管理应用程序的系统状态
+    List&lt;ActivityManager.RunningAppProcessInfo&gt; appProcesses = activityManager
+            .getRunningAppProcesses();//获取当前系统进程列表
+    for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+        if (appProcess.processName.equals(context.getPackageName())) {//判断是否是当前app进程
+            if (appProcess.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {//判断进程状态是否在前台运行
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+    return false;
+}
+</code></pre>
+
+<h5>2.判断系统网络状态及监听网络状态变化  <!--more--></h5>
+
+<p>a:判断网络是否连接</p>
+
+<pre><code>//获取网络连接服务管理
+ConnectivityManager cwjManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+//获取当前链接的可用的网络信息 ps :还有另外两个方法getNetworkInfo()是获取特定网络类型的链接网络信息。getAllNetworkInfo()是获取设备支持的所有网络类型的链接状态信息。
+NetworkInfo activeNetworkInfo = cwjManager.getActiveNetworkInfo();
+if(activeNetworkInfo==null){//没有链接网络
+    Intent intent = null;  
+    //跳转到网络设置界面，这里要做下判断当前系统版本是否是3.0（API&gt;10)版本以上，因为代码上有差异
+    if(android.os.Build.VERSION.SDK_INT &gt; 10) { 
+        intent = new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS);  
+    }else{
+        intent = new Intent();  
+        ComponentName component = new ComponentName("com.android.settings", "com.android.settings.WirelessSettings");
+        intent.setComponent(component);
+        intent.setAction("android.intent.action.VIEW"); 
+    }
+}
+</code></pre>
+
+<p>b:监听网络状态变化</p>
+
+<p>  注册一个广播接收者即可，如下：</p>
+
+<pre><code> private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if(intent.getAction()==android.net.conn.CONNECTIVITY_CHANGE){//网络状态改变广播
+            //相关操作
+            ......
+        }
+
+};
+</code></pre>
+
+<h5>3.使用手机设备播放声音</h5>
+
+<p>这里使用用户设置的铃声为例，如下：</p>
+
+<pre><code>  public static void startAlarm(Context context) {
+    MediaPlayer mMediaPlayer = MediaPlayer.create(context, getSystemDefultRingtoneUri(context));//获取播放器
+    mMediaPlayer.setLooping(true);//是否循环播放
+    try {
+        mMediaPlayer.prepare();//准备
+        mMediaPlayer.start();//播放
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
+ /**
+ * 获取系统默认通知铃声的Uri
+ * @param context
+ * @return 铃声的uri
+ */
+private static Uri getSystemDefultRingtoneUri(Context context) {
+    return RingtoneManager.getActualDefaultRingtoneUri(context,
+            RingtoneManager.TYPE_NOTIFICATION);
+}
+</code></pre>
+
+<h5>4.实现单行GridView滚动效果</h5>
+
+<p>图例：（里面只显示一行多个元素，可左右滑动）</p>
+
+<p><img src="http://i.imgur.com/WHllCt7.png" alt="" /></p>
+
+<p>步骤：
+a:在xml文件里定义一个GridView控件，如下：</p>
+
+<pre><code> &lt;HorizontalScrollView
+    android:layout_width="match_parent"
+    android:layout_height="100dp" &gt;
+    &lt;LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" &gt;
+        &lt;GridView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:gravity="center"
+            android:numColumns="auto_fit"//设置自动调整列数
+            android:stretchMode="spacingWidthUniform" &gt;//均匀缩放元素间隔
+        &lt;/GridView&gt;
+    &lt;/LinearLayout&gt;
+&lt;/HorizontalScrollView&gt;
+</code></pre>
+
+<p>b:在代码中动态绘制GridView的宽高，如下：</p>
+
+<pre><code>/**
+ * 设置单列显示的GridView宽高参数
+ * 
+ * @param mGridView 
+ * @param cloths 要显示的元素集合
+ */
+private void setGridView(GridView mGridView, List&lt;ClothInfos&gt; cloths) {
+    int size = cloths.size();
+    int length = 100;//单个元素的宽
+
+    DisplayMetrics dm = new DisplayMetrics();
+    //API 17之后使用，获取的像素宽高包含虚拟键所占空间，在API 17之前通过反射获取  
+    //context.getWindowManager().getDefaultDisplay().getRealMetrics(dm);  
+    //获取的像素宽高不包含虚拟键所占空间 
+    getWindowManager().getDefaultDisplay().getMetrics(dm);
+    float density = dm.density;//获取缩放因子 dip
+    int gridviewWidth = (int) (size * (length + 4) * density);//计算GridView的宽度
+    int itemWidth = (int) (length * density);//计算单个元素的宽度
+
+    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+            gridviewWidth, LinearLayout.LayoutParams.FILL_PARENT);
+
+    mGridView.setLayoutParams(params); // 设置GridView的宽高
+    mGridView.setColumnWidth(itemWidth); // 设置GridView的item宽
+    mGridView.setHorizontalSpacing(5); // 设置GridView的item间距
+    mGridView.setStretchMode(GridView.NO_STRETCH);
+    mGridView.setNumColumns(size); // 设置GridView的item数量
+}
+</code></pre>
+
+<p>注意：在获取屏幕像素宽高时不要加上虚拟按键的部分</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Your Name</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-07-07T22:56:26+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>10:56 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/android/'>android</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://wentao1990.github.io/blog/2014/07/07/androidUtils/" data-via="" data-counturl="http://wentao1990.github.io/blog/2014/07/07/androidUtils/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/06/22/androidContent/" title="Previous Post: Android之Context详解">&laquo; Android之Context详解</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/07/19/java-multithreading/" title="Next Post: java多线程-Runnable、thread、callable区别">java多线程-Runnable、thread、callable区别 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2017/03/01/android-mvp/">Android开发之架构模式选择</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/08/07/android-performs1/">转：Android最佳性能实践——合理管理内存</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/07/19/server/">如何快速搭建一个完整的移动直播系统？</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/05/23/android-server/">Service与 IntentService 的区别与使用场景</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/04/08/android-imageview/">自定义任意形状的ImageView</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2017 - Your Name -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

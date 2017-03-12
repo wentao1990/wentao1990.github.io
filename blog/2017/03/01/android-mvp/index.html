@@ -1,0 +1,347 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Android开发之架构模式选择 - My Octopress Blog</title>
+  <meta name="author" content="Your Name">
+
+  
+  <meta name="description" content="本文将会根据以下几个问题进行讨论 • 为什么要选择架构模式开发? • 架构模式做的事情? • 主流架构MVC、MVP的介绍及区别? • 开发中如何选择合适的架构模式? &mdash;&ndash;为什么要选择架构模式开发？ 首先， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://wentao1990.github.io/blog/2017/03/01/android-mvp/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My Octopress Blog</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="wentao1990.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Android开发之架构模式选择</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2017-03-01T21:20:25+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2017</span></span> <span class='time'>9:20 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3>本文将会根据以下几个问题进行讨论</h3>
+
+<h5>• 为什么要选择架构模式开发?</h5>
+
+<h5>• 架构模式做的事情?</h5>
+
+<h5>• 主流架构MVC、MVP的介绍及区别?</h5>
+
+<h5>• 开发中如何选择合适的架构模式?</h5>
+
+<h3>&mdash;&ndash;为什么要选择架构模式开发？</h3>
+
+<p>首先，让我们思考一下为什么在Android开发中如此迫切地需要一个清晰的软件架构。</p>
+
+<p><strong>Activity是上帝类</strong></p>
+
+<p>该段摘自“代码大全第二版”：</p>
+
+<blockquote><p>避免创建神类。避免创建无所不知，无所不能的上帝类。如果一个类需要花费时间从其他类中通过Get()和Set()检索数据（也说，需要深入业务并且告诉它们如何去做），所以是否应该把这些功能函数更好的组织到其它类而不是上帝类中。（Riel 1996）</p></blockquote>
+
+<p>上帝类的维护成本很高，你很难理解正在进行的操作，并且难以测试和扩展，这就是为什么要避免创建上帝类的黄金法则。</p>
+
+<p>然而，在Android开发中，如果你不考虑架构的话，Activity类往往会越来越大。这是因为，在Android中，允许View和其它线程共存于Activity内。其实最大的问题莫过于在Activity中同时存在业务逻辑和UI逻辑。这会增加测试和维护的成本。</p>
+
+<p>这是为什么需要清晰架构的原因之一。不仅会造成Activity的臃肿，还会引起其他问题，如使Activity和Fragment的生命周期变复杂，以及数据绑定等。</p>
+
+<h3>&mdash;&ndash;架构模式做的事情?</h3>
+
+<p><strong>1.低耦合性（强调视图和业务分离）</strong></p>
+
+<p>解耦可以说是程序设计最重要的一点，耦合性太高的代码不易维护，牵一发而动全身，修改bug或者需求很容易引起蝴蝶效应。</p>
+
+<p><strong>2.可测试性（单元测试）</strong></p>
+
+<p>项目分层明确，易进行驱动化测试，可以减少测试时间及bug的数量。</p>
+
+<p><strong>3.高复用性和可适用性（减少冗余的代码）</strong></p>
+
+<p>代码的有效复用可以提升性能及开发效率，优雅简洁的代码才是程序员追求的品味。</p>
+
+<p><strong>4.模块职责划分明显（分工明确，提升阅读性）</strong></p>
+
+<p>简单明了，一目了然，可以减轻二次开发的了解成本，试想一堆臃肿的代码如果非作者，别人该如何进行二次开发。</p>
+
+<p><strong>5.隐藏数据（安全性高）</strong></p>
+
+<p>不需要暴露出的数据，都应该封装隐藏起来，对数据统一加密、销毁、管理，可大大提高软件被破解的损失。</p>
+
+<p><strong>6.有利于软件工程化管理（减少维护成本）</strong></p>
+
+<p>一份规范的代码，可以进行工程化管理，无规矩不成方圆。</p>
+
+<p>等等&hellip;</p>
+
+<p><strong>由此可见，架构模式就是定义一个开发规范，大家彼此按照这个规范写代码。</strong></p>
+
+<h3>&mdash;&ndash;主流架构（MVC&amp;MVP)的比较 ?</h3>
+
+<h4>MVC（ModelViewController）</h4>
+
+<p>我们根据一张图来分析MVC所做的事情</p>
+
+<p><img src="http://i.imgur.com/i45tKyT.gif" alt="" /></p>
+
+<h4>MODEL（数据）层 ：</h4>
+
+<p><strong>• 封装应用程序状态</strong> （封装管理应用数据）</p>
+
+<p><strong>• 响应状态查询</strong> （响应VIEW层的请求操作数据）</p>
+
+<p><strong>• 暴露应用程序功能</strong> （供VIEW、CONTROLLER使用的核心业务逻辑）</p>
+
+<p><strong>• 通知更改的视图</strong> （通知VIEW层渲染最新的UI数据）</p>
+
+<p><strong>小结：</strong> 模型代表着核心的业务逻辑和数据。（不要理解成Model只是实体类）。</p>
+
+<h4>VIEW（视图）层 ：</h4>
+
+<p><strong>• 呈现模型</strong> （渲染UI、显示数据）</p>
+
+<p><strong>• 请求更新表单模型</strong> （通知MODEL层更新数据）</p>
+
+<p><strong>• 向控制器发送用户手势</strong> （响应用户的操作，通知CONTROLLER层处理相应的业务逻辑处理）</p>
+
+<p><strong>• 允许控制器选择的观点</strong> （根据CONTROLLER层返回的结果进行呈现）</p>
+
+<p><strong>小结：</strong> 视图应该关注与如何展示数据，而不应该包含任何业务逻辑（业务逻辑应写在Model中）。</p>
+
+<h4>CONTROLLER（控制器）层 ：</h4>
+
+<p><strong>• 指示应用程序行为</strong> （操作MODEL层做出相应的业务逻辑处理）</p>
+
+<p><strong>• 将用户操作映射到模型更新</strong>（根据VIEW层传来的用户手势，通知MODEL层更新状态）</p>
+
+<p><strong>• 选择视图进行响应</strong> （响应VIEW层的指令）</p>
+
+<p><strong>• 每个功能一个</strong> （一个业务逻辑的函数，是唯一的，整个项目通用）</p>
+
+<p><strong>小结：</strong> 控制器控制着程序的逻辑，并充当着视图和模型之间的协调角色。控制器从视图层接收用户输入的信息，然后使用模型来执行特定的操作，并把最终的结果回传给视图</p>
+
+<p><strong>总结：</strong> 由上可见，在 <strong>MVC模式</strong> 中，<strong> VIEW</strong> 层负责UI渲染和用户交互，<strong> MODEL</strong> 负责数据的维护及核心业务逻辑处理， <strong>CONTROLLER</strong> 负责把二者串起来，控制他们怎么工作。</p>
+
+<p>不过<strong>Android</strong>开发中，<strong>VIEW</strong> 层也是可以和 <strong>MODEL</strong> 层进行双向交互的，既然和数据交互，就难免存在一些业务逻辑处理，如果把控不好，就会造成 <strong>VIEW</strong> 层掺杂的业务逻辑代码过多，偏离了 <strong>MVC模式</strong> 的设计初衷。</p>
+
+<h4>MVP（ModelViewPresenter）</h4>
+
+<h4>为何这个模式出来后，就能被广大的Android的程序员接受呢？</h4>
+
+<p>MVP是在MVC的基础上演变而来的，这次的跳跃是从并不标准的MVC到MVP的一个转变，减少了 <strong>ACTIVITY</strong> 的职责，简化了 <strong>ACTIVITY</strong> 中的代码，将复杂的逻辑代码提取到了 <strong>PRESENTER</strong> 中进行处理。与之对应的好处就是，耦合度更低，更方便的进行测试。借用两张图，代表上述的转变：</p>
+
+<p><img src="http://i.imgur.com/28YLg9u.png" alt="" /></p>
+
+<p>转变为：</p>
+
+<p><img src="http://i.imgur.com/V2jdQQg.png" alt="" /></p>
+
+<h3>MVC 与 MVP 的区别</h3>
+
+<p>如下图：</p>
+
+<p><img src="http://i.imgur.com/GxXtsZZ.png" alt="" /></p>
+
+<p>其实最明显的区别就是，MVC中是允许Model和View进行交互的，而MVP中很明显，Model与View之间的交互由Presenter完成。还有一点就是Presenter与View之间的交互是通过接口的。</p>
+
+<p><strong>MVC 存在的问题：</strong></p>
+
+<p>在 <strong>MVC</strong> 模型里，<strong>MODEL</strong> 不依赖于 <strong>VIEW</strong>，但是 <strong>view</strong> 是依赖于 <strong>MODEL</strong> 的。不仅如此，因为有一些业务逻辑在  <strong>VIEW</strong> 里实现了，导致要更改 <strong>VIEW</strong> (视图是经常根据需求变化的) 也是比较困难的，至少那些业务逻辑是无法重用的。</p>
+
+<p><strong>把Controller和View混在一起，有什么问题？</strong></p>
+
+<p> <strong>• 难以测试</strong> 必须手动点击，使用各种自动化的测试工具。</p>
+
+<p> <strong>• 代码难以重用</strong> UI是很难重用，因为要求总是不同。所以，导致重复的代码四处都是，维护麻烦。</p>
+
+<p><strong>MVP 来解决 MVC 存在的问题：</strong></p>
+
+<p>在 <strong>MVP</strong> 里， <strong>PRESENTER</strong> 完全把 <strong>MODEL</strong> 和 <strong>VIEW</strong> 进行了分离，主要的程序逻辑在 <strong>PRESENTER</strong> 里实现。而且，<strong>PRESENTER</strong> 与具体的 <strong>VIEW </strong>是没有直接关联的，而是通过定义好的接口进行交互，从而使得在变更 <strong>VIEW</strong> 时候可以 保持<strong>PRESENTER</strong> 的不变，即重用！不仅如此，我们还可以编写测试用的 <strong>VIEW</strong> ，模拟用户的各种操作，从而实现对 <strong>PRESENTER</strong> 的测试&ndash;而不需要使用自动化的测试工具。</p>
+
+<p>我们甚至可以在 <strong>MODEL</strong> 和 <strong>VIEW</strong> 都没有完成时候，就可以通过编写 <strong>MOCK OBJECT </strong>（即实现了 <strong>MODEL</strong> 和 <strong>VIEW</strong> 的接口，但没有具体的内容的）来测试 <strong>PRESENTER</strong> 的逻辑</p>
+
+<h3>&mdash;&ndash;开发中如何选择合适的架构模式?</h3>
+
+<p>这里以 <strong>APP</strong> 开发为例，如果是一款轻量级、业务逻辑不是很复杂的 <strong>APP</strong> ，那么使用 <strong>MVC</strong> 模式足够满足需求，因为代码量不大，不至于变成臃肿的 <strong>MVC</strong> ，造成不好测试及维护问题。</p>
+
+<p>如果，开发的是一款业务逻辑复杂的 <strong>超级APP</strong> ,那么使用 <strong>MVC</strong> 模式进行开发，就会出现上面所列出的那些问题。这种情况下使用<strong>MVP</strong> 架构模式就更为妥当。有些 <strong>APP</strong> 甚至只有一个 <strong>ACTIVITY</strong>，在性能和反编译安全问题都有提升。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Your Name</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2017-03-01T21:20:25+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2017</span></span> <span class='time'>9:20 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/android/'>android</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://wentao1990.github.io/blog/2017/03/01/android-mvp/" data-via="" data-counturl="http://wentao1990.github.io/blog/2017/03/01/android-mvp/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2016/08/07/android-performs1/" title="Previous Post: 转：Android最佳性能实践——合理管理内存">&laquo; 转：Android最佳性能实践——合理管理内存</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2017/03/01/android-mvp/">Android开发之架构模式选择</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/08/07/android-performs1/">转：Android最佳性能实践——合理管理内存</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/07/19/server/">如何快速搭建一个完整的移动直播系统？</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/05/23/android-server/">Service与 IntentService 的区别与使用场景</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/04/08/android-imageview/">自定义任意形状的ImageView</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2017 - Your Name -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

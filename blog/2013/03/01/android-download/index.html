@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Android开发工具类之DownloadManagerPro - My Octopress Blog</title>
+  <meta name="author" content="Your Name">
+
+  
+  <meta name="description" content="这个工具类就是Android系统下载管理DownloadManager的一个增强类，提供了一些增强方法。或许大家不太了解这个安卓系统自带的DownloadManager这个类，我先做一个简单介绍吧。DownloadManager是系统开放给第三方应用使用的类， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://wentao1990.github.io/blog/2013/03/01/android-download/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My Octopress Blog</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="wentao1990.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Android开发工具类之DownloadManagerPro</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-03-01T22:22:25+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2013</span></span> <span class='time'>10:22 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h4>这个工具类就是Android系统下载管理DownloadManager的一个增强类，提供了一些增强方法。或许大家不太了解这个安卓系统自带的DownloadManager这个类，我先做一个简单介绍吧。DownloadManager是系统开放给第三方应用使用的类，包含两个静态内部类DownloadManager.Query和DownloadManager.Request。<!--more--></h4>
+
+<p>DownloadManager.Request用来请求一个下载，DownloadManager.Query用来查询下载信息。用downloadManager的enqueue接口进行下载，返回唯一的downloadId。注意这个id，我们会在DownloadManagerPro这个工具增强类中用到。正题来了，下面就介绍一下这个DownloadManagerPro。DownloadManagerPro这个增强类中有一下这些方法，我会对这些方法进行一个逐一的解释，希望大家不要嫌啰嗦。</p>
+
+<h5>1、int[] getBytesAndStatus(long downloadId)这个方法就是传入我们上面所说的那个enqueue接口返回的下载id，可以获取到这个下载文件已经下载了多大，总共多大，以及下载状态，返回信息是一个int数组，包含了这三个信息。</h5>
+
+<h5>2、int[] getDownloadBytes(long downloadId)这个方法就是传入下载id，可以获取到已经下载了多大，总共这个下载文件有多大的信息，返回信息也是一个int数组。</h5>
+
+<h5>3、int getErrorCode(long downloadId)这个方法是传入下载id，得到的返回信息就是这个文件下载失败的错误代码，error code。</h5>
+
+<h5>4、String getFileName(long downloadId)这个方法就是传入下载id，返回下载文件的名字</h5>
+
+<h5>5、int getPausedReason(long downloadId)这个方法是传入下载id，返回下载停止的原因</h5>
+
+<h5>6、int getReason(long downloadId)这个方法就是传入下载id，返回下载失败或者停止的错误代码</h5>
+
+<h5>7、int getStatusById(long downloadId)这个方法就是传入下载id，返回下载信息的状态码</h5>
+
+<h5>8、String getUri(long downloadId)这个方法就是传入下载id，返回下载文件的uri</h5>
+
+<h5>9、static boolean isExistPauseAndResumeMethod()这个方法就是判断在DownloadManager中是否存在停止下载的和重新下载的方法</h5>
+
+<h5>10、int pauseDownload(long&hellip; ids)这个方法就是传入多参数的id，停止响应下载id的下载11、int resumeDownload(long&hellip; ids)这个方法就是传入多参数的下载id，继续或者恢复停止的下载</h5>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Your Name</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2013-03-01T22:22:25+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2013</span></span> <span class='time'>10:22 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/android/'>android</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://wentao1990.github.io/blog/2013/03/01/android-download/" data-via="" data-counturl="http://wentao1990.github.io/blog/2013/03/01/android-download/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/03/05/android-app/" title="Next Post: Android应用开发浅谈">Android应用开发浅谈 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2017/03/01/android-mvp/">Android开发之架构模式选择</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/08/07/android-performs1/">转：Android最佳性能实践——合理管理内存</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/07/19/server/">如何快速搭建一个完整的移动直播系统？</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/05/23/android-server/">Service与 IntentService 的区别与使用场景</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/04/08/android-imageview/">自定义任意形状的ImageView</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2017 - Your Name -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

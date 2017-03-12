@@ -1,0 +1,491 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>打造可以共用的Adapter - My Octopress Blog</title>
+  <meta name="author" content="Your Name">
+
+  
+  <meta name="description" content="前言： 在我们开发android项目中，会在多个地方使用ListView展示内容，然后每个ListView都要对应一个Adapter来装载数据。这样的话代码就会有许多的冗余，就算写个BaseAdapter抽取部分代码，也有很多的冗余代码避免不了，至少那十几个类文件是确确实实存在那的（取决于项目需求 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://wentao1990.github.io/blog/2015/08/12/android-commonAdapter/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My Octopress Blog</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="wentao1990.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">打造可以共用的Adapter</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-08-12T19:14:31+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:14 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3>前言：</h3>
+
+<p>在我们开发android项目中，会在多个地方使用ListView展示内容，然后每个ListView都要对应一个Adapter来装载数据。这样的话代码就会有许多的冗余，就算写个BaseAdapter抽取部分代码，也有很多的冗余代码避免不了，至少那十几个类文件是确确实实存在那的（取决于项目需求）。下面我们来一起打造一个共用的Adapter,一个搞定所有ListView的数据装载。</p>
+
+<h5>传统的写法我就不贴出来了，自己回想一下大概就很清楚了。</h5>
+
+<h3>第一步：打造共用的ViewHolder</h3>
+
+<p>一个有经验的开发者在写Adapterd的时候是不会忘记写ViewHolder的，而ViewHolder无非就是item的复用，解决效率和负载问题。所以，若要打造一个共用的Adapter，那么一个共用的ViewHolder是必不可少的。</p>
+
+<p>ViewHolder的原理是通过convertView.setTag(this)与convertView进行绑定,然后当convertView被复用时，直接通过getTag方法拿到ViewHolder对象，直接操作里面封装的convertView中的控件，从而省去了findViewById的时间。也就说，每个convertView都会绑定一个ViewHolder对象来存储布局中的控件。那么我们只要写出一个通用的ViewHolder，然后对于任意的convertView，提供一个对象让其setTag即可；</p>
+
+<p> <!--more--></p>
+
+<p>既然是通用，那么我们这个ViewHolder就不可能含有各种控件的成员变量了，因为每个Item的布局是不同的，最好的方式是什么呢？
+提供一个容器，专门存每个Item布局中的所有控件，而且还要能够查找出来；既然需要查找，那么ListView肯定是不行了，需要一个键值对进行保存，键为控件的Id，值为控件的引用，相信大家立刻就能想到Map；但是我们不用Map，因为有更好的替代类，就是我们android提供的SparseArray这个类，和Map类似，但是比Map效率，不过键只能为Integer.</p>
+
+<p>下面直接贴出代码：</p>
+
+<pre><code>/**
+ * ClassName: ViewHolder
+ * Fuction: 通用ViewHolder
+ * Author：Knight
+ * Created  2015/8/10 0010.
+ */
+public class ViewHolder {
+private final SparseArray&lt;View&gt; mViews;//存储控件集合
+private View mConvertView;
+
+private ViewHolder(Context context, ViewGroup parent, int layoutId, int position) {
+    this.mViews = new SparseArray&lt;View&gt;();
+    mConvertView = LayoutInflater.from(context).inflate(layoutId, parent, false);
+    //setTag
+    mConvertView.setTag(this);
+}
+
+/**
+ * 获取ViewHolder对象
+ *
+ * @param context
+ * @param convertView Item
+ * @param parent      Item载体
+ * @param layoutId    Item布局资源id
+ * @param position    Item游标
+ * @return
+ */
+public static ViewHolder get(Context context, View convertView
+        , ViewGroup parent, int layoutId, int position) {
+    if (convertView == null) {
+        return new ViewHolder(context, parent, layoutId, position);
+    }
+
+    return (ViewHolder) convertView.getTag();
+}
+
+/**
+ * 根据id获取控件
+ *
+ * @param viewId
+ * @param &lt;T&gt;
+ * @return
+ */
+public &lt;T extends View&gt; T getByIdView(int viewId) {
+    View view = mViews.get(viewId);
+    if (view == null) {
+        view = mConvertView.findViewById(viewId);
+        mViews.put(viewId, view);
+    }
+    return (T) view;
+}
+
+/**
+ * 返回item
+ *
+ * @return
+ */
+public View getConvertView() {return mConvertView;}
+</code></pre>
+
+<p>与传统的ViewHolder不同，我们使用了一个SparseArray<View>用于存储与之对于的convertView的所有的控件，当需要拿这些控件时，通过getView(id)进行获取；</p>
+
+<h3>第二步：打造共用的Adapter</h3>
+
+<p>Adapter一般需要保持一个List对象，存储一个Bean的集合，不同的ListView，Bean肯定是不同的，这个CommonAdapter肯定需要支持泛型，内部维持一个List<T>，就解决我们的问题了；</p>
+
+<p>下面贴出代码：</p>
+
+<pre><code>/**
+ * ClassName: CommonAdapter
+ * Fuction: 通用适配器
+ * Author：Knight
+ * Created  2015/8/10 0010.
+ */
+public abstract class CommonAdapter&lt;T&gt; extends BaseAdapter {
+    private Context mContext;
+    private List&lt;T&gt; mDatas;
+    private int mLayoutId;
+    private Object object;
+
+    public CommonAdapter(Context context, List&lt;T&gt; datas, int layoutId) {
+        this.mContext = context;
+        this.mDatas=datas;
+        this.mLayoutId = layoutId;
+        this.object=new Object();
+    }
+
+    @Override
+    public View getView(int i, View view, ViewGroup viewGroup) {
+        //创建一个ViewHolder对象
+        final ViewHolder holder = ViewHolder.get(mContext, view, viewGroup, mLayoutId, i);
+        //子类的处理逻辑
+        convert(holder,mDatas.get(i));
+        //return view
+        return holder.getConvertView();
+    }
+
+     /**
+     * 需要子类实现的逻辑
+     *
+     * @param holder
+     * @param item
+     */
+    protected abstract void convert(ViewHolder holder, T item);
+
+    @Override
+    public int getCount() {
+        return mDatas == null ? 0 : mDatas.size();
+    }
+
+    @Override
+    public T getItem(int i) {
+        return mDatas.get(i);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return i;
+    }
+
+}
+</code></pre>
+
+<p>可以看出来我们的CommonAdapter是一个抽象类，使用者需要实现convert方法，从代码的逻辑来看，调用者（一般都是Activity)只需要实现convert方法来填写自身的处理逻辑即可，如settext、单击、长按。这是不是OO设计原则？</p>
+
+<p>下面贴出调用的Activity代码：</p>
+
+<pre><code>mListView= (ListView) findViewById(R.id.lv_brant);
+......
+
+mListView.setAdapter(new CommonAdapter&lt;UserConfInfo.TBrandOptionEntity.DataEntity&gt;(this
+        ,ConfUtils.getBrandList(typeId),R.layout.brand_list_item) {
+            @Override
+            protected void convert(ViewHolder holder, final UserConfInfo.TBrandOptionEntity.DataEntity item) {
+                TextView textView=holder.getByIdView(R.id.textview);
+                textView.setText("支付宝");
+            }
+        });
+</code></pre>
+
+<h3>第三步：封装需要使用的功能到ViewHolder</h3>
+
+<p>其实可以看出，完成上面两步之后，一个共用的Adapter就已经打造完成了。不过ViewHolder还可以做很多事情，由上可以看出，ViewHolder里维护了布局中的控件，我们最终还是去操作处理这些控件，如：赋值、跳转、数据交互等。那么为了更好的减少代码量（本人有点代码洁癖），我们可以把用到的功能都封装进ViewHoldr,看完下面的代码就会明白了。</p>
+
+<p>下面贴出封装功能后的ViewHolder:</p>
+
+<pre><code> /**
+ * 设置view内容
+ *
+ * @param viewId
+ * @param conent
+ * @return
+ */
+public ViewHolder setText(int viewId, String conent) {
+    TextView textView = getByIdView(viewId);
+    textView.setText(conent);
+    return this;
+}
+
+/**
+ * 设置控件背景
+ *
+ * @param viewId
+ * @param resourceId
+ * @return
+ */
+public ViewHolder setBackgroundResource(int viewId, int resourceId) {
+    getByIdView(viewId).setBackgroundResource(resourceId);
+
+    return this;
+}
+
+/**
+ * 设置view显示状态
+ *
+ * @param viewId
+ * @param visibility
+ * @return
+ */
+public ViewHolder setVisibility(int viewId, int visibility) {
+    getByIdView(viewId).setVisibility(visibility);
+    return this;
+}
+
+/**
+ * 设置图片
+ *
+ * @param viewId
+ * @param resId
+ * @return
+ */
+public ViewHolder setImageResource(int viewId, int resId) {
+    ImageView view = getByIdView(viewId);
+    view.setImageResource(resId);
+    return this;
+}
+
+/**
+ * 设置图片
+ *
+ * @param viewId
+ * @param bitmap
+ * @return
+ */
+public ViewHolder setImageBitmap(int viewId, Bitmap bitmap) {
+    ImageView view = getByIdView(viewId);
+    view.setImageBitmap(bitmap);
+    return this;
+}
+
+/**
+ * 设置textview字体颜色
+ *
+ * @param viewId
+ * @param resId
+ * @return
+ */
+public ViewHolder setTextColorResource(int viewId, int resId) {
+    TextView textView = getByIdView(viewId);
+    textView.setTextColor(resId);
+
+    return this;
+}
+
+/**
+ * 设置控件选中状态
+ *
+ * @param viewId
+ * @param b
+ * @return
+ */
+public ViewHolder setChecked(int viewId, boolean b) {
+    CheckBox checkBox = getByIdView(viewId);
+    checkBox.setChecked(b);
+
+    return this;
+}
+
+/**
+ * 绑定控件的多选事件
+ *
+ * @param viewId
+ * @param listener
+ * @return
+ */
+public ViewHolder setOnCheckedChangeListener(int viewId, CompoundButton.OnCheckedChangeListener listener) {
+    CheckBox checkBox = getByIdView(viewId);
+    checkBox.setOnCheckedChangeListener(listener);
+
+    return this;
+}
+
+/**
+ * 绑定view单击事件
+ *
+ * @param viewId
+ * @param listener
+ * @return
+ */
+public ViewHolder setOnClickListener(int viewId, View.OnClickListener listener) {
+    View view = getByIdView(viewId);
+    view.setOnClickListener(listener);
+
+    return this;
+}
+</code></pre>
+
+<p>完成以上三步后，一个不算完美但还能凑合用的共用Adapter就打造好了，整个项目的代码量应该会减少百分之一，多少还会有些神清气爽的感觉。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Your Name</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-08-12T19:14:31+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:14 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/android/'>android</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://wentao1990.github.io/blog/2015/08/12/android-commonAdapter/" data-via="" data-counturl="http://wentao1990.github.io/blog/2015/08/12/android-commonAdapter/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/07/09/android-safety/" title="Previous Post: 浅谈App安全">&laquo; 浅谈App安全</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/11/02/android-image/" title="Next Post: Android Image">Android Image &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2017/03/01/android-mvp/">Android开发之架构模式选择</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/08/07/android-performs1/">转：Android最佳性能实践——合理管理内存</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/07/19/server/">如何快速搭建一个完整的移动直播系统？</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/05/23/android-server/">Service与 IntentService 的区别与使用场景</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/04/08/android-imageview/">自定义任意形状的ImageView</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2017 - Your Name -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Unity3d | My Octopress Blog]]></title>
+  <link href="http://wentao1990.github.io/blog/categories/unity3d/atom.xml" rel="self"/>
+  <link href="http://wentao1990.github.io/"/>
+  <updated>2017-03-12T19:16:15+08:00</updated>
+  <id>http://wentao1990.github.io/</id>
+  <author>
+    <name><![CDATA[Your Name]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Unity3D项目融合到Android项目中]]></title>
+    <link href="http://wentao1990.github.io/blog/2015/07/03/android-unity3D/"/>
+    <updated>2015-07-03T19:44:10+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2015/07/03/android-unity3D</id>
+    <content type="html"><![CDATA[<h2>需求：</h2>
+
+<h3>有一个Android项目，里面要添加一个unity3D做的模块，然后把它们融合到一个项目中，这是两个独立的项目，需要把unity3D融合到Android项目中，如果是在项目设计架构之前选择一个为基点做二次开发，那就没有这么奇葩的需求了，然并卵！<!--more--></h3>
+
+<h3>注：</h3>
+
+<p>Unity3D是一款国外的3D游戏引擎，最近几年在国内火了起来，算是在游戏引擎里面比较新颖的技术吧，写好的项目可以直接导出Android和Ios版本，相当给力，可以直接在手机上跑了。说到这里，已经有一个Android项目出来了，且放在这，下面贴上Unity3D导出的Android版本的结构目录。
+<img src="http://i.imgur.com/SkSGFW0.png" alt="" /></p>
+
+<p>可以看的出它就是一个完整的Android项目，这样的话我们就能有至少两种思路来解决这个奇葩的需求。</p>
+
+<h3>一.捆绑安装</h3>
+
+<p>把unity3D虽然主程序静默安装到用户手机里面，然后在app内部开启unity3D程序并通信。很显然这样做的缺点太明显，技术层次也太LOW，作为一个高逼格的程序员显然是不屑于此的。由于此思路不适合在老板面前装逼，故不在此讨论。</p>
+
+<h3>二.代码合并</h3>
+
+<p>把unity3D导出的android项目代码合并到主项目里即可，也很简单，跟着下面步骤走完即可。</p>
+
+<p>1.在unity3D编辑器的安装目录中找到unity-classes.jar包引入到主程序libs中。这个unity for android的支持包。</p>
+
+<p>2.整合两个AndroidManifest.xml文件找到unity3DAndroidManifest.xml文件中的activity节点复制到主项目的AndroidManifest.xml文件中，记着把过滤器注释掉，也就是 <intent-filter>里面的内容。</p>
+
+<p>3.把unity3D Android项目中的assets目录下的bin文件复制到主项目assets目录下</p>
+
+<p><img src="http://i.imgur.com/3NbzTJH.png" alt="" /></p>
+
+<p>4.最后把unity项目中的activity复制到主项目中</p>
+
+<h5>UnityPlayerProxyActivity这个类主要就是在程序运行时获取设备系统的版本，然后根据系统版本自行判断启动UnityPlayerActivity还是UnityPlayerNativeActivity。UnityPlayerActivity是UnityPlayerNativeActivity的子类根据unity官方说明UnityPlayerNativeActivity加载的比较快，但是需要android2.3系统版本以上支持，因为引用了UnityPlayerNativeActivity继承了NativeActivity类，而这个类是从android系统中引入的，在2.3版本之前没有此类。那么现在就知道了，UnityPlayerNativeActivity类其实就unity3D加载的入口，一切模型动画渲染都是从这里开始加载的，那么也就可以把UnityPlayerNativeActivity当作一个普通的android中的activity使用，调用、复用、销毁，它也具备activity的生命周期，因为往深去看，其实就是一个activity。完成以上步骤，就完成了所有的整合，以后若unity3D模块更新迭代后，直接把assets下的bin复制替换掉主项目中的即可。</h5>
+
+<p>有时间后面再分享些整合后在模型（UnityPlayerNativeActivity类）中修改界面和一些交互注意事项方面的东西与大家探讨一下。</p>
+]]></content>
+  </entry>
+  
+</feed>

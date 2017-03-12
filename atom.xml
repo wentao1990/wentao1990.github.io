@@ -2,15 +2,2948 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[My Octopress Blog]]></title>
-  <link href="http://yoursite.com/atom.xml" rel="self"/>
-  <link href="http://yoursite.com/"/>
-  <updated>2017-03-12T19:07:00+08:00</updated>
-  <id>http://yoursite.com/</id>
+  <link href="http://wentao1990.github.io/atom.xml" rel="self"/>
+  <link href="http://wentao1990.github.io/"/>
+  <updated>2017-03-12T19:16:15+08:00</updated>
+  <id>http://wentao1990.github.io/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Android开发之架构模式选择]]></title>
+    <link href="http://wentao1990.github.io/blog/2017/03/01/android-mvp/"/>
+    <updated>2017-03-01T21:20:25+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2017/03/01/android-mvp</id>
+    <content type="html"><![CDATA[<h3>本文将会根据以下几个问题进行讨论</h3>
+
+<h5>• 为什么要选择架构模式开发?</h5>
+
+<h5>• 架构模式做的事情?</h5>
+
+<h5>• 主流架构MVC、MVP的介绍及区别?</h5>
+
+<h5>• 开发中如何选择合适的架构模式?</h5>
+
+<h3>&mdash;&ndash;为什么要选择架构模式开发？</h3>
+
+<p>首先，让我们思考一下为什么在Android开发中如此迫切地需要一个清晰的软件架构。</p>
+
+<p><strong>Activity是上帝类</strong></p>
+
+<p>该段摘自“代码大全第二版”：</p>
+
+<blockquote><p>避免创建神类。避免创建无所不知，无所不能的上帝类。如果一个类需要花费时间从其他类中通过Get()和Set()检索数据（也说，需要深入业务并且告诉它们如何去做），所以是否应该把这些功能函数更好的组织到其它类而不是上帝类中。（Riel 1996）</p></blockquote>
+
+<p>上帝类的维护成本很高，你很难理解正在进行的操作，并且难以测试和扩展，这就是为什么要避免创建上帝类的黄金法则。</p>
+
+<p>然而，在Android开发中，如果你不考虑架构的话，Activity类往往会越来越大。这是因为，在Android中，允许View和其它线程共存于Activity内。其实最大的问题莫过于在Activity中同时存在业务逻辑和UI逻辑。这会增加测试和维护的成本。</p>
+
+<p>这是为什么需要清晰架构的原因之一。不仅会造成Activity的臃肿，还会引起其他问题，如使Activity和Fragment的生命周期变复杂，以及数据绑定等。</p>
+
+<h3>&mdash;&ndash;架构模式做的事情?</h3>
+
+<p><strong>1.低耦合性（强调视图和业务分离）</strong></p>
+
+<p>解耦可以说是程序设计最重要的一点，耦合性太高的代码不易维护，牵一发而动全身，修改bug或者需求很容易引起蝴蝶效应。</p>
+
+<p><strong>2.可测试性（单元测试）</strong></p>
+
+<p>项目分层明确，易进行驱动化测试，可以减少测试时间及bug的数量。</p>
+
+<p><strong>3.高复用性和可适用性（减少冗余的代码）</strong></p>
+
+<p>代码的有效复用可以提升性能及开发效率，优雅简洁的代码才是程序员追求的品味。</p>
+
+<p><strong>4.模块职责划分明显（分工明确，提升阅读性）</strong></p>
+
+<p>简单明了，一目了然，可以减轻二次开发的了解成本，试想一堆臃肿的代码如果非作者，别人该如何进行二次开发。</p>
+
+<p><strong>5.隐藏数据（安全性高）</strong></p>
+
+<p>不需要暴露出的数据，都应该封装隐藏起来，对数据统一加密、销毁、管理，可大大提高软件被破解的损失。</p>
+
+<p><strong>6.有利于软件工程化管理（减少维护成本）</strong></p>
+
+<p>一份规范的代码，可以进行工程化管理，无规矩不成方圆。</p>
+
+<p>等等&hellip;</p>
+
+<p><strong>由此可见，架构模式就是定义一个开发规范，大家彼此按照这个规范写代码。</strong></p>
+
+<h3>&mdash;&ndash;主流架构（MVC&amp;MVP)的比较 ?</h3>
+
+<h4>MVC（ModelViewController）</h4>
+
+<p>我们根据一张图来分析MVC所做的事情</p>
+
+<p><img src="http://i.imgur.com/i45tKyT.gif" alt="" /></p>
+
+<h4>MODEL（数据）层 ：</h4>
+
+<p><strong>• 封装应用程序状态</strong> （封装管理应用数据）</p>
+
+<p><strong>• 响应状态查询</strong> （响应VIEW层的请求操作数据）</p>
+
+<p><strong>• 暴露应用程序功能</strong> （供VIEW、CONTROLLER使用的核心业务逻辑）</p>
+
+<p><strong>• 通知更改的视图</strong> （通知VIEW层渲染最新的UI数据）</p>
+
+<p><strong>小结：</strong> 模型代表着核心的业务逻辑和数据。（不要理解成Model只是实体类）。</p>
+
+<h4>VIEW（视图）层 ：</h4>
+
+<p><strong>• 呈现模型</strong> （渲染UI、显示数据）</p>
+
+<p><strong>• 请求更新表单模型</strong> （通知MODEL层更新数据）</p>
+
+<p><strong>• 向控制器发送用户手势</strong> （响应用户的操作，通知CONTROLLER层处理相应的业务逻辑处理）</p>
+
+<p><strong>• 允许控制器选择的观点</strong> （根据CONTROLLER层返回的结果进行呈现）</p>
+
+<p><strong>小结：</strong> 视图应该关注与如何展示数据，而不应该包含任何业务逻辑（业务逻辑应写在Model中）。</p>
+
+<h4>CONTROLLER（控制器）层 ：</h4>
+
+<p><strong>• 指示应用程序行为</strong> （操作MODEL层做出相应的业务逻辑处理）</p>
+
+<p><strong>• 将用户操作映射到模型更新</strong>（根据VIEW层传来的用户手势，通知MODEL层更新状态）</p>
+
+<p><strong>• 选择视图进行响应</strong> （响应VIEW层的指令）</p>
+
+<p><strong>• 每个功能一个</strong> （一个业务逻辑的函数，是唯一的，整个项目通用）</p>
+
+<p><strong>小结：</strong> 控制器控制着程序的逻辑，并充当着视图和模型之间的协调角色。控制器从视图层接收用户输入的信息，然后使用模型来执行特定的操作，并把最终的结果回传给视图</p>
+
+<p><strong>总结：</strong> 由上可见，在 <strong>MVC模式</strong> 中，<strong> VIEW</strong> 层负责UI渲染和用户交互，<strong> MODEL</strong> 负责数据的维护及核心业务逻辑处理， <strong>CONTROLLER</strong> 负责把二者串起来，控制他们怎么工作。</p>
+
+<p>不过<strong>Android</strong>开发中，<strong>VIEW</strong> 层也是可以和 <strong>MODEL</strong> 层进行双向交互的，既然和数据交互，就难免存在一些业务逻辑处理，如果把控不好，就会造成 <strong>VIEW</strong> 层掺杂的业务逻辑代码过多，偏离了 <strong>MVC模式</strong> 的设计初衷。</p>
+
+<h4>MVP（ModelViewPresenter）</h4>
+
+<h4>为何这个模式出来后，就能被广大的Android的程序员接受呢？</h4>
+
+<p>MVP是在MVC的基础上演变而来的，这次的跳跃是从并不标准的MVC到MVP的一个转变，减少了 <strong>ACTIVITY</strong> 的职责，简化了 <strong>ACTIVITY</strong> 中的代码，将复杂的逻辑代码提取到了 <strong>PRESENTER</strong> 中进行处理。与之对应的好处就是，耦合度更低，更方便的进行测试。借用两张图，代表上述的转变：</p>
+
+<p><img src="http://i.imgur.com/28YLg9u.png" alt="" /></p>
+
+<p>转变为：</p>
+
+<p><img src="http://i.imgur.com/V2jdQQg.png" alt="" /></p>
+
+<h3>MVC 与 MVP 的区别</h3>
+
+<p>如下图：</p>
+
+<p><img src="http://i.imgur.com/GxXtsZZ.png" alt="" /></p>
+
+<p>其实最明显的区别就是，MVC中是允许Model和View进行交互的，而MVP中很明显，Model与View之间的交互由Presenter完成。还有一点就是Presenter与View之间的交互是通过接口的。</p>
+
+<p><strong>MVC 存在的问题：</strong></p>
+
+<p>在 <strong>MVC</strong> 模型里，<strong>MODEL</strong> 不依赖于 <strong>VIEW</strong>，但是 <strong>view</strong> 是依赖于 <strong>MODEL</strong> 的。不仅如此，因为有一些业务逻辑在  <strong>VIEW</strong> 里实现了，导致要更改 <strong>VIEW</strong> (视图是经常根据需求变化的) 也是比较困难的，至少那些业务逻辑是无法重用的。</p>
+
+<p><strong>把Controller和View混在一起，有什么问题？</strong></p>
+
+<p> <strong>• 难以测试</strong> 必须手动点击，使用各种自动化的测试工具。</p>
+
+<p> <strong>• 代码难以重用</strong> UI是很难重用，因为要求总是不同。所以，导致重复的代码四处都是，维护麻烦。</p>
+
+<p><strong>MVP 来解决 MVC 存在的问题：</strong></p>
+
+<p>在 <strong>MVP</strong> 里， <strong>PRESENTER</strong> 完全把 <strong>MODEL</strong> 和 <strong>VIEW</strong> 进行了分离，主要的程序逻辑在 <strong>PRESENTER</strong> 里实现。而且，<strong>PRESENTER</strong> 与具体的 <strong>VIEW </strong>是没有直接关联的，而是通过定义好的接口进行交互，从而使得在变更 <strong>VIEW</strong> 时候可以 保持<strong>PRESENTER</strong> 的不变，即重用！不仅如此，我们还可以编写测试用的 <strong>VIEW</strong> ，模拟用户的各种操作，从而实现对 <strong>PRESENTER</strong> 的测试&ndash;而不需要使用自动化的测试工具。</p>
+
+<p>我们甚至可以在 <strong>MODEL</strong> 和 <strong>VIEW</strong> 都没有完成时候，就可以通过编写 <strong>MOCK OBJECT </strong>（即实现了 <strong>MODEL</strong> 和 <strong>VIEW</strong> 的接口，但没有具体的内容的）来测试 <strong>PRESENTER</strong> 的逻辑</p>
+
+<h3>&mdash;&ndash;开发中如何选择合适的架构模式?</h3>
+
+<p>这里以 <strong>APP</strong> 开发为例，如果是一款轻量级、业务逻辑不是很复杂的 <strong>APP</strong> ，那么使用 <strong>MVC</strong> 模式足够满足需求，因为代码量不大，不至于变成臃肿的 <strong>MVC</strong> ，造成不好测试及维护问题。</p>
+
+<p>如果，开发的是一款业务逻辑复杂的 <strong>超级APP</strong> ,那么使用 <strong>MVC</strong> 模式进行开发，就会出现上面所列出的那些问题。这种情况下使用<strong>MVP</strong> 架构模式就更为妥当。有些 <strong>APP</strong> 甚至只有一个 <strong>ACTIVITY</strong>，在性能和反编译安全问题都有提升。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[转：Android最佳性能实践——合理管理内存]]></title>
+    <link href="http://wentao1990.github.io/blog/2016/08/07/android-performs1/"/>
+    <updated>2016-08-07T13:42:26+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2016/08/07/android-performs1</id>
+    <content type="html"><![CDATA[<p>原文：<a href="http://blog.csdn.net/guolin_blog/article/details/42238627">http://blog.csdn.net/guolin_blog/article/details/42238627</a></p>
+
+<p>注意本系列文章的内容基本源于Android Doc，如果想要阅读更加详细的关于性能方面的资料，可以直接去阅读Android官方文档。</p>
+
+<p>内存(RAM)对于任何一个软件开发环境都是种非常珍贵的资源，而对于移动操作系统来讲的话，则会显得更加珍贵，因为手机的硬件条件相对于PC毕竟是比较落后的。尽管Android系统的虚拟机拥有自动回收垃圾的机制，但这并不代表我们就可以忽视应该在什么时候分配和释放内存。</p>
+
+<p>为了使垃圾回收器可以正常释放程序所占用的内存，在编写代码的时候就一定要注意尽量避免出现内存泄漏的情况（通常都是由于全局成员变量持有对象引用所导致的），并且在适当的时候去释放对象引用。对于大多数的应用程序而言，后面其它的事情就可以都交给垃圾回收器去完成了，如果一个对象的引用不再被其它对象所持有，那么系统就会将这个对象所分配的内存进行回收。</p>
+
+<p>我们在开发软件的时候应当自始至终都把内存的问题充分考虑进去，这样的话才能开发出更加高性能的软件。而内存问题也并不是无规律可行的，Android系统给我们提出了很多内存优化的建议技巧，只要按照这些技巧来编写程序，就可以让我们的程序在内存性能发面表现得相当不错，下面我们就来一一学习一下这些技巧。</p>
+
+<h3>节制地使用Service</h3>
+
+<p>如果应用程序当中需要使用Service来执行后台任务的话，请一定要注意只有当任务正在执行的时候才应该让Service运行起来。另外，当任务执行完之后去停止Service的时候，要小心Service停止失败导致内存泄漏的情况。</p>
+
+<p>当我们启动一个Service时，系统会倾向于将这个Service所依赖的进程进行保留，这样就会导致这个进程变得非常消耗内存。并且，系统可以在LRU cache当中缓存的进程数量也会减少，导致切换应用程序的时候耗费更多性能。严重的话，甚至有可能会导致崩溃，因为系统在内存非常吃紧的时候可能已无法维护所有正在运行的Service所依赖的进程了。</p>
+
+<p>为了能够控制Service的生命周期，Android官方推荐的最佳解决方案就是使用IntentService，这种Service的最大特点就是当后台任务执行结束后会自动停止，从而极大程度上避免了Service内存泄漏的可能性。关于IntentService更加详细的用法讲解，可以参考《第一行代码——Android》的9.5.2节。</p>
+
+<p>让一个Service在后台一直保持运行，即使它并不执行任何工作，这是编写Android程序时最糟糕的做法之一。所以Android官方极度建议开发人员们不要过于贪婪，让Service在后台一直运行，这不仅可能会导致手机和程序的性能非常低下，而且被用户发现了之后也有可能直接导致我们的软件被卸载（我个人就会这么做）。</p>
+
+<h3>当界面不可见时释放内存</h3>
+
+<p>当用户打开了另外一个程序，我们的程序界面已经不再可见的时候，我们应当将所有和界面相关的资源进行释放。在这种场景下释放资源可以让系统缓存后台进程的能力显著增加，因此也会让用户体验变得更好。</p>
+
+<p>那么我们如何才能知道程序界面是不是已经不可见了呢？其实很简单，只需要在Activity中重写onTrimMemory()方法，然后在这个方法中监听TRIM_MEMORY_UI_HIDDEN这个级别，一旦触发了之后就说明用户已经离开了我们的程序，那么此时就可以进行资源释放操作了，如下所示：</p>
+
+<pre><code>@Override  
+public void onTrimMemory(int level) {  
+    super.onTrimMemory(level);  
+    switch (level) {  
+    case TRIM_MEMORY_UI_HIDDEN:  
+        // 进行资源释放操作  
+        break;  
+    }  
+}  
+</code></pre>
+
+<p>注意onTrimMemory()方法中的TRIM_MEMORY_UI_HIDDEN回调只有当我们程序中的所有UI组件全部不可见的时候才会触发，这和onStop()方法还是有很大区别的，因为onStop()方法只是当一个Activity完全不可见的时候就会调用，比如说用户打开了我们程序中的另一个Activity。因此，我们可以在onStop()方法中去释放一些Activity相关的资源，比如说取消网络连接或者注销广播接收器等，但是像UI相关的资源应该一直要等到onTrimMemory(TRIM_MEMORY_UI_HIDDEN)这个回调之后才去释放，这样可以保证如果用户只是从我们程序的一个Activity回到了另外一个Activity，界面相关的资源都不需要重新加载，从而提升响应速度。</p>
+
+<h3>当内存紧张时释放内存</h3>
+
+<p>除了刚才讲的TRIM_MEMORY_UI_HIDDEN这个回调，onTrimMemory()方法还有很多种其它类型的回调，可以在手机内存降低的时候及时通知我们。我们应该根据回调中传入的级别来去决定如何释放应用程序的资源：</p>
+
+<h4>• TRIM_MEMORY_RUNNING_MODERATE    表示应用程序正常运行，并且不会被杀掉。但是目前手机的内存已经有点低了，系统可能会开始根据LRU缓存规则来去杀死进程了。</h4>
+
+<h4>• TRIM_MEMORY_RUNNING_LOW    表示应用程序正常运行，并且不会被杀掉。但是目前手机的内存已经非常低了，我们应该去释放掉一些不必要的资源以提升系统的性能，同时这也会直接影响到我们应用程序的性能。</h4>
+
+<h4>• TRIM_MEMORY_RUNNING_CRITICAL    表示应用程序仍然正常运行，但是系统已经根据LRU缓存规则杀掉了大部分缓存的进程了。这个时候我们应当尽可能地去释放任何不必要的资源，不然的话系统可能会继续杀掉所有缓存中的进程，并且开始杀掉一些本来应当保持运行的进程，比如说后台运行的服务。</h4>
+
+<p>以上是当我们的应用程序正在运行时的回调，那么如果我们的程序目前是被缓存的，则会收到以下几种类型的回调：</p>
+
+<h4>• TRIM_MEMORY_BACKGROUND    表示手机目前内存已经很低了，系统准备开始根据LRU缓存来清理进程。这个时候我们的程序在LRU缓存列表的最近位置，是不太可能被清理掉的，但这时去释放掉一些比较容易恢复的资源能够让手机的内存变得比较充足，从而让我们的程序更长时间地保留在缓存当中，这样当用户返回我们的程序时会感觉非常顺畅，而不是经历了一次重新启动的过程。</h4>
+
+<h4>• TRIM_MEMORY_MODERATE    表示手机目前内存已经很低了，并且我们的程序处于LRU缓存列表的中间位置，如果手机内存还得不到进一步释放的话，那么我们的程序就有被系统杀掉的风险了。</h4>
+
+<h4>• TRIM_MEMORY_COMPLETE    表示手机目前内存已经很低了，并且我们的程序处于LRU缓存列表的最边缘位置，系统会最优先考虑杀掉我们的应用程序，在这个时候应当尽可能地把一切可以释放的东西都进行释放。</h4>
+
+<h3>避免在Bitmap上浪费内存</h3>
+
+<p>当我们读取一个Bitmap图片的时候，有一点一定要注意，就是千万不要去加载不需要的分辨率。在一个很小的ImageView上显示一张高分辨率的图片不会带来任何视觉上的好处，但却会占用我们相当多宝贵的内存。需要仅记的一点是，将一张图片解析成一个Bitmap对象时所占用的内存并不是这个图片在硬盘中的大小，可能一张图片只有100k你觉得它并不大，但是读取到内存当中是按照像素点来算的，比如这张图片是1500<em>1000像素，使用的ARGB_8888颜色类型，那么每个像素点就会占用4个字节，总内存就是1500</em>1000*4字节，也就是5.7M，这个数据看起来就比较恐怖了。</p>
+
+<pre><code>至于如何去压缩图片，以及更多在图片方面节省内存的技术，大家可以去参考我之前写的一篇博客 Android高效加载大图、多图解决方案，有效避免程序OOM 。
+</code></pre>
+
+<h3>使用优化过的数据集合</h3>
+
+<p>Android API当中提供了一些优化过后的数据集合工具类，如SparseArray，SparseBooleanArray，以及LongSparseArray等，使用这些API可以让我们的程序更加高效。传统Java API中提供的HashMap工具类会相对比较低效，因为它需要为每一个键值对都提供一个对象入口，而SparseArray就避免掉了基本数据类型转换成对象数据类型的时间。</p>
+
+<h3>知晓内存的开支情况</h3>
+
+<p>我们还应当清楚我们所使用语言的内存开支和消耗情况，并且在整个软件的设计和开发当中都应该将这些信息考虑在内。可能有一些看起来无关痛痒的写法，结果却会导致很大一部分的内存开支，例如：
+使用枚举通常会比使用静态常量要消耗两倍以上的内存，在Android开发当中我们应当尽可能地不使用枚举。
+任何一个Java类，包括内部类、匿名类，都要占用大概500字节的内存空间。
+任何一个类的实例要消耗12-16字节的内存开支，因此频繁创建实例也是会一定程序上影响内存的。
+在使用HashMap时，即使你只设置了一个基本数据类型的键，比如说int，但是也会按照对象的大小来分配内存，大概是32字节，而不是4字节。因此最好的办法就是像上面所说的一样，使用优化过的数据集合。</p>
+
+<h3>谨慎使用抽象编程</h3>
+
+<p>许多程序员都喜欢各种使用抽象来编程，认为这是一种很好的编程习惯。当然，这一点不可否认，因为的抽象的编程方法更加面向对象，而且在代码的维护和可扩展性方面都会有所提高。但是，在Android上使用抽象会带来额外的内存开支，因为抽象的编程方法需要编写额外的代码，虽然这些代码根本执行不到，但是却也要映射到内存当中，不仅占用了更多的内存，在执行效率方面也会有所降低。当然这里我并不是提倡大家完全不使用抽象编程，而是谨慎使用抽象编程，不要认为这是一种很酷的编程方式而去肆意使用它，只在你认为有必要的情况下才去使用。</p>
+
+<p>尽量避免使用依赖注入框架</p>
+
+<p>现在有很多人都喜欢在Android工程当中使用依赖注入框架，比如说像Guice或者RoboGuice等，因为它们可以简化一些复杂的编码操作，比如可以将下面的一段代码：</p>
+
+<pre><code>class AndroidWay extends Activity {   
+    TextView name;   
+    ImageView thumbnail;   
+    LocationManager loc;   
+    Drawable icon;   
+    String myName;   
+
+    public void onCreate(Bundle savedInstanceState) {   
+        super.onCreate(savedInstanceState);   
+        setContentView(R.layout.main);  
+        name      = (TextView) findViewById(R.id.name);   
+        thumbnail = (ImageView) findViewById(R.id.thumbnail);   
+        loc       = (LocationManager) getSystemService(Activity.LOCATION_SERVICE);   
+        icon      = getResources().getDrawable(R.drawable.icon);   
+        myName    = getString(R.string.app_name);   
+        name.setText( "Hello, " + myName );   
+    }   
+}   
+</code></pre>
+
+<p>简化成这样的一种写法：</p>
+
+<pre><code>@ContentView(R.layout.main)  
+class RoboWay extends RoboActivity {   
+    @InjectView(R.id.name)             TextView name;   
+    @InjectView(R.id.thumbnail)        ImageView thumbnail;   
+    @InjectResource(R.drawable.icon)   Drawable icon;   
+    @InjectResource(R.string.app_name) String myName;   
+    @Inject                            LocationManager loc;   
+
+    public void onCreate(Bundle savedInstanceState) {   
+        super.onCreate(savedInstanceState);   
+        name.setText( "Hello, " + myName );   
+    }   
+}  
+</code></pre>
+
+<p>看上去确实十分诱人，我们甚至可以将findViewById()这一类的繁琐操作全部省去了。但是这些框架为了要搜寻代码中的注解，通常都需要经历较长的初始化过程，并且还可能将一些你用不到的对象也一并加载到内存当中。这些用不到的对象会一直占用着内存空间，可能要过很久之后才会得到释放，相较之下，也许多敲几行看似繁琐的代码才是更好的选择。</p>
+
+<h3>使用ProGuard简化代码</h3>
+
+<p>ProGuard相信大家都不会陌生，很多人都会使用这个工具来混淆代码，但是除了混淆之外，它还具有压缩和优化代码的功能。ProGuard会对我们的代码进行检索，删除一些无用的代码，并且会对类、字段、方法等进行重命名，重命名之后的类、字段和方法名都会比原来简短很多，这样的话也就对内存的占用变得更少了。</p>
+
+<h3>使用多个进程</h3>
+
+<p>这个技巧其实并不是非常建议使用，但它确实是一种可以帮助我们节省和管理内存的高级技巧。如果你要使用它的话一定要谨慎使用，因为绝大多数的应用程序都不应该在多个进程当中运行的，一旦使用不当，它甚至会增加额外的内存而不是帮我们节省内存。这个技巧比较适用于那些需要在后台去完成一项独立的任务，和前台的功能是可以完全区分开的场景。</p>
+
+<p>这里举一个比较适合去使用多进程技巧的场景，比如说我们正在做一个音乐播放器软件，其中播放音乐的功能应该是一个独立的功能，它不需要和UI方面有任何关系，即使软件已经关闭了也应该可以正常播放音乐。如果此时我们只使用一个进程，那么即使用户关闭了软件，已经完全由Service来控制音乐播放了，系统仍然会将许多UI方面的内存进行保留。在这种场景下就非常适合使用两个进程，一个用于UI展示，另一个则用于在后台持续地播放音乐。</p>
+
+<p>想要实现多进程的功能也非常简单，只需要在AndroidManifest文件的应用程序组件中声明一个android:process属性就可以了，比如说我们希望播放音乐的Service可以运行在一个单独的进程当中，就可以这样写：</p>
+
+<pre><code>&lt;service android:name=".PlaybackService"  
+         android:process=":background" /&gt;  
+</code></pre>
+
+<p>这里指定的进程名是background，你也可以将它改成任意你喜欢的名字。需要注意的是，进程名的前面都应该加上一个冒号，表示该进程是一个当前应用程序的私有进程。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[如何快速搭建一个完整的移动直播系统？]]></title>
+    <link href="http://wentao1990.github.io/blog/2016/07/19/server/"/>
+    <updated>2016-07-19T22:53:30+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2016/07/19/server</id>
+    <content type="html"><![CDATA[<p>移动直播行业的火热会在很长一段时间内持续，通过和各行业的整合，从而成为具有无限可能性的行业。主要有以下三个原因：</p>
+
+<p>第一，移动直播的UGC生产模式比PC端的直播更明显，人人都有设备，随时随地开播，完全顺应了互联网时代的开放性原则，能刺激更多人去创造和传播优质内容。</p>
+
+<p>第二，网络带宽和速度在逐渐提高，网络成本在逐渐下降，为移动直播提供一个极佳的发展环境。文字、声音、视频、游戏等都会在移动直播中呈现，创造出更加丰富的用户体验。 直播可以以SDK的形式接入到自己的应用中 ，比如，教育领域中的课后辅导完全可以以直播的形式开展业务、电商也可借助直播让用户挑选商品，促进销售。 <!--more--></p>
+
+<p>第三， 一个与VR/AR技术相结合的移动直播为整个行业的未来提供了新的发展空间。 VR/AR直播能够让用户身临其境，带动主播与观众更贴近真实的互动，大大提高平台的用户参与度。</p>
+
+<p>当下，有技术实力和流量优势的互联网从业者都不愿错过直播这个风口，如何快速搭建一个直播系统成了大家关心的问题，我想和大家分享下我的经验。我从事于一家直播产品开发商，我们的产品为了快速赶上市场，使用了云服务提供商的直播SDK。</p>
+
+<p>从业者都知道，一个完整直播产品应该包含以下环节：推流端（采集、前处理、编码、推流）、服务端处理（转码、录制、截图、鉴黄）、播放器（拉流、解码、渲染）、互动系统（聊天室、礼物系统、赞）。 下面我就一一讲述下直播SDK在各个环节所做的工作。</p>
+
+<h3>一、移动直播推流端需要做哪些工作？</h3>
+
+<p>直播推流端即主播端，主要通过手机摄像头采集视频数据和麦克风采集音频数据，经过一系列前处理、编码、封装，然后推流到CDN进行分发。
+<img src="http://i.imgur.com/xzp325c.jpg" alt="" /></p>
+
+<h4>1、采集</h4>
+
+<p>移动直播SDK通过手机摄像头和麦克风直接采集音视频数据。其中，视频采样数据一般采用RGB或YUV格式、音频采样数据一般采用PCM格式。采集到的原始音视频的体积是非常大的，需要经过压缩技术处理来提高传输效率。</p>
+
+<h4>2、前处理</h4>
+
+<p>在这个环节主要处理美颜、水印、模糊等效果。美颜功能几乎是直播的标配功能。我们调研中发现太多case是因为没有美颜功能被抛弃使用的。另外国家明确提出了，所有直播都必须打有水印并回放留存15天以上。</p>
+
+<p>美颜实际上是通过算法去识别图像中的皮肤部分，对皮肤区域进行色值调整。 通过颜色对比找到皮肤区域，可以进行色值调整、添加白色图层或调整透明度等来达到美白效果。在美颜处理方面，最著名的GPUImage提供了丰富的效果，同时可以支持iOS和Android，支持自己写算法实现自己最理想的效果。GPUImage内置了120多种常见滤镜效果，添加滤镜只需要简单调用几行代码就可以了。</p>
+
+<h4>3、编码</h4>
+
+<p>为了便于手机视频的推流、拉流以及存储，通常采用视频编码压缩技术来减少视频的体积，现在比较常用的视频编码是H.264。在音频方面，比较常用的是AAC编码格式，其它如MP3、WMA也是可选方案。视频经过编码压缩大大提高了视频的存储和传输效率，当然，经过压缩后的视频在播放时必须进行解码。</p>
+
+<p>相较于之前的H.264，2012年诞生的H.265编解码标准有了相当大的改善，做到了仅需要原来一半带宽即可播放相同质量的视频，低于1.5Mbps的网络也能传输1080p的高清视频。像阿里云、金山云都在推自己的H.265编解码技术，随着直播的快速发展和对带宽的依赖，H.265编解码技术已有全面取代H.264的趋势。</p>
+
+<p>H264和H265个模块技术差异：
+<img src="http://i.imgur.com/f2WDB3V.jpg" alt="" />
+另外，硬件编码已经成为移动直播的首选方案，软编码处理在720p以上的视频颓势非常明显 。在iOS平台上硬件编码的兼容性比较好，可以直接采用，但在Android平台上，Media Codec编码器针对不同的芯片平台表现差异还是非常大的，要完全实现全平台兼容的成本还是非常高的。</p>
+
+<h4>4、推流</h4>
+
+<p>要想用于推流还必须把音视频数据使用传输协议进行封装，变成流数据。 常用的流传输协议有RTSP、RTMP、HLS等，使用RTMP传输的延时通常在1–3秒，对于移动直播这种实时性要求非常高的场景，RTMP也成为移动直播中最常用的流传输协议。最后通过一定的Qos算法将音视频流数据推送到网络断，通过CDN进行分发。在直播场景中，网络不稳定是非常常见的，这时就需要Qos来保证网络不稳情况下的用户观看直播的体验，通常是通过主播端和播放端设置缓存，让码率均匀。另外，针对实时变化的网络状况，动态码率和帧率也是最常用的策略。</p>
+
+<p>当然，在网络传输方面全部自己来做基本不现实，找提供推流服务的CDN服务商提供解决方案是最好的选择。据了解，阿里云是国内唯一能自研CDN缓存服务器的厂商，性能非常有保障。当然，大多数直播平台都会同时接入多个视频云服务提供商，这样可以做拉流线路互备，对推流后视频集群再进行优化也可提高直播的流畅性和稳定性。</p>
+
+<h3>二、服务端处理需要做哪些工作？</h3>
+
+<p>要想适配各终端和平台，服务端还需要对流进行转码，如支持RTMP、HLS、FLV等格式拉流，支持一路转多路适配不同网络和分辨率的终端设备。</p>
+
+<h4>1、截图、录制、水印</h4>
+
+<p>像阿里云等云服务商都提供了实时转码技术，将用户推流码率较高（比如720P）实时转化成较低清晰度（比如360P）的流以适应播放端的需求。如果要自己搭建实时转码系统，这个成本是极高的，一台8核设备只能实时转10路流，如果一个正常的直播平台有1000路流，就需要100台设备，加上后期的运维成本，一般公司就吃不消了。</p>
+
+<h4>2、鉴黄</h4>
+
+<p>2016年4月14日，文化部查出了斗鱼、虎牙、YY、熊猫TV、六间房、9158等涉嫌提供含宣扬淫秽、暴力、教唆犯罪的网络直播平台，被列入查处名单。政府介入管制有利于直播行业打造健康的生态，进入良性发展。这也意味着为了安全直播产品鉴黄成了必需环节，使用技术手段去鉴黄是移动直播平台必然采用的方案。</p>
+
+<p>市面上提供鉴黄服务的方案主要有两种：</p>
+
+<p>第一种是对视频进行截图，然后对图片进行鉴黄，返回鉴黄结果和分值。 典型的企业有阿里（绿网）、图谱科技，他们目前都支持直接传入视频，经过服务端分析返回结果。通常由业务系统接入鉴黄服务，根据鉴黄结果对直播流进行控制，如切断直播流、封禁账号等。</p>
+
+<p>第二种是和CDN结合，直接对直播流进行分析，识别结果分为色情、疑似色情、性感和正常，业务系统根据识别结果直接控制直播流。 典型的企业是Viscovery，这套方案的优点是实时性保证比较好，缺点是必须部署到CDN或自己的机房，使用成本相对高一些。</p>
+
+<p>还有一种一站式直播解决方案提供商，他们的做法是，用户只需在控制台对鉴黄服务进行配置就可以针对每个应用、每一路直播流进行实时审核。在控制台中，云服务商实时将鉴黄结果返回，用户可以直接查看色情直播和违规界面的截图，同时可以对直播流进行控制，切断问题直播流。该服务商还提供了短信、邮件和站内信功能，避免漏掉任何一个非法视频，给平台造成损失，我们就使用了这种方式。
+<img src="http://i.imgur.com/wKXx4p9.jpg" alt="" /></p>
+
+<h3>三、播放器端需要做哪些工作？</h3>
+
+<p>在播放器端如何做到秒开，直播过程中保证画面和声音清晰度的同时，稳定、流程、无卡顿的直播流量，这些工作都需要播放器端配合服务端来做优化，做到精确调度。</p>
+
+<h4>1、拉流</h4>
+
+<p>拉流实际是推流的逆过程。首先通过播放端获取码流，标准的拉流格式有RTMP、HLS、FLV等。RTMP是Adobe的专利协议，开源软件和开源库都支持的比较好，如开源的librtmp库，播放端只要支持flashPlayer的就能非常简单的播放RTMP直播，直播延迟一般在1–3秒。</p>
+
+<p>HLS是苹果提出的基于HTTP的流媒体传输协议，HTML5可以直接打开播放，通过微信、QQ等软件分享出去，用户也可以直接观看直播，可以说移动直播app，HLS拉流协议是必须支持的，缺点是延迟通常大于10秒。FLV（HTTP-FLV）协议是使用HTTP协议传输流媒体内容的一个协议，也不用担心被Adobe的专利绑架，直播延迟同样可以做到1–3秒。</p>
+
+<p>各拉流协议的差异：</p>
+
+<p>我们使用的云服务的直播拉流技术提供了以上三种格式，满足不同业务场景的需求，如对即时性要求较高或有互动需求的可以采用RTMP或FLV格式进行直播拉流播放；对于有回放或跨平台需求的，推荐使用HLS。当然，三种协议是可以同时使用的，分别用到自己的场景就可以了。</p>
+
+<h4>2、解码和渲染</h4>
+
+<p>拉流获取封装的视频数据后，必须通过解码器解码、渲染后才能在播放器上播放。它是编码的逆过程，是指从音视频的数据中提取原始数据。前面介绍的H.264和H.265编码格式都是有损压缩，所以在提取后的原始数据，并非原始采样数据，存在一定的信息丢失。因此，在视频体积最小的情况下通过各种编码参数保留最好的原始画面，成为了各视频公司的核心机密。</p>
+
+<p>考虑对高清的支持，解码肯定还是要选择硬解码的。前面介绍过，iOS系统由于硬件比较单一、比较封闭，支持的比较好，Android系统由于平台差异非常大，编解码要完全兼容各平台还需要很多工作要做。</p>
+
+<p>四、移动直播中的交互系统</p>
+
+<p>移动直播中最常见的交互有聊天室（弹幕）、点赞、打赏和礼物等，交互系统涉及消息的实时性和互动性，在技术实现上大多是使用IM的功能来实现的。对于在线人数比较多的房间，弹幕消息量是非常大，主播与用户其实都看不过来，为了缓解服务器压力，在产品策略需要做一些必要的优化。</p>
+
+<p>1、聊天室</p>
+
+<p>移动直播中的弹幕交互是用户和主播互动的主要方式，实际上就是IM中的聊天室功能。聊天室和群聊功能类似，但聊天室的消息是不需要分发给不在线的用户的，历史消息也不需要查看，用户只有进入聊天室后才能查看聊天消息和群成员信息。面对复杂多变的网络状况，还需要根据用户位置就近选择近对应运营商的单线机房接入弹幕消息服务，让弹幕更及时。</p>
+
+<p>2、礼物系统</p>
+
+<p>礼物系统更是绝大多数移动直播平台的标配了，它是这些平台主要的收入来源。送礼物的形式也增强了用户和主播之间的互动交流，也是主播依赖平台的最主要原因。</p>
+
+<p>礼物的收发在技术实现上也是用聊天室接口做的，通常采用IM中的自定义消息实现，当用户收到或发送礼物时将自定义消息对应的礼物图形渲染出来。</p>
+
+<p>原文出处：<a href="http://www.leiphone.com/news/201607/Nhq9iveY5y5fQ3Gw.html">http://www.leiphone.com/news/201607/Nhq9iveY5y5fQ3Gw.html</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Service与 IntentService 的区别与使用场景]]></title>
+    <link href="http://wentao1990.github.io/blog/2016/05/23/android-server/"/>
+    <updated>2016-05-23T17:50:35+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2016/05/23/android-server</id>
+    <content type="html"><![CDATA[<h4>1.IntentService是继承自Service的</h4>
+
+<h4>2.Service不是一个单独的进程 ，它和应用程序在同一个进程中。</h4>
+
+<h4>3.Service不是一个线程，所以我们应该避免在Service里面进行耗时的操作</h4>
+
+<h4>4.IntentService相对于Service来说，有几个非常有用的优点</h4>
+
+<p>IntentService使用队列的方式将请求的Intent加入队列，然后开启一个worker thread(线程)来处理队列中的Intent，对于异步的startService请求，IntentService会处理完成一个之后再处理第二个，每一个请求都会在一个单独的worker thread中处理，不会阻塞应用程序的主线程，这里就给我们提供了一个思路，如果有耗时的操作与其在Service里面开启新线程还不如使用IntentService来处理耗时操作。</p>
+
+<p>因为最大部分的service不需要同时处理多个请求(处理多个请求是一个比较危险的多线程的场景),这样在在这种情况下呢，最好使用IntentService类如果你实现你的服务。</p>
+
+<p>使用intentService与service有什么不同呢</p>
+
+<h4>a . 直接 创建一个默认的工作线程,该线程执行所有的intent传递给onStartCommand()区别于应用程序的主线程。</h4>
+
+<h4>b . 直接创建一个工作队列,将一个意图传递给你onHandleIntent()的实现,所以我们就永远不必担心多线程。</h4>
+
+<h4>c . 当请求完成后自己会调用stopSelf()，所以你就不用调用该方法了。</h4>
+
+<h4>d . 提供的默认实现onBind()返回null，所以也不需要重写这个方法。so easy啊</h4>
+
+<h4>e . 提供了一个默认实现onStartCommand(),将意图工作队列,然后发送到你onHandleIntent()实现。真是太方便了</h4>
+
+<p>我们需要做的就是实现onHandlerIntent()方法，还有一点就是经常被遗忘的，构造函数是必需的,而且必须调用超IntentService(字符串) ，因为工作线程的构造函数必须使用一个名称。如何实现呢，我们借助于谷歌官方文档来看一下吧。</p>
+
+<pre><code>public class HelloIntentService extends IntentService {  
+
+  /** 
+   * A constructor is required, and must call the super IntentService(String) 
+   * constructor with a name for the worker thread. 
+   */  
+  public HelloIntentService() {  
+      super("HelloIntentService");  
+  }  
+
+  /** 
+   * The IntentService calls this method from the default worker thread with 
+   * the intent that started the service. When this method returns, IntentService 
+   * stops the service, as appropriate. 
+   */  
+  @Override  
+  protected void onHandleIntent(Intent intent) {  
+      // Normally we would do some work here, like download a file.  
+      // For our sample, we just sleep for 5 seconds.  
+      long endTime = System.currentTimeMillis() + 5*1000;  
+      while (System.currentTimeMillis() &lt; endTime) {  
+          synchronized (this) {  
+              try {  
+                  wait(endTime - System.currentTimeMillis());  
+              } catch (Exception e) {  
+              }  
+          }  
+      }  
+  }  
+}  
+</code></pre>
+
+<p>那么它为什么不用stopself()方法呢，我们看一下自身的源代码吧</p>
+
+<pre><code>    public abstract class IntentService extends Service {  
+    private volatile Looper mServiceLooper;  
+    private volatile ServiceHandler mServiceHandler;  
+    private String mName;  
+    private boolean mRedelivery;  
+
+    private final class ServiceHandler extends Handler {  
+        public ServiceHandler(Looper looper) {  
+            super(looper);  
+        }  
+
+        @Override  
+        public void handleMessage(Message msg) {  
+            onHandleIntent((Intent)msg.obj);  
+            stopSelf(msg.arg1);  
+        }  
+    }  
+
+    /** 
+     * Creates an IntentService.  Invoked by your subclass's constructor. 
+     * 
+     * @param name Used to name the worker thread, important only for debugging. 
+     */  
+    public IntentService(String name) {  
+        super();  
+        mName = name;  
+    }  
+
+    /** 
+     * Sets intent redelivery preferences.  Usually called from the constructor 
+     * with your preferred semantics. 
+     * 
+     * &lt;p&gt;If enabled is true, 
+     * {@link #onStartCommand(Intent, int, int)} will return 
+     * {@link Service#START_REDELIVER_INTENT}, so if this process dies before 
+     * {@link #onHandleIntent(Intent)} returns, the process will be restarted 
+     * and the intent redelivered.  If multiple Intents have been sent, only 
+     * the most recent one is guaranteed to be redelivered. 
+     * 
+     * &lt;p&gt;If enabled is false (the default), 
+     * {@link #onStartCommand(Intent, int, int)} will return 
+     * {@link Service#START_NOT_STICKY}, and if the process dies, the Intent 
+     * dies along with it. 
+     */  
+    public void setIntentRedelivery(boolean enabled) {  
+        mRedelivery = enabled;  
+    }  
+
+    @Override  
+    public void onCreate() {  
+        // TODO: It would be nice to have an option to hold a partial wakelock  
+        // during processing, and to have a static startService(Context, Intent)  
+        // method that would launch the service &amp; hand off a wakelock.  
+
+        super.onCreate();  
+        HandlerThread thread = new HandlerThread("IntentService[" + mName + "]");  
+        thread.start();  
+
+        mServiceLooper = thread.getLooper();  
+        mServiceHandler = new ServiceHandler(mServiceLooper);  
+    }  
+
+    @Override  
+    public void onStart(Intent intent, int startId) {  
+        Message msg = mServiceHandler.obtainMessage();  
+        msg.arg1 = startId;  
+        msg.obj = intent;  
+        mServiceHandler.sendMessage(msg);  
+    }  
+
+    /** 
+     * You should not override this method for your IntentService. Instead, 
+     * override {@link #onHandleIntent}, which the system calls when the IntentService 
+     * receives a start request. 
+     * @see android.app.Service#onStartCommand 
+     */  
+    @Override  
+    public int onStartCommand(Intent intent, int flags, int startId) {  
+        onStart(intent, startId);  
+        return mRedelivery ? START_REDELIVER_INTENT : START_NOT_STICKY;  
+    }  
+
+    @Override  
+    public void onDestroy() {  
+        mServiceLooper.quit();  
+    }  
+
+    /** 
+     * Unless you provide binding for your service, you don't need to implement this 
+     * method, because the default implementation returns null.  
+     * @see android.app.Service#onBind 
+     */  
+    @Override  
+    public IBinder onBind(Intent intent) {  
+        return null;  
+    }  
+
+    /** 
+     * This method is invoked on the worker thread with a request to process. 
+     * Only one Intent is processed at a time, but the processing happens on a 
+     * worker thread that runs independently from other application logic. 
+     * So, if this code takes a long time, it will hold up other requests to 
+     * the same IntentService, but it will not hold up anything else. 
+     * When all requests have been handled, the IntentService stops itself, 
+     * so you should not call {@link #stopSelf}. 
+     * 
+     * @param intent The value passed to {@link 
+     *               android.content.Context#startService(Intent)}. 
+     */  
+    protected abstract void onHandleIntent(Intent intent);  
+}  
+</code></pre>
+
+<p>我们可以看到源代码里头的第15行handlerMessage方法里当处理完请求后就会调用stopself()方法了，外界就不用调用了，此外还有一点我们可以看到代码最后一行第110行，onhandleIntent()是一个抽象类，而其他类都是抽象类，所以我们就可以理解为什么只需要重写onhandleIntent()方法了吧。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[自定义任意形状的ImageView]]></title>
+    <link href="http://wentao1990.github.io/blog/2016/04/08/android-imageview/"/>
+    <updated>2016-04-08T22:22:25+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2016/04/08/android-imageview</id>
+    <content type="html"><![CDATA[<h4>参考</h4>
+
+<p>Xfermode in android - 解释文档和模式部分写得很好
+Android中Canvas绘图之PorterDuffXfermode使用及工作原理详解 - 代码实践分析部分值得细看</p>
+
+<p>网上大部分文章都说有3个类可用, 但是实际上仅需要掌握PoterDuffXfermode, 因为只有它支持硬件加速, 官方的文档的描述中Xfermode的直接继承类也只有它了, 所以一般只用它.</p>
+
+<p>PoterDuffXfermode</p>
+
+<p>Porter-Duff 操作是 1 组 12 项用于描述数字图像合成的基本手法，包括Clear、Source Only、Destination Only、Source Over、Source In、SourceOut、Source Atop、Destination Over、Destination In、DestinationOut、Destination Atop、XOR。通过组合使用 Porter-Duff 操作，可完成任意 2D图像的合成。Thomas Porter 和 Tom Duff 发表于 1984年原始论文的扫描版本
+简单来说就是一种图像合成的理论依据, 规定了合成图像时的像素操作. Android中支持总共18种模式, 就不一一列举了. 看懂文档就行.</p>
+
+<h3>文档解释</h3>
+
+<pre><code>public enum Mode { 
+    // ... 
+    /** [Sa + (1 - Sa)*Da, Dc + (1 - Da)*Sc] */ 
+    DST_OVER (4), 
+    /** [Sa * Da, Sa * Dc] */ 
+    DST_IN (6), 
+    // ...以下省略
+}
+</code></pre>
+
+<p>文档中每个模式对应一条公式, 公式中的缩写表示:
+SRC = source, 表示即将要画的像素
+DST = destination, 表示已经存在的像素
+Sa = Source alpha, 透明通道值
+Da = Dest alpha
+Sc = Source color, 颜色值
+Dc = Dst color
+[AlphaValue, ColorValue] -> 第一个值为进行像素操作后的透明通道值, 第二个值为操作后的颜色值</p>
+
+<h4>举个例子:</h4>
+
+<p>DST_IN - [Sa Da, Sa Dc]
+为了简化分析, 假设透明通道值不是0就是1
+主要看颜色值的计算 Sa * Dc, 当Sa = 1的时候, 颜色值就是Dc, 也就是说在准备画的像素的alpha值为1的地方, 直接显示原来的像素, Sa = 0的时候不显示任何颜色, 并且只有在Sa和Da都是1的地方才会显示颜色.</p>
+
+<p>加入透明通道值的分析参考Xfermode in android</p>
+
+<p>看懂文档后我们就可以利用Xfermode做各种图形效果, Xfermode可以做的事情理论上</p>
+
+<p>可完成任意 2D图像的合成
+远远不限于实现任意形状的ImageView. 接下来就一步步分析如下实现任意形状的ImageView和我遇到的问题.</p>
+
+<p>实现任意形状ImageView</p>
+
+<p>分析</p>
+
+<p>为了最简化代码, 最好能够复用ImageView, 而ImageView#onDraw就是把图片画在屏幕上, 也就是说经过ImageView#onDraw方法后, 图片像素会变成DST(已经存在的像素).</p>
+
+<p>所以要实现任意形状最直接的办法应该是根据形状裁剪图片像素, 即显示DST和SRC重合的部分的DST像素, 形状内的像素自然是SRC(即将要画的像素), 转化成公式应该是Sa * Dc, 查模式说明文档找到我们需要的模式DST_IN - [Sa * Da, Sa * Dc]</p>
+
+<p>所以我们的核心代码应该如下</p>
+
+<pre><code>super.onDraw(canvas);// 画图片
+mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));// 设置Xfermode模式
+canvas.drawXX();// 画多边形覆盖在图片上
+</code></pre>
+
+<p>使用saveLayer</p>
+
+<p>在实际测试的时候会发现, 多边形外的像素会变成黑色(也有可能是白色), 这是因为默认情况画布只有一个图层(就是Photoshop里面的图层概念), 此时的DST不仅是图片, 还包括图片后面的背景像素, 如果清除了多边形外的像素, 当然背景也会被清除掉了, 而一般情况下我们仅需要处理图片本身, 所以实际使用中通常会使用Canvas#saveLayer来创建新的透明图层来进行图像合成的操作, 此时背景的像素就不会被纳入DST中.</p>
+
+<p>核心代码变成</p>
+
+<pre><code>int layerId = canvas.saveLayer(0, 0, canvas.getWidth(), canvas.getHeight(), null, Canvas.ALL_SAVE_FLAG);// 新增透明图层
+super.onDraw(canvas);// 画图片
+mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));// 设置Xfermode模式
+canvas.drawXX();// 画多边形覆盖在图片上
+canvas.restoreToCount(layerId);// 合并图层
+</code></pre>
+
+<h4>使用Bitmap</h4>
+
+<p>如果我想制作圆形图片, 那么直接通过Canvas#drawCircle画圆, 实际运行就会发现结果跟预测的不同, 圆形外的像素并没有消失, 为什么?</p>
+
+<p>这是因为直接通过Canvas#drawXX方法画图时, SRC仅是图形内的像素, 例如你画了一个圆, 那么SRC(即将要画的像素)仅是圆内的像素, 也就是说图片与圆不重叠的像素并不会有任何变化, 当然就不会消失了.
+所以要想圆形外的像素会消失, 我们要把圆形外的像素也纳入SRC并且使其透明通道值为0.</p>
+
+<p>所以进行"过滤"操作的时候, 例如DST_IN, 仅显示即将要画的像素一般会先创建一个Bitmap实例, 并先在Bitmap画要保留的图形, 然后再把Bitmap画在图片上, 此时SRC的像素包括了整个Bitmap而不仅仅是图形内的像素</p>
+
+<p>.假设我们要制作的是菱形的图片, 那么代码就变成</p>
+
+<pre><code>    // 创建一个跟图片一样大小的Bitmap, 并画一个旋转了45度的正方形
+private Bitmap createMask() { 
+    int maskWidth = getMeasuredWidth(); 
+    int maskHeight = getMeasuredHeight(); 
+    Bitmap mask = Bitmap.createBitmap(maskWidth, maskHeight, Bitmap.Config.ALPHA_8); 
+    Canvas canvas = new Canvas(mask); 
+    canvas.translate(maskWidth / 2, 0); 
+    canvas.rotate(45); 
+    int rectSize = (int) (maskWidth / 2 / Math.sin(Math.toRadians(45))); 
+    canvas.drawRect(0, 0, rectSize, rectSize, mPaint);
+}
+
+// 核心操作
+int layerId = canvas.saveLayer(0, 0, canvas.getWidth(), canvas.getHeight(), null, Canvas.ALL_SAVE_FLAG);// 新增透明图层
+super.onDraw(canvas);// 画图片
+mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));// 设置Xfermode模式
+canvas.drawBitmap(createMask(), 0, 0, mPaint);// 画多边形覆盖在图片上
+canvas.restoreToCount(layerId);
+</code></pre>
+
+<p>这里有个小技巧, 在创建Bitmap的时候使用了Bitmap.Config.ALPHA_8, 这是因为DST_IN的公式中仅使用了Sa, 不需要有颜色, 所以只使用ALPHA_8就足够了, 可以节省内存.</p>
+
+<p>效果图</p>
+
+<p><img src="http://i.imgur.com/WF3dwTc.png" alt="" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[IP/TCP/UDP/HTTP浅谈]]></title>
+    <link href="http://wentao1990.github.io/blog/2016/01/11/android-iptcphttp/"/>
+    <updated>2016-01-11T18:46:25+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2016/01/11/android-iptcphttp</id>
+    <content type="html"><![CDATA[<h4>前言：</h4>
+
+<p>在世界上各地，各种各样的电脑运行着各自不同的操作系统为大家服务，这些电脑在表达同一种信息的时候所使用的方法是千差万别。就好像圣经中上帝打乱了各地人的口音，让他们无法合作一样。计算机使用者意识到，计算机只是单兵作战并不会发挥太大的作用。只有把它们联合起来，电脑才会发挥出它最大的潜力。于是人们就想方设法的用电线把电脑连接到了一起。但是简单的连到一起是远远不够的，就好像语言不同的两个人互相见了面，完全不能交流信息。因而他们需要定义一些共通的东西来进行交流，TCP/IP就是为此而生。TCP/IP不是一个协议，而是一个协议族的统称。里面包括了IP协议，IMCP协议，TCP协议，以及我们更加熟悉的http、ftp、pop3协议等等。电脑有了这些，就好像学会了外语一样，就可以和其他的计算机终端做自由的交流了。</p>
+
+<h4>协议分层：</h4>
+
+<p>提到协议分层，我们很容易联想到ISO-OSI的七层协议经典架构，但是TCP/IP协议族的结构则稍有不同。</p>
+
+<p>如图所示：</p>
+
+<p><img src="http://i.imgur.com/FFdYFsO.jpg" alt="" /></p>
+
+<p>TCP/IP协议族按照层次由上到下，层层包装。</p>
+
+<p>第一层：应用层，这里面有http、ftp等协议。</p>
+
+<p>第二层：传输层，这里面有TCP和UDP等协议。</p>
+
+<p>第三层：网络层，IP协议就在这里，它负责对数据加上IP地址和其他数据，以确定传输目标。</p>
+
+<p>第四层:数据链路层,这个层次为待传送的数据加入一个以太网协议头，并进行CRC编码，为最后的数据传输做准备。（1.为IP模块发送和 接收IP数据报。2.为ARP模块发送ARP请求和接收ARP应答。3.为RARP发送RARP请 求和接收RARP应答）。</p>
+
+<p>第五层：物理层，负责网络的传输，这个层次的定义包括网线的制式，网卡的定义等等。注：有些书籍并不把这层归纳在TCP/IP协议族中。</p>
+
+<h3>IP协议</h3>
+
+<p>IP协议是TCP/IP协议的核心，所有的TCP，UDP，IMCP，IGCP的数据都以IP数据格式传输。要注意的是，IP不是可靠的协议，这是说，IP协议没有提供一种数据未传达以后的处理机制&ndash;这被认为是上层协议&ndash;TCP或UDP要做的事情。所以这也就出现了TCP是一个可靠的协议，而UDP就没有那么可靠的区别。</p>
+
+<h3>TCP协议</h3>
+
+<p>1.是面向连接的。应用程序在使用TCP协议时，必须进行连接；当然，数据传输结束后，要断开TCP连接。</p>
+
+<p>2.TCP连接是点对点的。</p>
+
+<p>3.TCP连接时可靠的。也就是说传输的数据时无差错的、不丢失、不重复、有序到达的。</p>
+
+<p>4.是全双工的。即TCP连接的两端都设有发送缓存和接收缓存，用来存放双向通信的数据。</p>
+
+<p>5.是面向字节流的。也就是说TCP将应用程序交下来的数据看成仅仅是一连串的无结构的字节流，其不知道这些字节流的具体含义。TCP议无法保证发送的数据块的具体大小，因为TCP协议的发送的数据大小收到对方给出的窗口值和当前的网络拥塞度的影响。</p>
+
+<p>TCP的连接端点是套接字。套接字是IP地址拼接上端口号组成的，即点分方式的十进制后面是端口号，中间用逗号或冒号隔开。如下方式：
+套接字Socket=(IP地址：端口号)</p>
+
+<h4>TCP协议应用场景：</h4>
+
+<p>TCP一般用于那些对于数据严谨准确率高但同时非紧急实时性的场景，比如：文件传输（FTP HTTP 对数据准确性要求高，速度可以相对慢）、发送或接收邮件（POP IMAP SMTP 对数据准确性要求高，非紧急应用）、远程登录（TELNET SSH 对数据准确性有一定要求，有连接的概念）等等。</p>
+
+<h3>UDP协议</h3>
+
+<p>UDP本身是一种不可靠的协议，UDP协议在IP协议上增加了复用、分用和差错检测功能。</p>
+
+<p>1.是无连接的。相比于TCP协议，UDP协议在传送数据前不需要建立连接，当然也就没有释放连接。</p>
+
+<p>2.是尽最大努力交付的。也就是说UDP协议无法保证数据能够准确的交付到目的主机。也不需要对接收到的UDP报文进行确认。</p>
+
+<p>3.是面向报文的。也就是说UDP协议将应用层传输下来的数据封装在一个UDP包中，不进行拆分或合并。因此，运输层在收到对方的UDP包后，会去掉首部后，将数据原封不动的交给应用进程。</p>
+
+<p>4.没有拥塞控制。因此UDP协议的发送速率不送网络的拥塞度影响。</p>
+
+<p>5.UDP支持一对一、一对多、多对一和多对多的交互通信。</p>
+
+<p>6.UDP的头部占用较小，只占用8个字节。</p>
+
+<h4>UDP协议应用场景：</h4>
+
+<p>UDP协议一般应用与那些对于数据不是很严谨高准确率但对速度实时性较高的场景，比如：即时通信（QQ聊天 对数据准确性和丢包要求比较低，但速度必须快），在线视频（RTSP 速度一定要快，保证视频连续，但是偶尔花了一个图像帧，人们还是能接受的），网络语音电话、视频会议（VoIP 语音数据包一般比较小，需要高速发送，偶尔断音或串音也没有问题）等等。</p>
+
+<h3>HTTP协议</h3>
+
+<p>HTTP是一个属于应用层的面向对象的协议，由于其简捷、快速的方式，适用于分布式超媒体信息系统。</p>
+
+<p>1.支持客户/服务器模式。</p>
+
+<p>2.简单快速：客户向服务器请求服务时，只需传送请求方法和路径。请求方法常用的有GET、HEAD、POST。每种方法规定了客户与服务器联系的类型不同。由于HTTP协议简单，使得HTTP服务器的程序规模小，因而通信速度很快。</p>
+
+<p>3.灵活：HTTP允许传输任意类型的数据对象。正在传输的类型由Content-Type加以标记。</p>
+
+<p>4.无连接：无连接的含义是限制每次连接只处理一个请求。服务器处理完客户的请求，并收到客户的应答后，即断开连接。采用这种方式可以节省传输时间。</p>
+
+<p>5.无状态：HTTP协议是无状态协议。无状态是指协议对于事务处理没有记忆能力。缺少状态意味着如果后续处理需要前面的信息，则它必须重传，这样可能导致每次连接传送的数据量增大。另一方面，在服务器不需要先前信息时它的应答就较快。</p>
+
+<h4>HTTP应用场景：</h4>
+
+<p>Http请求主要有http协议，基于http协议的soap协议，常见的http数据请求方式有get和post，web服务</p>
+
+<p>优点：</p>
+
+<p>1.基于应用级的接口使用方便</p>
+
+<p>2.要求的开发水平不高，容错性强</p>
+
+<p>缺点：</p>
+
+<p>1.传输速度慢，数据包大。</p>
+
+<p>2.如实现实时交互，服务器性能压力大</p>
+
+<p>3.数据传输安全性差</p>
+
+<h4>HTTP常用状态码：</h4>
+
+<p>206 - 断点下载时用到，客户端请求了一部分内容，服务器成功把这部分内容返回给它，这时候就是用这个状态。</p>
+
+<p>301 - 永久跳转，原地址不存在了，url被指向到另一个地址。这个主要是搜索引擎相关，影响爬虫的检索行为。</p>
+
+<p>302 - 临时跳转，服务器会返回一个新的url给客户端，客户端可以继续访问这个url来获取内容。</p>
+
+<p>304 - 资源没有改变，客户端可以使用本地缓存的内容，常见于静态内容访问。</p>
+
+<p>413 - 请求实体太大。常见的情况是上传大文件，但超出了服务器(比如nginx)限制。或者请求头或请求体超出了后端的server(比如tomcat)的设置（比如当前域名下cookie太多，超出了请求头限制）</p>
+
+<p>416 - 跟断点续传有关，客户端请求的范围超出了服务器上文件大小。</p>
+
+<p>500 - 服务器内部错误，不能返回正常的结果。比如最常见的应用抛出空指针异常未进行处理。</p>
+
+<p>502 - 网关错误。常见的情况是反向代理后端的服务器(比如resin或tomcat)没有启动。</p>
+
+<p>503 - 服务不可用。比如服务器负载太高或者服务器已经停止服务。</p>
+
+<p>504 - 网关超时。比如请求时长超出了服务器的响应时间限制。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Android Image]]></title>
+    <link href="http://wentao1990.github.io/blog/2015/11/02/android-image/"/>
+    <updated>2015-11-02T00:00:00+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2015/11/02/android-image</id>
+    <content type="html"><![CDATA[<blockquote><hr />
+
+<p>layout: post
+title: &ldquo;&lt;转>Android高效加载大图、多图解决方案，有效避免程序OOM&rdquo;
+date: 2015-11-02 16:46:35 +0800
+comments: true</p>
+
+<h2>categories: android</h2></blockquote>
+
+<p>原文：<a href="http://blog.csdn.net/guolin_blog/article/details/9316683">http://blog.csdn.net/guolin_blog/article/details/9316683</a></p>
+
+<p>本篇文章主要内容来自于Android Doc，我翻译之后又做了些加工，英文好的朋友也可以直接去读原文。</p>
+
+<p><a href="http://developer.android.com/training/displaying-bitmaps/index.html">http://developer.android.com/training/displaying-bitmaps/index.html</a></p>
+
+<h4>高效加载大图片</h4>
+
+<p>我们在编写Android程序的时候经常要用到许多图片，不同图片总是会有不同的形状、不同的大小，但在大多数情况下，这些图片都会大于我们程序所需要的大小。比如说系统图片库里展示的图片大都是用手机摄像头拍出来的，这些图片的分辨率会比我们手机屏幕的分辨率高得多。大家应该知道，我们编写的应用程序都是有一定内存限制的，程序占用了过高的内存就容易出现OOM(OutOfMemory)异常。我们可以通过下面的代码看出每个应用程序最高可用内存是多少。</p>
+
+<pre><code>int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);  
+Log.d("TAG", "Max memory is " + maxMemory + "KB");  
+</code></pre>
+
+<p>因此在展示高分辨率图片的时候，最好先将图片进行压缩。压缩后的图片大小应该和用来展示它的控件大小相近，在一个很小的ImageView上显示一张超大的图片不会带来任何视觉上的好处，但却会占用我们相当多宝贵的内存，而且在性能上还可能会带来负面影响。下面我们就来看一看，如何对一张大图片进行适当的压缩，让它能够以最佳大小显示的同时，还能防止OOM的出现。</p>
+
+<p>BitmapFactory这个类提供了多个解析方法(decodeByteArray, decodeFile, decodeResource等)用于创建Bitmap对象，我们应该根据图片的来源选择合适的方法。比如SD卡中的图片可以使用decodeFile方法，网络上的图片可以使用decodeStream方法，资源文件中的图片可以使用decodeResource方法。这些方法会尝试为已经构建的bitmap分配内存，这时就会很容易导致OOM出现。为此每一种解析方法都提供了一个可选的BitmapFactory.Options参数，将这个参数的inJustDecodeBounds属性设置为true就可以让解析方法禁止为bitmap分配内存，返回值也不再是一个Bitmap对象，而是null。虽然Bitmap是null了，但是BitmapFactory.Options的outWidth、outHeight和outMimeType属性都会被赋值。这个技巧让我们可以在加载图片之前就获取到图片的长宽值和MIME类型，从而根据情况对图片进行压缩。如下代码所示：</p>
+
+<pre><code>BitmapFactory.Options options = new BitmapFactory.Options();  
+options.inJustDecodeBounds = true;  
+BitmapFactory.decodeResource(getResources(), R.id.myimage, options);  
+int imageHeight = options.outHeight;  
+int imageWidth = options.outWidth;  
+String imageType = options.outMimeType;
+</code></pre>
+
+<p>为了避免OOM异常，最好在解析每张图片的时候都先检查一下图片的大小，除非你非常信任图片的来源，保证这些图片都不会超出你程序的可用内存。</p>
+
+<p>现在图片的大小已经知道了，我们就可以决定是把整张图片加载到内存中还是加载一个压缩版的图片到内存中。以下几个因素是我们需要考虑的：</p>
+
+<h5>• 预估一下加载整张图片所需占用的内存。</h5>
+
+<h5>• 为了加载这一张图片你所愿意提供多少内存。</h5>
+
+<h5>• 用于展示这张图片的控件的实际大小。</h5>
+
+<h5>• 当前设备的屏幕尺寸和分辨率。</h5>
+
+<p>比如，你的ImageView只有128<em>96像素的大小，只是为了显示一张缩略图，这时候把一张1024</em>768像素的图片完全加载到内存中显然是不值得的。</p>
+
+<p>那我们怎样才能对图片进行压缩呢？通过设置BitmapFactory.Options中inSampleSize的值就可以实现。比如我们有一张2048<em>1536像素的图片，将inSampleSize的值设置为4，就可以把这张图片压缩成512</em>384像素。原本加载这张图片需要占用13M的内存，压缩后就只需要占用0.75M了(假设图片是ARGB_8888类型，即每个像素点占用4个字节)。下面的方法可以根据传入的宽和高，计算出合适的inSampleSize值：</p>
+
+<pre><code>    public static int calculateInSampleSize(BitmapFactory.Options options,  
+        int reqWidth, int reqHeight) {  
+    // 源图片的高度和宽度  
+    final int height = options.outHeight;  
+    final int width = options.outWidth;  
+    int inSampleSize = 1;  
+    if (height &gt; reqHeight || width &gt; reqWidth) {  
+        // 计算出实际宽高和目标宽高的比率  
+        final int heightRatio = Math.round((float) height / (float) reqHeight);  
+        final int widthRatio = Math.round((float) width / (float) reqWidth);  
+        // 选择宽和高中最小的比率作为inSampleSize的值，这样可以保证最终图片的宽和高  
+        // 一定都会大于等于目标的宽和高。  
+        inSampleSize = heightRatio &lt; widthRatio ? heightRatio : widthRatio;  
+    }  
+    return inSampleSize;  
+}  
+</code></pre>
+
+<p>使用这个方法，首先你要将BitmapFactory.Options的inJustDecodeBounds属性设置为true，解析一次图片。然后将BitmapFactory.Options连同期望的宽度和高度一起传递到到calculateInSampleSize方法中，就可以得到合适的inSampleSize值了。之后再解析一次图片，使用新获取到的inSampleSize值，并把inJustDecodeBounds设置为false，就可以得到压缩后的图片了。</p>
+
+<pre><code>public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,  
+        int reqWidth, int reqHeight) {  
+    // 第一次解析将inJustDecodeBounds设置为true，来获取图片大小  
+    final BitmapFactory.Options options = new BitmapFactory.Options();  
+    options.inJustDecodeBounds = true;  
+    BitmapFactory.decodeResource(res, resId, options);  
+    // 调用上面定义的方法计算inSampleSize值  
+    options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);  
+    // 使用获取到的inSampleSize值再次解析图片  
+    options.inJustDecodeBounds = false;  
+    return BitmapFactory.decodeResource(res, resId, options);  
+}  
+</code></pre>
+
+<p>下面的代码非常简单地将任意一张图片压缩成100*100的缩略图，并在ImageView上展示。</p>
+
+<pre><code>mImageView.setImageBitmap(  
+    decodeSampledBitmapFromResource(getResources(), R.id.myimage, 100, 100));  
+</code></pre>
+
+<h4>使用图片缓存技术</h4>
+
+<p>在你应用程序的UI界面加载一张图片是一件很简单的事情，但是当你需要在界面上加载一大堆图片的时候，情况就变得复杂起来。在很多情况下，（比如使用ListView, GridView 或者 ViewPager 这样的组件），屏幕上显示的图片可以通过滑动屏幕等事件不断地增加，最终导致OOM。</p>
+
+<p>为了保证内存的使用始终维持在一个合理的范围，通常会把被移除屏幕的图片进行回收处理。此时垃圾回收器也会认为你不再持有这些图片的引用，从而对这些图片进行GC操作。用这种思路来解决问题是非常好的，可是为了能让程序快速运行，在界面上迅速地加载图片，你又必须要考虑到某些图片被回收之后，用户又将它重新滑入屏幕这种情况。这时重新去加载一遍刚刚加载过的图片无疑是性能的瓶颈，你需要想办法去避免这个情况的发生。</p>
+
+<p>这个时候，使用内存缓存技术可以很好的解决这个问题，它可以让组件快速地重新加载和处理图片。下面我们就来看一看如何使用内存缓存技术来对图片进行缓存，从而让你的应用程序在加载很多图片的时候可以提高响应速度和流畅性。</p>
+
+<p>内存缓存技术对那些大量占用应用程序宝贵内存的图片提供了快速访问的方法。其中最核心的类是LruCache (此类在android-support-v4的包中提供) 。这个类非常适合用来缓存图片，它的主要算法原理是把最近使用的对象用强引用存储在 LinkedHashMap 中，并且把最近最少使用的对象在缓存值达到预设定值之前从内存中移除。</p>
+
+<p>在过去，我们经常会使用一种非常流行的内存缓存技术的实现，即软引用或弱引用 (SoftReference or WeakReference)。但是现在已经不再推荐使用这种方式了，因为从 Android 2.3 (API Level 9)开始，垃圾回收器会更倾向于回收持有软引用或弱引用的对象，这让软引用和弱引用变得不再可靠。另外，Android 3.0 (API Level 11)中，图片的数据会存储在本地的内存当中，因而无法用一种可预见的方式将其释放，这就有潜在的风险造成应用程序的内存溢出并崩溃。</p>
+
+<p>为了能够选择一个合适的缓存大小给LruCache, 有以下多个因素应该放入考虑范围内，例如：</p>
+
+<h5>• 你的设备可以为每个应用程序分配多大的内存？</h5>
+
+<h5>• 设备屏幕上一次最多能显示多少张图片？有多少图片需要进行预加载，因为有可能很快也会显示在屏幕上？</h5>
+
+<h5>• 你的设备的屏幕大小和分辨率分别是多少？一个超高分辨率的设备（例如 Galaxy Nexus) 比起一个较低分辨率的设备（例如 Nexus S），在持有相同数量图片的时候，需要更大的缓存空间。</h5>
+
+<h5>• 图片的尺寸和大小，还有每张图片会占据多少内存空间。</h5>
+
+<h5>• 图片被访问的频率有多高？会不会有一些图片的访问频率比其它图片要高？如果有的话，你也许应该让一些图片常驻在内存当中，或者使用多个LruCache 对象来区分不同组的图片。</h5>
+
+<h5>• 你能维持好数量和质量之间的平衡吗？有些时候，存储多个低像素的图片，而在后台去开线程加载高像素的图片会更加的有效。</h5>
+
+<p>并没有一个指定的缓存大小可以满足所有的应用程序，这是由你决定的。你应该去分析程序内存的使用情况，然后制定出一个合适的解决方案。一个太小的缓存空间，有可能造成图片频繁地被释放和重新加载，这并没有好处。而一个太大的缓存空间，则有可能还是会引起 Java.lang.OutOfMemory 的异常。</p>
+
+<p>下面是一个使用 LruCache 来缓存图片的例子：</p>
+
+<pre><code>private LruCache&lt;String, Bitmap&gt; mMemoryCache;  
+
+@Override  
+protected void onCreate(Bundle savedInstanceState) {  
+    // 获取到可用内存的最大值，使用内存超出这个值会引起OutOfMemory异常。  
+    // LruCache通过构造函数传入缓存值，以KB为单位。  
+    int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);  
+    // 使用最大可用内存值的1/8作为缓存的大小。  
+    int cacheSize = maxMemory / 8;  
+    mMemoryCache = new LruCache&lt;String, Bitmap&gt;(cacheSize) {  
+        @Override  
+        protected int sizeOf(String key, Bitmap bitmap) {  
+            // 重写此方法来衡量每张图片的大小，默认返回图片数量。  
+            return bitmap.getByteCount() / 1024;  
+        }  
+    };  
+}  
+
+public void addBitmapToMemoryCache(String key, Bitmap bitmap) {  
+    if (getBitmapFromMemCache(key) == null) {  
+        mMemoryCache.put(key, bitmap);  
+    }  
+}  
+
+public Bitmap getBitmapFromMemCache(String key) {  
+    return mMemoryCache.get(key);  
+}  
+</code></pre>
+
+<p>在这个例子当中，使用了系统分配给应用程序的八分之一内存来作为缓存大小。在中高配置的手机当中，这大概会有4兆(32/8)的缓存空间。一个全屏幕的 GridView 使用4张 800x480分辨率的图片来填充，则大概会占用1.5兆的空间(800<em>480</em>4)。因此，这个缓存大小可以存储2.5页的图片。</p>
+
+<p>当向 ImageView 中加载一张图片时,首先会在 LruCache 的缓存中进行检查。如果找到了相应的键值，则会立刻更新ImageView ，否则开启一个后台线程来加载这张图片。</p>
+
+<pre><code>public void loadBitmap(int resId, ImageView imageView) {  
+    final String imageKey = String.valueOf(resId);  
+    final Bitmap bitmap = getBitmapFromMemCache(imageKey);  
+    if (bitmap != null) {  
+        imageView.setImageBitmap(bitmap);  
+    } else {  
+        imageView.setImageResource(R.drawable.image_placeholder);  
+        BitmapWorkerTask task = new BitmapWorkerTask(imageView);  
+        task.execute(resId);  
+    }  
+}  
+</code></pre>
+
+<p>BitmapWorkerTask 还要把新加载的图片的键值对放到缓存中。</p>
+
+<pre><code>class BitmapWorkerTask extends AsyncTask&lt;Integer, Void, Bitmap&gt; {  
+    // 在后台加载图片。  
+    @Override  
+    protected Bitmap doInBackground(Integer... params) {  
+        final Bitmap bitmap = decodeSampledBitmapFromResource(  
+                getResources(), params[0], 100, 100);  
+        addBitmapToMemoryCache(String.valueOf(params[0]), bitmap);  
+        return bitmap;  
+    }  
+}  
+</code></pre>
+
+<p>掌握了以上两种方法，不管是要在程序中加载超大图片，还是要加载大量图片，都不用担心OOM的问题了!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[打造可以共用的Adapter]]></title>
+    <link href="http://wentao1990.github.io/blog/2015/08/12/android-commonAdapter/"/>
+    <updated>2015-08-12T19:14:31+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2015/08/12/android-commonAdapter</id>
+    <content type="html"><![CDATA[<h3>前言：</h3>
+
+<p>在我们开发android项目中，会在多个地方使用ListView展示内容，然后每个ListView都要对应一个Adapter来装载数据。这样的话代码就会有许多的冗余，就算写个BaseAdapter抽取部分代码，也有很多的冗余代码避免不了，至少那十几个类文件是确确实实存在那的（取决于项目需求）。下面我们来一起打造一个共用的Adapter,一个搞定所有ListView的数据装载。</p>
+
+<h5>传统的写法我就不贴出来了，自己回想一下大概就很清楚了。</h5>
+
+<h3>第一步：打造共用的ViewHolder</h3>
+
+<p>一个有经验的开发者在写Adapterd的时候是不会忘记写ViewHolder的，而ViewHolder无非就是item的复用，解决效率和负载问题。所以，若要打造一个共用的Adapter，那么一个共用的ViewHolder是必不可少的。</p>
+
+<p>ViewHolder的原理是通过convertView.setTag(this)与convertView进行绑定,然后当convertView被复用时，直接通过getTag方法拿到ViewHolder对象，直接操作里面封装的convertView中的控件，从而省去了findViewById的时间。也就说，每个convertView都会绑定一个ViewHolder对象来存储布局中的控件。那么我们只要写出一个通用的ViewHolder，然后对于任意的convertView，提供一个对象让其setTag即可；</p>
+
+<p> <!--more--></p>
+
+<p>既然是通用，那么我们这个ViewHolder就不可能含有各种控件的成员变量了，因为每个Item的布局是不同的，最好的方式是什么呢？
+提供一个容器，专门存每个Item布局中的所有控件，而且还要能够查找出来；既然需要查找，那么ListView肯定是不行了，需要一个键值对进行保存，键为控件的Id，值为控件的引用，相信大家立刻就能想到Map；但是我们不用Map，因为有更好的替代类，就是我们android提供的SparseArray这个类，和Map类似，但是比Map效率，不过键只能为Integer.</p>
+
+<p>下面直接贴出代码：</p>
+
+<pre><code>/**
+ * ClassName: ViewHolder
+ * Fuction: 通用ViewHolder
+ * Author：Knight
+ * Created  2015/8/10 0010.
+ */
+public class ViewHolder {
+private final SparseArray&lt;View&gt; mViews;//存储控件集合
+private View mConvertView;
+
+private ViewHolder(Context context, ViewGroup parent, int layoutId, int position) {
+    this.mViews = new SparseArray&lt;View&gt;();
+    mConvertView = LayoutInflater.from(context).inflate(layoutId, parent, false);
+    //setTag
+    mConvertView.setTag(this);
+}
+
+/**
+ * 获取ViewHolder对象
+ *
+ * @param context
+ * @param convertView Item
+ * @param parent      Item载体
+ * @param layoutId    Item布局资源id
+ * @param position    Item游标
+ * @return
+ */
+public static ViewHolder get(Context context, View convertView
+        , ViewGroup parent, int layoutId, int position) {
+    if (convertView == null) {
+        return new ViewHolder(context, parent, layoutId, position);
+    }
+
+    return (ViewHolder) convertView.getTag();
+}
+
+/**
+ * 根据id获取控件
+ *
+ * @param viewId
+ * @param &lt;T&gt;
+ * @return
+ */
+public &lt;T extends View&gt; T getByIdView(int viewId) {
+    View view = mViews.get(viewId);
+    if (view == null) {
+        view = mConvertView.findViewById(viewId);
+        mViews.put(viewId, view);
+    }
+    return (T) view;
+}
+
+/**
+ * 返回item
+ *
+ * @return
+ */
+public View getConvertView() {return mConvertView;}
+</code></pre>
+
+<p>与传统的ViewHolder不同，我们使用了一个SparseArray<View>用于存储与之对于的convertView的所有的控件，当需要拿这些控件时，通过getView(id)进行获取；</p>
+
+<h3>第二步：打造共用的Adapter</h3>
+
+<p>Adapter一般需要保持一个List对象，存储一个Bean的集合，不同的ListView，Bean肯定是不同的，这个CommonAdapter肯定需要支持泛型，内部维持一个List<T>，就解决我们的问题了；</p>
+
+<p>下面贴出代码：</p>
+
+<pre><code>/**
+ * ClassName: CommonAdapter
+ * Fuction: 通用适配器
+ * Author：Knight
+ * Created  2015/8/10 0010.
+ */
+public abstract class CommonAdapter&lt;T&gt; extends BaseAdapter {
+    private Context mContext;
+    private List&lt;T&gt; mDatas;
+    private int mLayoutId;
+    private Object object;
+
+    public CommonAdapter(Context context, List&lt;T&gt; datas, int layoutId) {
+        this.mContext = context;
+        this.mDatas=datas;
+        this.mLayoutId = layoutId;
+        this.object=new Object();
+    }
+
+    @Override
+    public View getView(int i, View view, ViewGroup viewGroup) {
+        //创建一个ViewHolder对象
+        final ViewHolder holder = ViewHolder.get(mContext, view, viewGroup, mLayoutId, i);
+        //子类的处理逻辑
+        convert(holder,mDatas.get(i));
+        //return view
+        return holder.getConvertView();
+    }
+
+     /**
+     * 需要子类实现的逻辑
+     *
+     * @param holder
+     * @param item
+     */
+    protected abstract void convert(ViewHolder holder, T item);
+
+    @Override
+    public int getCount() {
+        return mDatas == null ? 0 : mDatas.size();
+    }
+
+    @Override
+    public T getItem(int i) {
+        return mDatas.get(i);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return i;
+    }
+
+}
+</code></pre>
+
+<p>可以看出来我们的CommonAdapter是一个抽象类，使用者需要实现convert方法，从代码的逻辑来看，调用者（一般都是Activity)只需要实现convert方法来填写自身的处理逻辑即可，如settext、单击、长按。这是不是OO设计原则？</p>
+
+<p>下面贴出调用的Activity代码：</p>
+
+<pre><code>mListView= (ListView) findViewById(R.id.lv_brant);
+......
+
+mListView.setAdapter(new CommonAdapter&lt;UserConfInfo.TBrandOptionEntity.DataEntity&gt;(this
+        ,ConfUtils.getBrandList(typeId),R.layout.brand_list_item) {
+            @Override
+            protected void convert(ViewHolder holder, final UserConfInfo.TBrandOptionEntity.DataEntity item) {
+                TextView textView=holder.getByIdView(R.id.textview);
+                textView.setText("支付宝");
+            }
+        });
+</code></pre>
+
+<h3>第三步：封装需要使用的功能到ViewHolder</h3>
+
+<p>其实可以看出，完成上面两步之后，一个共用的Adapter就已经打造完成了。不过ViewHolder还可以做很多事情，由上可以看出，ViewHolder里维护了布局中的控件，我们最终还是去操作处理这些控件，如：赋值、跳转、数据交互等。那么为了更好的减少代码量（本人有点代码洁癖），我们可以把用到的功能都封装进ViewHoldr,看完下面的代码就会明白了。</p>
+
+<p>下面贴出封装功能后的ViewHolder:</p>
+
+<pre><code> /**
+ * 设置view内容
+ *
+ * @param viewId
+ * @param conent
+ * @return
+ */
+public ViewHolder setText(int viewId, String conent) {
+    TextView textView = getByIdView(viewId);
+    textView.setText(conent);
+    return this;
+}
+
+/**
+ * 设置控件背景
+ *
+ * @param viewId
+ * @param resourceId
+ * @return
+ */
+public ViewHolder setBackgroundResource(int viewId, int resourceId) {
+    getByIdView(viewId).setBackgroundResource(resourceId);
+
+    return this;
+}
+
+/**
+ * 设置view显示状态
+ *
+ * @param viewId
+ * @param visibility
+ * @return
+ */
+public ViewHolder setVisibility(int viewId, int visibility) {
+    getByIdView(viewId).setVisibility(visibility);
+    return this;
+}
+
+/**
+ * 设置图片
+ *
+ * @param viewId
+ * @param resId
+ * @return
+ */
+public ViewHolder setImageResource(int viewId, int resId) {
+    ImageView view = getByIdView(viewId);
+    view.setImageResource(resId);
+    return this;
+}
+
+/**
+ * 设置图片
+ *
+ * @param viewId
+ * @param bitmap
+ * @return
+ */
+public ViewHolder setImageBitmap(int viewId, Bitmap bitmap) {
+    ImageView view = getByIdView(viewId);
+    view.setImageBitmap(bitmap);
+    return this;
+}
+
+/**
+ * 设置textview字体颜色
+ *
+ * @param viewId
+ * @param resId
+ * @return
+ */
+public ViewHolder setTextColorResource(int viewId, int resId) {
+    TextView textView = getByIdView(viewId);
+    textView.setTextColor(resId);
+
+    return this;
+}
+
+/**
+ * 设置控件选中状态
+ *
+ * @param viewId
+ * @param b
+ * @return
+ */
+public ViewHolder setChecked(int viewId, boolean b) {
+    CheckBox checkBox = getByIdView(viewId);
+    checkBox.setChecked(b);
+
+    return this;
+}
+
+/**
+ * 绑定控件的多选事件
+ *
+ * @param viewId
+ * @param listener
+ * @return
+ */
+public ViewHolder setOnCheckedChangeListener(int viewId, CompoundButton.OnCheckedChangeListener listener) {
+    CheckBox checkBox = getByIdView(viewId);
+    checkBox.setOnCheckedChangeListener(listener);
+
+    return this;
+}
+
+/**
+ * 绑定view单击事件
+ *
+ * @param viewId
+ * @param listener
+ * @return
+ */
+public ViewHolder setOnClickListener(int viewId, View.OnClickListener listener) {
+    View view = getByIdView(viewId);
+    view.setOnClickListener(listener);
+
+    return this;
+}
+</code></pre>
+
+<p>完成以上三步后，一个不算完美但还能凑合用的共用Adapter就打造好了，整个项目的代码量应该会减少百分之一，多少还会有些神清气爽的感觉。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[浅谈App安全]]></title>
+    <link href="http://wentao1990.github.io/blog/2015/07/09/android-safety/"/>
+    <updated>2015-07-09T20:52:25+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2015/07/09/android-safety</id>
+    <content type="html"><![CDATA[<h5>前言：大多数开发者认为，iOS系统的封闭性使APP也更加安全，事实上，根据国外某安全服务商的最新调查显示：iOS前100名付费应用中87%均遭黑客破解。内购破解、源代码破解、本地数据窃取、本地数据窃取等手段时刻都在威胁着移动APP的安全。由于现在智能手机的普及度越来越高，APP的安全问题也越来越多的曝光在群众视野之内，仔细查阅下资料，真是与PC端程序有过之而无不及。本文楼主就以Android应用APP为例，介绍下破解和防破解的一些常用手段。</h5>
+
+<p>（早在大学期间，我就和室友一起编写过一些游戏脚本兜售给玩家，以此赚取一些生活费用。那时我们用VB语言编写一些简单的游戏挂机辅助软件，就是模拟按键操作，由于当时对行业认知有限，我们编写的软件只是简单的加了个Protect外壳就投入到市场上，后来发现淘宝上有三五家商家在兜售我们的破解软件。）</p>
+
+<h4>常用的防破解方式：</h4>
+
+<p><strong>• 1： 代码混淆</strong></p>
+
+<p>最早的应用保护当属代码混淆，谷歌官方发布的sdk中就包含ProGuard这种混淆工具。混淆工具会把你用java语言编写的代码的类名、变量名混淆为自己定义的格式，这样可以增加破解者在破解时阅读难度。如下图：</p>
+
+<p><strong>不足：</strong></p>
+
+<p>这种方法其实算不上防破解，只不过是增加破解者的时间成本而已，好比多穿几件衣服。。。你们懂的。</p>
+
+<p><strong>• 2： 自我校验</strong></p>
+
+<p>通俗的讲，自我校验就是在程序中加一些对自己应用的完整性校验。我们可以借助软件的签名、计算软件的dex的md5值、利用HTTP协议从服务器上获取一段数据来完成。这种保护可以使软件在二次打包的时候不能运行，算是真正意义上的一种防破解手段，目前市面上多数软件都是采用这种方式，可以阻挡一些菜鸟级的破解者了。</p>
+
+<p><strong>不足：</strong></p>
+
+<p>计算机在执行指令的时候是按照预先定义好的逻辑（开发者写的）去执行，然而如果破解者对开发者校验的地方近进行了修改，那么计算机也会按照新的逻辑执行。也就是说，破解者如果修改你校验数据的逻辑后，就呵呵了。。。</p>
+
+<p><strong>• 3： Dex文件保护</strong></p>
+
+<p>a.隐藏dex文件</p>
+
+<p>既然dex文件中包含了核心逻辑，那么把dex隐藏，再通过另外的方式加载起来，是不是就能达到保护dex的目的了呢？于是这成为些第三方加固产品保护应用的方式。他们通过加密甚至压缩（早期是不存在压缩的，只是单纯的加密）方式把dex转换为另外一个文件。而被加固后的apk里面的dex则是那些第三方加固产品用来启动和加载隐藏dex的入口，也就是壳。</p>
+
+<p>b.对dex文件进行变形</p>
+
+<p>这里所说的变形，不同于封建社会时期提到的变形。这种办法不隐藏dex，而是让dex保留在外面，但是当破解者去分析这个dex的时候，会发现dex里面的内容是不完整的。</p>
+
+<p>c.对dex结构进行变形</p>
+
+<p>此类方法是比较复杂的，了解dex结构的人应该很清楚，dex结构中包含DexClassDef、ClassDataItem、DexCode，这些是dalvik虚拟机运行一个dex必不可少的部分，特别是DexCode，DexCode包含了虚拟机运行的字节码指令。</p>
+
+<p>部分第三方加固产品开始尝试这种方式，他们的保护方案中可能抽取了DexCode中的部分，然后对字节码指令添加nop，或者连ClassDataItem和DexCode一同抽取，或者对上面提到的三个部分都做处理。抽取完之后，还要做修正、修复等工作，总之很烦锁。因为dex运行时有很多关于dex的校验，即使校验通过还有一些偏移问题。</p>
+
+<p><strong>不足：</strong></p>
+
+<p>基本世面上的dex变形都可以通过baksmali来得到smali，这样破解者就可继续分析。而manifset文件格式官方有明确的规范，破解者按照规范去解析，遇到不正确字节可以推敲，最终还是可以将其还原。</p>
+
+<p><strong>• 4： So保护</strong></p>
+
+<p>a.修改Elf头、节表</p>
+
+<p>我们知道so其实是一个ELF文件，ELF文件有着自己的格式。有些第三方加固保护是对so文件进行保护，他们的做法是稍微修改一下ELF头或者节表信息，因为这并不会影响程序的正常运行。</p>
+
+<p>b.选择开源加壳工具</p>
+
+<p>　　
+最常用的当属UPX壳，因为它支持arm架构的ELF加固。在加壳之后再对原文件做一些处理，这样对破解者的分析工作又增加了一些难度。
+　　</p>
+
+<p>c.进程防调试、或增加调试难度</p>
+
+<p>有时候静态分析是非常局限的，这个时候动态分析的好处就体现出来了，然而动态分析的核心就是调试，而调试一个进程首先要ptrace这个进程，如果能有效的防止进程被ptrace，就能有效的防止动态调试。当然还有其他反调试技术，或者增加调试难度等等。</p>
+
+<h4>总结：</h4>
+
+<p>理论上，没有任何一款软件可以做到100%的防破解，但是我们可以增加破解者对自己软件的破解难度。如果觉得没有必要或者没有精力去做这些，可以使用一些第三方的加固工具来为自己的软件增加一道保护壳。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[熟悉网络端口]]></title>
+    <link href="http://wentao1990.github.io/blog/2015/07/05/network-port/"/>
+    <updated>2015-07-05T22:55:10+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2015/07/05/network-port</id>
+    <content type="html"><![CDATA[<p>计算机中的“端口”是英文port意译，可以认为计算机与外界通信交流的出口。其硬件领域的端口又称接口，如USB端口、串口端口，软件领域的端口一般指网络中面向连接服务和无连接服务的通信协议端口是—种抽象的软件结构，包括一些数据结构和I/O基本输入输出缓冲区，这类端口也是黑客们入侵计算机的途径之一。 在一台计算机中最多有65536个端口，我们可以按照端口号将他们划分为以下三类。</p>
+
+<h3>1、公认端口</h3>
+
+<p>从O到1023，它们紧密绑定(binding)于一服务．通常这些端口的通信明确表明了某种服务的协议，例如．80端口实际上总是月于HTTPP通信。</p>
+
+<h3>2、注册端口</h3>
+
+<p>从1024到49151，他们松散的绑定于一服务。也就是说有许多服务绑定于这些端口，这些端口同样用于许多其他目的，例如：许多系统处理动态端口从1024左右开始．</p>
+
+<h3>3、动态和/或私有端口 <!--more--></h3>
+
+<p>从49152到65535理论上，不应为服务分配这些端口，实际上，机器通常从1024起分配动态端口。但也
+有例外．SUN的RPC端口从32768开始．</p>
+
+<h3>如何关闭端口？</h3>
+
+<p>比如在Windows 2000/XP中关闭SMTP服务的25端口，可以这样做：首先打开“控制面板”，双击“管理工具”，再双击“服务”。接着在打开的服务窗口中找到并双击“Simple Mail Transfer Protocol
+（SMTP）”服务，单击“停止”按钮来停止该服务，然后在“启动类型”中选择“已禁用”，最后单击
+“确定”按钮即可。这样，关闭了SMTP服务就相当于关闭了对应的端口。</p>
+
+<h3>如何开启端口？</h3>
+
+<p>如果要开启该端口只要先在“启动类型”选择“自动”，单击“确定”按钮，再打开该服务，在“服务
+状态”中单击“启动”按钮即可启用该端口，最后，单击“确定”按钮即可。
+另外在网络连接属性中，选择“TCP/IP协议”属性，打开高级TCP/IP设置，在选项的那个页面打开
+TCP/IP筛选，在出现的设置窗口中也可以根据实现情况设置端口的打开和关闭，默认是未启用TCP/IP筛选。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Unity3D项目融合到Android项目中]]></title>
+    <link href="http://wentao1990.github.io/blog/2015/07/03/android-unity3D/"/>
+    <updated>2015-07-03T19:44:10+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2015/07/03/android-unity3D</id>
+    <content type="html"><![CDATA[<h2>需求：</h2>
+
+<h3>有一个Android项目，里面要添加一个unity3D做的模块，然后把它们融合到一个项目中，这是两个独立的项目，需要把unity3D融合到Android项目中，如果是在项目设计架构之前选择一个为基点做二次开发，那就没有这么奇葩的需求了，然并卵！<!--more--></h3>
+
+<h3>注：</h3>
+
+<p>Unity3D是一款国外的3D游戏引擎，最近几年在国内火了起来，算是在游戏引擎里面比较新颖的技术吧，写好的项目可以直接导出Android和Ios版本，相当给力，可以直接在手机上跑了。说到这里，已经有一个Android项目出来了，且放在这，下面贴上Unity3D导出的Android版本的结构目录。
+<img src="http://i.imgur.com/SkSGFW0.png" alt="" /></p>
+
+<p>可以看的出它就是一个完整的Android项目，这样的话我们就能有至少两种思路来解决这个奇葩的需求。</p>
+
+<h3>一.捆绑安装</h3>
+
+<p>把unity3D虽然主程序静默安装到用户手机里面，然后在app内部开启unity3D程序并通信。很显然这样做的缺点太明显，技术层次也太LOW，作为一个高逼格的程序员显然是不屑于此的。由于此思路不适合在老板面前装逼，故不在此讨论。</p>
+
+<h3>二.代码合并</h3>
+
+<p>把unity3D导出的android项目代码合并到主项目里即可，也很简单，跟着下面步骤走完即可。</p>
+
+<p>1.在unity3D编辑器的安装目录中找到unity-classes.jar包引入到主程序libs中。这个unity for android的支持包。</p>
+
+<p>2.整合两个AndroidManifest.xml文件找到unity3DAndroidManifest.xml文件中的activity节点复制到主项目的AndroidManifest.xml文件中，记着把过滤器注释掉，也就是 <intent-filter>里面的内容。</p>
+
+<p>3.把unity3D Android项目中的assets目录下的bin文件复制到主项目assets目录下</p>
+
+<p><img src="http://i.imgur.com/3NbzTJH.png" alt="" /></p>
+
+<p>4.最后把unity项目中的activity复制到主项目中</p>
+
+<h5>UnityPlayerProxyActivity这个类主要就是在程序运行时获取设备系统的版本，然后根据系统版本自行判断启动UnityPlayerActivity还是UnityPlayerNativeActivity。UnityPlayerActivity是UnityPlayerNativeActivity的子类根据unity官方说明UnityPlayerNativeActivity加载的比较快，但是需要android2.3系统版本以上支持，因为引用了UnityPlayerNativeActivity继承了NativeActivity类，而这个类是从android系统中引入的，在2.3版本之前没有此类。那么现在就知道了，UnityPlayerNativeActivity类其实就unity3D加载的入口，一切模型动画渲染都是从这里开始加载的，那么也就可以把UnityPlayerNativeActivity当作一个普通的android中的activity使用，调用、复用、销毁，它也具备activity的生命周期，因为往深去看，其实就是一个activity。完成以上步骤，就完成了所有的整合，以后若unity3D模块更新迭代后，直接把assets下的bin复制替换掉主项目中的即可。</h5>
+
+<p>有时间后面再分享些整合后在模型（UnityPlayerNativeActivity类）中修改界面和一些交互注意事项方面的东西与大家探讨一下。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Android Studio 之 Gradle 基础]]></title>
+    <link href="http://wentao1990.github.io/blog/2015/06/19/android-gradle/"/>
+    <updated>2015-06-19T19:32:55+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2015/06/19/android-gradle</id>
+    <content type="html"><![CDATA[<h3>● Gradle 介绍</h3>
+
+<p>Gradle是一种依赖管理工具，基于Groovy语言。主要是面向Java应用程序为主，它抛弃了基于XML的各种繁琐配置，取而代之的是一种基于Groovy的内部领域特定（DSL）语言。</p>
+
+<h3>● Gradle 基本概念</h3>
+
+<p>下面根据Android Studio 文件目录逐一说明。</p>
+
+<p><img src="http://i.imgur.com/BTNr0t8.png" alt="" /></p>
+
+<h4>▶ 1 project # build.gradle 文件</h4>
+
+<p>这个文件第一行有句注释：</p>
+
+<pre><code>//Top-level build file where you can add configuration options common to all sub-projects/modules.
+</code></pre>
+
+<p>意思大概就是：此文件是顶级构建文件，你可以在这里配置所有需要的子模块。（是基于整个 project 的配置）</p>
+
+<pre><code>// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+//构建过程依赖的仓库
+repositories {
+jcenter()
+}
+//构建过程需要依赖的库
+dependencies {
+ //下面声明的是gradle插件的版本
+ classpath 'com.android.tools.build:gradle:1.1.0'
+ // NOTE: Do not place your application dependencies here; they belong
+ // in the individual module build.gradle files
+}
+}
+//这里面配置整个项目依赖的仓库,这样每个module就不用配置仓库了
+allprojects {
+     repositories {
+          jcenter()
+     }
+}
+</code></pre>
+
+<p>注：大家可能很奇怪，为什么仓库repositories需要声明两次，这其实是由于它们作用不同，buildscript中的仓库是gradle脚本自身需要的资源，而allprojects下的仓库是项目所有模块需要的资源。所以大家千万不要配错了。</p>
+
+<h4>▶ 2 module#build.gradle 文件</h4>
+
+<p>这个文件和上面的区别在于，此文件是配置使用的单个模块。（类似全局变量和局部变量的区别）
+    //声明插件 这是一个android程序；如果是一个android依赖库，就要换成com.android.library
+    apply plugin: &lsquo;com.android.application&rsquo;</p>
+
+<pre><code>android {
+    //安卓构建过程需要配置的参数
+    compileSdkVersion 21 //编译SDK的版本
+    buildToolsVersion "21.1.1"//build tools的版本（本地需要要有此版本的SDK）
+    //默认配置，会同时应用到debug和release版本上
+    defaultConfig {
+        applicationId "com.wuwentao.start"// 应用的包名
+        minSdkVersion 14 //支持最低的版本
+        targetSdkVersion 23 //目标版本
+        versionCode 1 //版本号
+        versionName "1.0" //版本名
+    }
+    buildTypes {
+         //这里面可以配置debug和release版本的一些参数，比如混淆、签名配置等
+        release {
+            minifyEnabled false //是否混淆
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro' //混淆文件位置
+        }
+    }
+}
+
+dependencies {
+    //项目使用到的依赖库和jar包
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    testCompile 'junit:junit:4.12'
+}
+</code></pre>
+
+<h4>▶ 3 gradle-wrapper.properties 文件</h4>
+
+<p>gradle wrapper task利用gradle-wrapper.properties来下载指定的gradle</p>
+
+<h4>▶ 4 proguard-rules.pro 文件</h4>
+
+<p>Android Studio 默认自带的混淆文件，可以在这里配置一些混淆参数。当然也可以自定义一个混淆文件，需要在 module#build.gradle 指明其路径。下面贴出一些混淆的参数配置：</p>
+
+<pre><code>-optimizationpasses 5          # 指定代码的压缩级别
+-dontusemixedcaseclassnames   # 是否使用大小写混合
+-dontpreverify           # 混淆时是否做预校验
+-verbose                # 混淆时是否记录日志
+
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*  # 混淆时所采用的算法
+
+-keep public class * extends android.app.Activity      # 保持哪些类不被混淆
+-keep public class * extends android.app.Application   # 保持哪些类不被混淆
+-keep public class * extends android.app.Service       # 保持哪些类不被混淆
+-keep public class * extends android.content.BroadcastReceiver  # 保持哪些类不被混淆
+-keep public class * extends android.content.ContentProvider    # 保持哪些类不被混淆
+-keep public class * extends android.app.backup.BackupAgentHelper # 保持哪些类不被混淆
+-keep public class * extends android.preference.Preference        # 保持哪些类不被混淆
+-keep public class com.android.vending.licensing.ILicensingService    # 保持哪些类不被混淆
+
+-keepclasseswithmembernames class * {  # 保持 native 方法不被混淆
+    native &lt;methods&gt;;
+}
+-keepclasseswithmembers class * {   # 保持自定义控件类不被混淆
+    public &lt;init&gt;(android.content.Context, android.util.AttributeSet);
+}
+-keepclasseswithmembers class * {# 保持自定义控件类不被混淆
+    public &lt;init&gt;(android.content.Context, android.util.AttributeSet, int);
+}
+-keepclassmembers class * extends android.app.Activity { # 保持自定义控件类不被混淆   
+    public void *(android.view.View);
+}
+-keepclassmembers enum * {     # 保持枚举 enum 类不被混淆    
+    public static **[] values();    
+    public static ** valueOf(java.lang.String);
+}
+-keep class * implements android.os.Parcelable { # 保持 Parcelable 不被混淆  
+    public static final android.os.Parcelable$Creator *;
+}
+</code></pre>
+
+<h5>注：混淆的规则</h5>
+
+<p>反射用到的类不混淆；  JNI方法不混淆； AndroidMainfest中的类不混淆；  四大组件和Application的子类和Framework层下所有的类默认不会进行混淆；  Parcelable的子类和Creator静态成员变量不混淆，否则会产生android.os.BadParcelableException异常；  使用GSON、fastjson等框架时，所写的JSON对象类不混淆，否则无法将JSON解析成对应的对象；  使用第三方开源库或者引用其他第三方的SDK包时，需要在混淆文件中加入对应的混淆规则；有用到WEBView的JS调用也需要保证写的接口方法不混淆；</p>
+
+<h4>▶ 5 gradle.properties 文件</h4>
+
+<p>是一个供 build.gradle 使用的常量配置文件，可以在这里配置签名的keystore位置，密码，keyalias等。</p>
+
+<h4>▶ 6 settings.gradle 文件</h4>
+
+<p>这个文件是用来配置多模块的，比如你的项目有两个模块module-a,module-b,那么你就需要在这个文件中进行配置</p>
+
+<pre><code>include ':module-a',':module-b'
+</code></pre>
+
+<h4>▶ 7 local.properties 文件</h4>
+
+<p>里面存放的是各插件需要的本机相关的信息, 例如Android gradle插件可能需要 SDK路径, NDK路径, 别的插件需要的可能就是其他配置信息.
+还有存放敏感数据, 例如某些插件需要 用户名, 密码, api_key 等, 与隐私相关的数据.</p>
+
+<p>例如: 在插件开发的时候, 你需要将工程打包后, publish 到远程仓库的时候, 需要 帐号, 密码, 此时, 帐号, 密码, 一般就是存放在 local.properties 里面</p>
+
+<h5>注：local.properties 在git里面是要屏蔽掉的，local.properties 只对本地, 本机有效, 团队协作, 这个文件是不共享的.</h5>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Activity全屏模式下设置adjustResize模式失效，输入框会被软键盘挡到]]></title>
+    <link href="http://wentao1990.github.io/blog/2015/06/08/adjust/"/>
+    <updated>2015-06-08T23:00:52+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2015/06/08/adjust</id>
+    <content type="html"><![CDATA[<h3>下面先介绍下adjustUnspecified、adjustResize、adjustPan三种模式的区别</h3>
+
+<h5>1.adjustUnspecified ：</h5>
+
+<p>Activity在没有被指定是adjustResize模式还是adjustPan模式时，系统会根据该Activity窗口是否有滚动控件，自动的挑选这两个模式的一种。如果该Activity有滚动控件，该窗口则使用adjustResize模式，重新调整大小，通过滚动可以使窗口的所有内容在一个更小的区域全部展示出来。如果该Activity没有滚动控件，则采用adjustPan模式。</p>
+
+<h5>2.adjustResize：</h5>
+
+<p>Activity的主窗口总是调整大小，来为屏幕上的软键盘腾出空间。</p>
+
+<h5>3.adjustPan：</h5>
+
+<p>Activity的主窗口不会调整大小来为软键盘腾出空间。然而，窗口的内容自动的移动以便当前焦点永远不会被软键盘遮盖住，这样用户总是可以看到他们将要打字的内容。这通常看来是不令人满意的，因为用户可能需要关闭软键盘，才可以点击那些被软键盘遮住的控件。   <!--more--></p>
+
+<h4>根据以上的解释就可以很好的选择了，如果带背景图片的Activity为了防止图片变形，那么就只能选择adjustPan模式了。但是，不管选择哪种模式，在Activiy全屏下就是无效的。</h4>
+
+<p>这个问题出现了很早，至少在2009年以前就出现了，google的Android团队一直都没有解决。<a href="http://code.google.com/p/android/issues/detail?id=5497">http://code.google.com/p/android/issues/detail?id=5497</a>   ，在Android官方问题回馈帖，这个问题的代号为“5497” ，不过这个世界永远都不缺少大神，在此推荐这其中的一个解决方法，来自：stackoverflow.com，实测有效。</p>
+
+<p>首先：要在工程里引入AndroidBug5497Workaround类，代码如下：</p>
+
+<pre><code>public class AndroidBug5497Workaround {
+    public static void assistActivity (Activity activity) {
+        new AndroidBug5497Workaround(activity);
+    }
+
+    private View mChildOfContent;
+    private int usableHeightPrevious;
+    private FrameLayout.LayoutParams frameLayoutParams;
+
+    private AndroidBug5497Workaround(Activity activity) {
+        FrameLayout content = (FrameLayout) activity.findViewById(android.R.id.content);
+        mChildOfContent = content.getChildAt(0);
+        mChildOfContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            public void onGlobalLayout() {
+                possiblyResizeChildOfContent();
+            }
+        });
+        frameLayoutParams = (FrameLayout.LayoutParams) mChildOfContent.getLayoutParams();
+    }
+
+    private void possiblyResizeChildOfContent() {
+        int usableHeightNow = computeUsableHeight();
+        if (usableHeightNow != usableHeightPrevious) {
+            int usableHeightSansKeyboard = mChildOfContent.getRootView().getHeight();
+            int heightDifference = usableHeightSansKeyboard - usableHeightNow;
+            if (heightDifference &gt; (usableHeightSansKeyboard/4)) {
+                // keyboard probably just became visible
+                frameLayoutParams.height = usableHeightSansKeyboard - heightDifference+50;
+            } else {
+                // keyboard probably just became hidden
+                frameLayoutParams.height = usableHeightSansKeyboard;
+            }
+            mChildOfContent.requestLayout();
+            usableHeightPrevious = usableHeightNow;
+        }
+    }
+
+    private int computeUsableHeight() {
+        Rect r = new Rect();
+        mChildOfContent.getWindowVisibleDisplayFrame(r);
+        return (r.bottom - r.top);
+    }
+
+}
+</code></pre>
+
+<p>然后：在Activity的setContentView(R.layout)后面加上AndroidBug5497Workaround.assistActivity(this)即可，如下：</p>
+
+<pre><code>setContentView(R.layout.activity);
+//一定要在setContentView后面调用
+AndroidBug5497Workaround.assistActivity(this);
+</code></pre>
+
+<p>以上完美解决这个问题，感谢解决问题的大神。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Android应用安全开发之防范无意识的数据泄露]]></title>
+    <link href="http://wentao1990.github.io/blog/2015/05/19/androidDataLeak/"/>
+    <updated>2015-05-19T22:08:15+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2015/05/19/androidDataLeak</id>
+    <content type="html"><![CDATA[<p><strong>OWASP</strong>移动安全漏洞Top 10中第4个就是无意识的数据泄漏。当应用程序存储数据的位置本身是脆弱的时，就会造成无意识的数据泄漏。这些位置可能包括剪贴板，URL缓存，浏览器的Cookies，HTML5数据存储，分析数据等等。例如，一个用户在登录银行应用的时候已经把密码复制到了剪贴板，恶意应用程序通过访问用户剪贴板数据就可以获取密码了。</p>
+
+<h3>0x01 避免缓存网络数据</h3>
+
+<p>数据可以在用户无意识的情况下被各种工具捕获。开发人员经常忽视包括log/debug输出信息，Cookies，Web历史记录，Web缓存等的一些数据存储方式存在的安全隐患。例如，通常浏览器访问页面时，会在临时文件夹下保存页面的html，js，图片等等。当页面上包含敏感信息时，这些信息也会存储在临时文件中。这就造成了安全隐患。在移动设备上尽可能不要存储/缓存敏感数据。这是避免设备上缓存的数据泄漏的最好的方式。</p>
+
+<h5>开发建议</h5>
+
+<p>● 为了防止HTTP缓存，特别是HTTPS传输数据的缓存，开发人员应该配置Android不缓存网络数据。</p>
+
+<p>● 为了避免为任何Web过程(如注册)缓存URL历史记录和页面数据，我们应该在Web服务器上配置HTTP缓存头。HTTP协议1.1版中，规定了缓存的使用。其中，Cache-Control: no-store这个应答头可以满足我们的需要。Cache-Control:no-store要求浏览器必须不存储响应或者引起响应的请求的任何内容。对于Web应用程序，HTML表单输入可以通过设置autocomplete=off让浏览器不缓存值。避免缓存应该在应用程序使用后通过对设备数据的取证进行验证。    <!--more--></p>
+
+<p>● 如果你的应用程序通过WebView访问敏感数据，你可以使用 clearCache方法来删除任何存储在本地的文件。</p>
+
+<h3>0x02 Android:避免GUI对象缓存</h3>
+
+<p>由于多任务处理的原因，整个应用程序都可以驻留在内存中，所以Android应用程序界面也会驻留在内存中。发现或者盗取了设备的攻击者可以直接查看到仍然驻留在内存中的用户之前查看过的界面，并看到仍显示在GUI上的所以数据。银行应用程序就是一个例子，一个用户查看了交易记录，然后“退出”应用程序。攻击者通过直接启动交易视图activity可以看到以前的交易被显示出来。</p>
+
+<h5>开发建议</h5>
+
+<p>● 当用户注销登录的时候退出整个app。这虽然是违反android设计原则的，但是却更加安全，因为GUI界面被销毁、回收了。</p>
+
+<p>● 在每一个activity(界面)启动的时候检测用户是否处于登录状态，如果没有则跳转到登录界面。</p>
+
+<p>● 在用户离开(切换)应用界面或者注销登录时清除gui界面的数据</p>
+
+<h3>0x03 限制用户名缓存</h3>
+
+<p>如果缓存了用户名，在运行时，用户名会在任何类型的身份验证之前加载进内存，从而允许潜在的恶意进程截获用户名。</p>
+
+<h5>开发建议</h5>
+
+<p>很难做到既便利地为用户存储用户名，同时又能避免不安全的存储或潜在的运行时拦截造成的信息泄漏。尽管用户名不像密码那样敏感，但它属于隐私数据应该得到保护。一个安全性较高的缓存用户名的可行的方法就是存储掩蔽的用户名，而不是真实的用户名，如在身份认证的时候用hash值代替用户名。这个hash值可以包含一个唯一的设备token，这个设备token是在用户注册时获取的。使用hash和设备token的好处就是真实的用户名并没有存储在本地，也不会在加载进内存后得不到保护，将这个值复制到其它设备或者在web上使用都会因获取到的设备token值不同而不能使用。攻击者必须挖掘更多的信息(明文帐号、设备特征码、密码)才能成功的窃取用户凭证。</p>
+
+<h3>0x04 留意键盘缓存</h3>
+
+<p>键盘缓存是意外的数据泄漏问题之一。安卓键盘包含一个用户字典，如果一个用户在文本框输入一些文本，输入法就可能通过用户字典缓存一些由用户输入的数据，用于以后对用户的输入进行自动纠错。而此用户字典不需要什么特殊权限就在任何应用中使用。恶意软件可以通过获取键盘缓存提取这些数据。缓存的内容超出了应用程序的管理权限,所以应用程序不能从缓存中删除数据。</p>
+
+<p>攻击示例：<a href="https://www.youtube.com/watch?v=o6SlUy5mmBQ">https://www.youtube.com/watch?v=o6SlUy5mmBQ</a></p>
+
+<h5>开发建议</h5>
+
+<p>● 对于任何敏感信息(不仅对密码字段)禁用自动纠错的功能。因为键盘缓存的敏感信息可能是可恢复的。</p>
+
+<p>● 为了提高安全性，可以考虑实现自绘键盘，它可以禁用缓存，并提供其它的保护功能，如键盘监听保护。</p>
+
+<h3>0x05 复制和粘贴</h3>
+
+<p>无论数据源是否加密，存在于剪贴板中的敏感数据都是可以被任意修改的。如果用户复制的是明文敏感数据，那么其它应用程序通过访问剪贴板就可以获取到该明文敏感数据了。</p>
+
+<h5>开发建议：</h5>
+
+<p>在适当的情况下，禁用复制/粘贴处理敏感数据。消除复制选项可以减少数据暴露的风险。在安卓系统上，可以通过任何应用程序访问剪贴板，因此，如果需要共享敏感数据，建议使用content provider。</p>
+
+<h3>0x06 敏感文件删除</h3>
+
+<p>Android通过调用file.delete是不能安全地把文件抹去。只要文件不被覆盖就可以被进行恢复。Android Data Recovery就具备这个功能。</p>
+
+<h6>开发建议</h6>
+
+<p>开发者应该假定写入设备的任何数据都可以被恢复。因此，在某些情况下，加密可以提供额外的一层保护。
+另外一种可能方法是删除一个文件，然后创建一个大文件覆盖所有的可用空间，迫使NAND闪存擦除所有未分配空间也是可能的。这种技术的缺点是损耗NAND闪存，导致应用和整个设备的响应速度变慢，显著增加功耗。对于大多数应用不建议使用此方法。理想的解决办法是尽可能不要在设备上存储敏感信息。</p>
+
+<h3>0x07 屏幕截取和录制防范</h3>
+
+<p>Android 5.0新增的屏幕录制接口，无需特殊权限，使用如下系统API即可实现屏幕录制功能：</p>
+
+<p>发起录制请求后，系统弹出如下提示框请求用户确认：</p>
+
+<p><img src="http://i.imgur.com/C61Xhg5.jpg" alt="" /></p>
+
+<p>在上图中，“AZ Screen Recorder”为需要录制屏幕的软件名称，“将开始截取您的屏幕上显示的所有内容”是系统自带的提示信息，不可更改或删除。用户点击“立即开始”便开始录制屏幕，录制完成后在指定的目录生成mp4文件。
+但其中存在着漏洞攻击者只需要给恶意程序构造一段特殊的，读起来很“合理的”应用程序名，就可以将该提示框变成一个UI陷阱，使其失去原有的“录屏授权”提示功能，并使恶意程序在用户不知情的情况下录制用户手机屏幕。</p>
+
+<h5>开发建议</h5>
+
+<p>在涉及用户隐私的Acitivity中(例如登录，支付等其他输入敏感信息的界面中)增加WindowManager.LayoutParams.FLAG_SECURE属性，该属性能防止屏幕被截图和录制。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[<译>Android-高性能编码优化]]></title>
+    <link href="http://wentao1990.github.io/blog/2015/04/14/android-performs2/"/>
+    <updated>2015-04-14T20:16:21+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2015/04/14/android-performs2</id>
+    <content type="html"><![CDATA[<p>这里先事先提醒大家一句，本篇文章中讨论的编码优化技巧都是属于一些“微优化”，也就是说即使我们都按照本篇文章的技巧来优化代码，在性能方面也是看不出有什么显著的提升的。使用合适的算法与数据结构将永远是你优化程序性能的最主要手段，但本篇文章中不会讨论这一块的内容。因此，这里我们即将学习的并不是什么灵丹妙药，而是大家应该把这些技巧当作一种好的编码规范，我们在平时写代码时就可以潜移默化地使用这些编码规范，不仅能够在微观层面提升程序一定的性能，也可以让我们的代码变得更加专业，下面就让我们来一起学习一下这些技巧。</p>
+
+<h3>避免创建不必要的对象</h3>
+
+<p>创建对象从来都不应该是一件随意的事情，因为创建一个对象就意味着垃圾回收器需要回收一个对象，而这两步操作都是需要消耗时间的。虽说创建一个对象的代价确实非常小，并且Android 2.3版本当中又增加了并发垃圾回收器机制，这让GC操作时的停顿时间也变得难以察觉，但是这些理由都不足以让我们可以肆意地创建对象，需要创建的对象我们自然要创建，但是不必要的对象我们就应该尽量避免创建。</p>
+
+<h4>下面来看一些我们可以避免创建对象的场景：</h4>
+
+<h5>• 如果我们有一个需要拼接的字符串，那么可以优先考虑使用StringBuffer或者StringBuilder来进行拼接，而不是加号连接符，因为使用加号连接符会创建多余的对象，拼接的字符串越长，加号连接符的性能越低。</h5>
+
+<h5>• 在没有特殊原因的情况下，尽量使用基本数据类来代替封装数据类型，int比Integer要更加高效，其它数据类型也是一样。</h5>
+
+<h5>• 当一个方法的返回值是String的时候，通常可以去判断一下这个String的作用是什么，如果我们明确地知道调用方会将这个返回的String再进行拼接操作的话，可以考虑返回一个StringBuffer对象来代替，因为这样可以将一个对象的引用进行返回，而返回String的话就是创建了一个短生命周期的临时对象。</h5>
+
+<h5>• 正如前面所说，基本数据类型要优于对象数据类型，类似地，基本数据类型的数组也要优于对象数据类型的数组。另外，两个平行的数组要比一个封装好的对象数组更加高效，举个例子，Foo[]和Bar[]这样的两个数组，使用起来要比Custom(Foo,Bar)[]这样的一个数组高效得多。</h5>
+
+<p>当然上面所说的只是一些代表性的例子，我们所要遵守的一个基本原则就是尽可能地少创建临时对象，越少的对象意味着越少的GC操作，同时也就意味着越好的程序性能和用户体验。</p>
+
+<p>静态优于抽象</p>
+
+<p>如果你并不需要访问一个对象中的某些字段，只是想调用它的某个方法来去完成一项通用的功能，那么可以将这个方法设置成静态方法，这会让调用的速度提升15%-20%，同时也不用为了调用这个方法而去专门创建对象了，这样还满足了上面的一条原则。另外这也是一种好的编程习惯，因为我们可以放心地调用静态方法，而不用担心调用这个方法后是否会改变对象的状态（静态方法内无法访问非静态字段）。</p>
+
+<p>对常量使用static final修饰符</p>
+
+<p>我们先来看一下在一个类的最顶部定义如下代码：</p>
+
+<pre><code>static int intVal = 42;  
+static String strVal = "Hello, world!";  
+</code></pre>
+
+<p>编译器会为上述代码生成一个初始化方法，称为<clinit>方法，该方法会在定义类第一次被使用的时候调用。然后这个方法会将42的值赋值到intVal当中，并从字符串常量表中提取一个引用赋值到strVal上。当赋值完成后，我们就可以通过字段搜寻的方式来去访问具体的值了。</p>
+
+<p>但是我们还可以通过final关键字来对上述代码进行优化：</p>
+
+<pre><code>static final int intVal = 42;  
+static final String strVal = "Hello, world!";  
+</code></pre>
+
+<p>经过这样修改之后，定义类就不再需要一个<clinit>方法了，因为所有的常量都会在dex文件的初始化器当中进行初始化。当我们调用intVal时可以直接指向42的值，而调用strVal时会用一种相对轻量级的字符串常量方式，而不是字段搜寻的方式。</p>
+
+<p>另外需要大家注意的是，这种优化方式只对基本数据类型以及String类型的常量有效，对于其它数据类型的常量是无效的。不过，对于任何常量都是用static final的关键字来进行声明仍然是一种非常好的习惯。</p>
+
+<h3>使用增强型for循环语法</h3>
+
+<p>增强型for循环（也被称为for-each循环）可以用于去遍历实现Iterable接口的集合以及数组，这是jdk 1.5中新增的一种循环模式。当然除了这种新增的循环模式之外，我们仍然还可以使用原有的普通循环模式，只不过它们之间是有效率区别的，我们来看下面一段代码：</p>
+
+<pre><code>static class Counter {  
+    int mCount;  
+}  
+
+Counter[] mArray = ...  
+
+public void zero() {  
+    int sum = 0;  
+    for (int i = 0; i &lt; mArray.length; ++i) {  
+        sum += mArray[i].mCount;  
+    }  
+}  
+
+public void one() {  
+    int sum = 0;  
+    Counter[] localArray = mArray;  
+    int len = localArray.length;  
+    for (int i = 0; i &lt; len; ++i) {  
+        sum += localArray[i].mCount;  
+    }  
+}  
+
+public void two() {  
+    int sum = 0;  
+    for (Counter a : mArray) {  
+        sum += a.mCount;  
+    }  
+}  
+</code></pre>
+
+<p>可以看到，上述代码当中我们使用了三种不同的循环方式来对mArray中的所有元素进行求和。其中zero()方法是最慢的一种，因为它是把mArray.length写在循环当中的，也就是说每循环一次都需要重新计算一次mArray的长度。而one()方法则相对快得多，因为它使用了一个局部变量len来记录数组的长度，这样就省去了每次循环时字段搜寻的时间。two()方法在没有JIT（Just In Time Compiler）的设备上是运行最快的，而在有JIT的设备上运行效率和one()方法不相上下，唯一需要注意的是这种写法需要JDK 1.5之后才支持。</p>
+
+<p>但是这里要跟大家提一个特殊情况，对于ArrayList这种集合，自己手写的循环要比增强型for循环更快，而其他的集合就没有这种情况。因此，对于我们来说，默认情况下可以都使用增强型for循环，而遍历ArrayList时就还是使用传统的循环方式吧。</p>
+
+<h3>多使用系统封装好的API</h3>
+
+<p>Java语言当中其实给我们提供了非常丰富的API接口，我们在编写程序时如果可以使用系统提供的API就应该尽量使用，系统提供的API完成不了我们需要的功能时才应该自己去写，因为使用系统的API在很多时候比我们自己写的代码要快得多，它们的很多功能都是通过底层的汇编模式执行的。</p>
+
+<p>比如说String类当中提供的好多API都是拥有极高的效率的，像indexOf()方法和一些其它相关的API，虽说我们通过自己编写算法也能够完成同样的功能，但是效率方面会和这些方法差的比较远。这里举个例子，如果我们要实现一个数组拷贝的功能，使用循环的方式来对数组中的每一个元素一一进行赋值当然是可行的，但是如果我们直接使用系统中提供的System.arraycopy()方法将会让执行效率快9倍以上。</p>
+
+<h3>避免在内部调用Getters/Setters方法</h3>
+
+<p>我们平时写代码时都被告知，一定要使用面向对象的思维去写代码，而面向对象的三大特性我们都知道，封装、多态和继承。其中封装的基本思想就是不要把类内部的字段暴漏给外部，而是提供特定的方法来允许外部操作相应类的内部字段，从而在Java语言当中就出现了Getters/Setters这种封装技巧。</p>
+
+<p>然而在Android上这个技巧就不再是那么的受推崇了，因为字段搜寻要比方法调用效率高得多，我们直接访问某个字段可能要比通过getters方法来去访问这个字段快3到7倍。不过我们肯定不能仅仅因为效率的原因就将封装这个技巧给抛弃了，编写代码还是要按照面向对象思维的，但是我们可以在能优化的地方进行优化，比如说避免在内部调用getters/setters方法。</p>
+
+<p>那什么叫做在内部调用getters/setters方法呢？这里我举一个非常简单的例子：</p>
+
+<pre><code>public class Calculate {  
+
+    private int one = 1;  
+
+    private int two = 2;  
+
+    public int getOne() {  
+        return one;  
+    }  
+
+    public int getTwo() {  
+        return two;  
+    }  
+
+    public int getSum() {  
+        return getOne() + getTwo();  
+    }  
+}  
+</code></pre>
+
+<p>可以看到，上面是一个Calculate类，这个类的功能非常简单，先将one和two这两个字段进行了封装，然后提供了getOne()方法获取one字段的值，提供了getTwo()方法获取two字段的值，还提供了一个getSum()方法用于获取总和的值。</p>
+
+<p>这里我们注意到，getSum()方法当中的算法就是将one和two的值相加进行返回，但是它获取one和two的值的方式也是通过getters方法进行获取的，其实这是一种完全没有必要的方式，因为getSum()方法本身就是Calculate类内部的方法，它是可以直接访问到Calculate类中的封装字段的，因此这种写法在Android上是不推崇的，我们可以进行如下修改：</p>
+
+<pre><code>public class Calculate {  
+
+    private int one = 1;  
+
+    private int two = 2;  
+
+    ......  
+
+    public int getSum() {  
+        return one + two;  
+    }  
+}  
+</code></pre>
+
+<p>改成这种写法之后，我们就避免了在内部调用getters/setters方法，而对于外部而言Calculate类仍然是具有很好的封装性的。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[42种常见的浏览器兼容性问题]]></title>
+    <link href="http://wentao1990.github.io/blog/2015/04/13/web-browser/"/>
+    <updated>2015-04-13T19:33:34+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2015/04/13/web-browser</id>
+    <content type="html"><![CDATA[<h2>JavaScript</h2>
+
+<h3>1.HTML对象获取问题</h3>
+
+<p>FireFox：document.getElementById(“idName”);
+ie:document.idname或者document.getElementById(“idName”).
+解决办法：统一使用document.getElementById(“idName”);<!--more--></p>
+
+<h3>2.const问题</h3>
+
+<p>说明:Firefox下,可以使用const关键字或var关键字来定义常量;
+IE下,只能使用var关键字来定义常量.
+解决方法：统一使用var关键字来定义常量.</p>
+
+<h3>3.event.x与event.y问题</h3>
+
+<p>说明:IE下,event对象有x,y属性,但是没有pageX,pageY属性;
+Firefox下,event对象有pageX,pageY属性,但是没有x,y属性.
+解决方法：使用mX(mX = event.x ? event.x : event.pageX;)来代替IE下的event.x或者Firefox下的event.pageX. <!--more--></p>
+
+<h3>4.window.location.href问题</h3>
+
+<p>说明:IE或者Firefox2.0.x下,可以使用window.location或window.location.href;
+Firefox1.5.x下,只能使用window.location.
+解决方法：使用window.location来代替window.location.href.</p>
+
+<h3>5.frame问题</h3>
+
+<p>以下面的frame为例：
+<frame id=”frameId” name="”frameName”" src="”xxx.html”" /></p>
+
+<h4>(1)访问frame对象:</h4>
+
+<p>IE:使用window.frameId或者window.frameName来访问这个frame对象.frameId和frameName可以同名。
+Firefox:只能使用window.frameName来访问这个frame对象.
+另外，在IE和Firefox中都可以使用window.document.getElementById(“frameId”)来访问这个frame对象.</p>
+
+<h4>(2)切换frame内容:</h4>
+
+<p>在 IE和Firefox中都可以使用window.document.getElementById(“testFrame”).src = “xxx.html”或window.frameName.location = “xxx.html”来切换frame的内容.
+如果需要将frame中的参数传回父窗口(注意不是opener,而是parent frame)，可以在frame中使用parent来访问父窗口。例如：parent.document.form1.filename.value=”Aqing”;</p>
+
+<h3>6.模态和非模态窗口问题</h3>
+
+<p>说明:IE下,可以通过showModalDialog和showModelessDialog打开模态和非模态窗口;Firefox下则不能.
+解决方法：直接使用window.open(pageURL,name,parameters)方式打开新窗口。
+如果需要将子窗口中的参数传递回父窗口,可以在子窗口中使用window.opener来访问父窗口.
+例如：var parWin = window.opener; parWin.document.getElementById(“Aqing”).value = “Aqing”;</p>
+
+<h3>7.firefox与IE的父元素(parentElement)的区别</h3>
+
+<p>IE：obj.parentElement
+firefox：obj.parentNode
+解决方法: 因为firefox与IE都支持DOM,因此使用obj.parentNode是不错选择.</p>
+
+<h3>8.document.formName.item(”itemName”) 问题</h3>
+
+<p>问题说明：IE下，可以使用document.formName.item(”itemName”) 或document.formName.elements [“elementName”];Firefox 下，只能使用document.formName.elements[“elementName”]。
+解决方法：统一使用document.formName.elements[“elementName”]。</p>
+
+<h3>9.集合类对象问题</h3>
+
+<p>问题说明：IE下，可以使用 () 或 [] 获取集合类对象;Firefox下，只能使用 [ ]获取集合类对象。
+解决方法：统一使用 [] 获取集合类对象。</p>
+
+<h3>10.自定义属性问题</h3>
+
+<p>问题说明：IE下，可以使用获取常规属性的方法来获取自定义属性，也可以使用getAttribute() 获取自定义属性;Firefox下，只能使用getAttribute() 获取自定义属性。
+解决方法：统一通过getAttribute() 获取自定义属性。
+解决方法：统一使用 [] 获取集合类对象。</p>
+
+<h3>11.input.type属性问题</h3>
+
+<p>问题说明：IE下input.type属性为只读;但是Firefox下input.type属性为读写。
+解决办法：不修改input.type属性。如果必须要修改，可以先隐藏原来的input，然后在同样的位置再插入一个新的input元素。
+解决方法：统一使用 [] 获取集合类对象。</p>
+
+<h3>12.event.srcElement问题</h3>
+
+<p>问题说明：IE下，even对象有srcElement属性，但是没有target属性;Firefox下，even对象有target属性，但是没有srcElement属性。
+解决方法：使用srcObj = event.srcElement ?event.srcElement : event.target;
+如果考虑第8条问题，就改用myEvent代替event即可。
+解决方法：统一使用 [] 获取集合类对象。</p>
+
+<h3>13.body载入问题</h3>
+
+<p>问题说明：Firefox的body对象在body标签没有被浏览器完全读入之前就存在;而IE的body对象则必须在body标签被浏览器完全读入之后才存在。
+[注] 这个问题尚未实际验证，待验证后再来修改。
+[注] 经验证，IE6、Opera9以及FireFox2中不存在上述问题，单纯的JS脚本可以访问在脚本之前已经载入的所有对象和元素，即使这个元素还没有载入完成。
+解决方法：统一使用 [] 获取集合类对象。</p>
+
+<h3>14.事件委托方法</h3>
+
+<p>问题说明：IE下，使用document.body.onload = inject; 其中function inject()在这之前已被实现;在Firefox下，使用document.body.onload = inject();</p>
+
+<h4>解决方法：统一使用document.body.onload=new Function(’inject()’); 或document.body.onload = function(){/<em> 这里是代码 </em>/}[注意] Function和function的区别。</h4>
+
+<h3>15.Table操作问题</h3>
+
+<p>问题说明：ie、firefox以及其它浏览器对于 table 标签的操作都各不相同，在ie中不允许对table和tr的innerHTML赋值，使用js增加一个tr时，使用appendChild方法也不管用。
+解决方法：//向table追加一个空行：
+var row = otable.insertRow(-1);var cell = document.createElement(“td”);cell.innerHTML = “”;cell.className = “XXXX”;row.appendChild(cell);[注] 由于俺很少使用JS直接操作表格，这个问题没有遇见过。建议使用JS框架集来操作table，如JQuery。
+解决方法：统一使用 [] 获取集合类对象。</p>
+
+<h3>16.对象宽高赋值问题</h3>
+
+<p>问题说明：FireFox中类似obj.style.height = imgObj.height的语句无效。
+Ø CSS
+解决方法：统一使用 [] 获取集合类对象。</p>
+
+<h4>1.cursor:hand VS cursor:pointer</h4>
+
+<p>firefox不支持hand，但ie支持pointer
+解决方法: 统一使用pointer
+解决方法：统一使用 [] 获取集合类对象。</p>
+
+<h4>2.innerText在IE中能正常工作，但在FireFox中却不行.</h4>
+
+<p>需用textContent。
+解决方法:
+if(navigator.appName.indexOf(“Explorer”) > -1){
+document.getElementById(‘element’).innerText = “my text”;
+}
+else{
+document.getElementById(‘element’).textContent = “my text”;
+}</p>
+
+<h4>3.CSS透明</h4>
+
+<p>IE：filter:progid:DXImageTransform.Microsoft.Alpha(style=0,opacity=60)。
+FF：opacity:0.6。</p>
+
+<h4>4.css中的width和padding</h4>
+
+<p>在IE7和FF中width宽度不包括padding，在Ie6中包括padding.</p>
+
+<h4>5.FF和IEBOX模型解释不一致导致相差2px</h4>
+
+<p>box.style{width:100;border 1px;}
+ie理解为box.width = 100
+ff理解为box.width = 100 + 1*2 = 102 //加上边框2px
+解决方法：div{margin:30px!important;margin:28px;}
+注意这两个margin的顺序一定不能写反， IE不能识别!important这个属性，但别的浏览器可以识别。所以在IE下其实解释成这样：div{maring:30px;margin:28px}
+重复定义的话按照最后一个来执行，所以不可以只写margin:XXpx!important;</p>
+
+<h4>6.IE5 和IE6的BOX解释不一致</h4>
+
+<p>IE5下div{width:300px;margin:0 10px 0 10px;}
+div 的宽度会被解释为300px-10px(右填充)-10px(左填充)，最终div的宽度为280px，而在IE6和其他浏览器上宽度则是以 300px+10px(右填充)+10px(左填充)=320px来计算的。这时我们可以做如下修改 div{width:300px!important;width /**/:340px;margin:0 10px 0 10px}</p>
+
+<h4>7.ul和ol列表缩进问题</h4>
+
+<p>消除ul、ol等列表的缩进时，样式应写成：list-style:none;margin:0px;padding:0px;
+经验证，在IE中，设置margin:0px可以去除列表的上下左右缩进、空白以及列表编号或圆点，设置padding对样式没有影响;在 Firefox 中，设置margin:0px仅仅可以去除上下的空白，设置padding:0px后仅仅可以去掉左右缩进，还必须设置list- style:none才能去除列表编号或圆点。也就是说，在IE中仅仅设置margin:0px即可达到最终效果，而在Firefox中必须同时设置margin:0px、 padding:0px以及list-style:none三项才能达到最终效果。</p>
+
+<h4>8.元素水平居中问题</h4>
+
+<p>FF: margin:0 auto;
+IE: 父级{ text-align:center; }</p>
+
+<h4>9.Div的垂直居中问题</h4>
+
+<p>vertical-align:middle; 将行距增加到和整个DIV一样高：line-height:200px; 然后插入文字，就垂直居中了。缺点是要控制内容不要换行。</p>
+
+<h4>10.margin加倍的问题</h4>
+
+<p>设置为float的div在ie下设置的margin会加倍。这是一个ie6都存在的bug。解决方案是在这个div里面加上display:inline;
+例如：
+相应的css为#imfloat{
+float:left;
+margin:5px;/<em>IE下理解为10px</em>/
+display:inline;/<em>IE下再理解为5px</em>/}
+解决方法：统一使用 [] 获取集合类对象。</p>
+
+<h4>11.IE与宽度和高度的问题</h4>
+
+<p>IE不认得min-这个定义，但实际上它把正常的width和height当作有min的情况来使。这样问题就大了，如果只用宽度和高度，正常的浏览器里这两个值就不会变，如果只用min-width和min-height的话，IE下面根本等于没有设置宽度和高度。
+比如要设置背景图片，这个宽度是比较重要的。要解决这个问题，可以这样：
+#box{ width: 80px; height: 35px;}html>body #box{ width: auto; height: auto; min-width: 80px; min-height: 35px;}</p>
+
+<h4>12.页面的最小宽度</h4>
+
+<p>如上一个问题，IE不识别min，要实现最小宽度，可用下面的方法：
+#container{ min-width: 600px; width:expression(document.body.clientWidth&lt; 600? “600px”: “auto” );}
+第一个min-width是正常的;但第2行的width使用了Javascript，这只有IE才认得，这也会让你的HTML文档不太正规。它实际上通过Javascript的判断来实现最小宽度。</p>
+
+<h4>13.DIV浮动IE文本产生3象素的bug</h4>
+
+<p>左边对象浮动，右边采用外补丁的左边距来定位，右边对象内的文本会离左边有3px的间距.
+#box{ float:left; width:800px;}
+#left{ float:left; width:50%;}
+#right{ width:50%;}
+*html #left{ margin-right:-3px; //这句是关键}</p>
+
+<h4>14.IE捉迷藏的问题</h4>
+
+<p>当div应用复杂的时候每个栏中又有一些链接，DIV等这个时候容易发生捉迷藏的问题。
+有些内容显示不出来，当鼠标选择这个区域是发现内容确实在页面。
+解决办法：对#layout使用line-height属性或者给#layout使用固定高和宽。页面结构尽量简单。</p>
+
+<h4>15.float的div闭合;清除浮动;自适应高度</h4>
+
+<h5>① 例如：</h5>
+
+<p>这里的NOTfloatC并不希望继续平移，而是希望往下排。(其中floatA、floatB的属性已经设置为float:left;)
+这段代码在IE中毫无问题，问题出在FF。原因是NOTfloatC并非float标签，必须将float标签闭合。在
+之间加上
+这个div一定要注意位置，而且必须与两个具有float属性的div同级，之间不能存在嵌套关系，否则会产生异常。并且将clear这种样式定义为为如下即可：.clear{clear:both;}</p>
+
+<h5>②作为外部 wrapper 的 div 不要定死高度,为了让高度能自适应，要在wrapper里面加上overflow:hidden; 当包含float的box的时候，高度自适应在IE下无效，这时候应该触发IE的layout私有属性(万恶的IE啊!)用zoom:1;可以做到，这样就达到了兼容。</h5>
+
+<p>例如某一个wrapper如下定义：
+.colwrapper{overflow:hidden; zoom:1; margin:5px auto;}</p>
+
+<h5>③对于排版,我们用得最多的css描述可能就是float:left.有的时候我们需要在n栏的float div后面做一个统一的背景,譬如:</h5>
+
+<p>比如我们要将page的背景设置成蓝色,以达到所有三栏的背景颜色是蓝色的目的,但是我们会发现随着left center right的向下拉长,而page居然保存高度不变,问题来了,原因在于page不是float属性,而我们的page由于要居中,不能设置成float,所以我们应该这样解决：
+再嵌入一个float left而宽度是100%的DIV解决之。</p>
+
+<h5>④万能float 闭合(非常重要!)</h5>
+
+<p>关于 clear float 的原理可参见 [How To Clear Floats Without Structural Markup],将以下代码加入Global CSS 中,给需要闭合的div加上class=”clearfix” 即可,屡试不爽。
+/<em> Clear Fix </em>/
+.clearfix:after { content:”.”; display:block; height:0; clear:both; visibility:hidden; }
+.clearfix { display:inline-block; }
+/<em> Hide from IE Mac </em>/
+.clearfix {display:block;}
+/<em> End hide from IE Mac </em>/
+/<em> end of clearfix </em>/
+或者这样设置：.hackbox{ display:table; //将对象作为块元素级的表格显示}</p>
+
+<h4>16.高度不适应</h4>
+
+<p>高度不适应是当内层对象的高度发生变化时外层高度不能自动进行调节，特别是当内层对象使用margin 或padding时。
+例：
+#box {background-color:#eee; }
+#box p {margin-top: 20px;margin-bottom: 20px; text-align:center; }
+p对象中的内容
+解决技巧：在P对象上下各加2个空的div对象CSS代码{height:0px;overflow:hidden;}或者为DIV加上border属性。</p>
+
+<h4>17.IE6下图片下有空隙产生</h4>
+
+<p>解决这个BUG的技巧有很多,可以是改变html的排版,或者设置img为display:block或者设置vertical-align属性为vertical-align:top/bottom/middle/text-bottom 都可以解决.</p>
+
+<h4>18.对齐文本与文本输入框</h4>
+
+<p>加上vertical-align:middle;
+经验证，在IE下任一版本都不适用，而ff、opera、safari、chrome均OK!</p>
+
+<h4>19.LI中内容超过长度后以省略号显示</h4>
+
+<p>此技巧适用与IE、Opera、safari、chrom浏览器，FF暂不支持。</p>
+
+<h4>20.为什么web标准中IE无法设置滚动条颜色了</h4>
+
+<p>解决办法是将body换成html</p>
+
+<h4>21.为什么无法定义1px左右高度的容器</h4>
+
+<p>IE6下这个问题是因为默认的行高造成的,解决的技巧也有很多：
+例如:overflow:hidden　 zoom:0.08 　 line-height:1px</p>
+
+<h4>22.怎么样才能让层显示在FLASH之上呢</h4>
+
+<p>解决的办法是给FLASH设置透明</p>
+
+<h4>23.链接(a标签)的边框与背景</h4>
+
+<p>a链接加边框和背景色，需设置 display: block, 同时设置 float: left 保证不换行。参照menubar, 给 a 和menubar设置高度是为了避免底边显示错位, 若不设 height, 可以在menubar中插入一个空格。</p>
+
+<h4>24.超链接访问过后hover样式就不出现的问题</h4>
+
+<p>被点击访问过的超链接样式不在具有hover和active了,很多人应该都遇到过这个问题,解决技巧是改变CSS属性的排列顺序: L-V-H-A
+Code:</p>
+
+<h4>25.FORM标签</h4>
+
+<p>这个标签在IE中,将会自动margin一些边距,而在FF中margin则是0,因此,如果想显示一致,所以最好在css中指定margin和 padding,针对上面两个问题,我的css中一般首先都使用这样的样式ul,form{margin:0;padding:0;}。</p>
+
+<h4>26.属性选择器(这个不能算是兼容,是隐藏css的一个bug)</h4>
+
+<p>p[id]{}div[id]{}
+这个对于IE6.0和IE6.0以下的版本都隐藏,FF和OPera作用.属性选择器和子选择器还是有区别的,子选择器的范围从形式来说缩小了,属性选择器的范围比较大,如p[id]中,所有p标签中有id的都是同样式的.</p>
+
+<h4>27.为什么FF下文本无法撑开容器的高度</h4>
+
+<p>标准浏览器中固定高度值的容器是不会象IE6里那样被撑开的,那我又想固定高度,又想能被撑开需要怎样设置呢?办法就是去掉height设置min-height:200px; 这里为了照顾不认识min-height的IE6 可以这样定义:
+{
+height:auto!important;
+height:200px;
+min-height:200px;
+}</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[仿支付宝&微信支付密码界面]]></title>
+    <link href="http://wentao1990.github.io/blog/2015/03/28/customPay/"/>
+    <updated>2015-03-28T22:52:26+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2015/03/28/customPay</id>
+    <content type="html"><![CDATA[<h4>这篇文章主要介绍下支付宝和微信支付密码样式实现。如下图：</h4>
+
+<p><img src="http://i.imgur.com/83WfVFz.png" alt="" /></p>
+
+<p>1：绘制一个完整的界面，如下图：</p>
+
+<p><img src="http://i.imgur.com/MqF5j8Y.png" alt="" /></p>
+
+<p>(这个界面可以根据自己的需要自定义）</p>
+
+<p>代码：</p>
+
+<p>xml部分就不粘贴了，这里主要阐述的是逻辑代码。  <!--more--></p>
+
+<pre><code>/**
+ * 自定义支付密码显示view
+ * Author：knight
+ * QQ：394558536
+ * Created by Administrator on 2015/3/24.
+ */
+public class PayPasswordView implements View.OnClickListener, View.OnLongClickListener {
+    private TextView box1, box2, box3, box4, box5, box6;
+    private ArrayList&lt;String&gt; mList = new ArrayList&lt;String&gt;();
+    private OnPayListener listener;
+    private View mView;
+    private Context mContext;
+
+    public PayPasswordView(Context mContext, OnPayListener listener) {
+        getDecorView(mContext, listener);
+    }
+
+    public static PayPasswordView getInstance( Context mContext, OnPayListener listener) {
+        return new PayPasswordView(mContext, listener);
+    }
+
+    public void getDecorView( Context mContext, OnPayListener listener) {
+        this.listener = listener;
+        this.mContext = mContext;
+        mView = LayoutInflater.from(mContext).inflate(R.layout.item_paypassword, null);
+        //初始化控件
+        ......
+    }
+
+    /**
+     *处理按键点击事件
+     */
+    @Override
+    public void onClick(View view) {
+        //这里不能使用switch()...case语句
+        if (view.getId() == R.id.pay_keyboard_del) {
+            parseActionType(KeyboardEnum.del);
+        } else if (view.getId() == R.id.pay_keyboard_zero) {
+            parseActionType(KeyboardEnum.zero);
+        } else if (view.getId() == R.id.pay_keyboard_one) {
+            parseActionType(KeyboardEnum.one);
+        } else if (view.getId() == R.id.pay_keyboard_two) {
+            parseActionType(KeyboardEnum.two);
+        } else if (view.getId() == R.id.pay_keyboard_three) {
+            parseActionType(KeyboardEnum.three);
+        } else if (view.getId() == R.id.pay_keyboard_four) {
+            parseActionType(KeyboardEnum.four);
+        } else if (view.getId() == R.id.pay_keyboard_five) {
+            parseActionType(KeyboardEnum.five);
+        } else if (view.getId() == R.id.pay_keyboard_sex) {
+            parseActionType(KeyboardEnum.sex);
+        } else if (view.getId() == R.id.pay_keyboard_seven) {
+            parseActionType(KeyboardEnum.seven);
+        } else if (view.getId() == R.id.pay_keyboard_eight) {
+            parseActionType(KeyboardEnum.eight);
+        } else if (view.getId() == R.id.pay_keyboard_nine) {
+            parseActionType(KeyboardEnum.nine);
+        }else if(view.getId()==R.id.pay_cancel){
+            parseActionType(KeyboardEnum.cancel);
+        } else if(view.getId()==R.id.pay_forget_pw){
+            parseActionType(KeyboardEnum.forget);
+        }
+
+
+    }
+
+    /**
+     *长按删除键
+     * @param view
+     */
+    @Override
+    public boolean onLongClick(View view) {
+        if (view.getId() == R.id.pay_keyboard_del)
+            parseActionType(KeyboardEnum.longdel);
+        return false;
+    }
+
+    /**
+     * 功能事件处理
+     * @param type
+     */
+
+    private void parseActionType(KeyboardEnum type) {
+        if (type.getType() == KeyboardEnum.ActionEnum.add) {//输入
+            if (mList.size() &lt; 6) {
+                mList.add(type.getValue());
+                updateUi();
+            }
+        } else if (type.getType() == KeyboardEnum.ActionEnum.delete) {//删除
+            if (mList.size() &gt; 0) {
+                mList.remove(mList.get(mList.size() - 1));
+                updateUi();
+            }
+        } else if (type.getType() == KeyboardEnum.ActionEnum.cancel) {//取消
+            listener.onCancelPay();
+        } else if (type.getType() == KeyboardEnum.ActionEnum.sure) {//确定（当输入6位数时触发）
+            if (mList.size() &lt; 6) {
+                Toast.makeText(mContext, "支付密码必须6位", Toast.LENGTH_SHORT).show();
+            } else {
+                String payValue = "";
+                for (int i = 0; i &lt; mList.size(); i++) {
+                    payValue += mList.get(i);
+                }
+                listener.onSurePay(payValue);
+            }
+        } else if (type.getType() == KeyboardEnum.ActionEnum.longClick) {//长按删除
+            mList.clear();
+            updateUi();
+        }else if(type.getType()== KeyboardEnum.ActionEnum.forget){//忘记密码
+            listener.onForgetPW();
+        }
+
+    }
+
+   /**
+    * 更新UI
+    */
+    private void updateUi() {
+        if (mList.size() == 0) {
+            box1.setText("");
+            box2.setText("");
+            box3.setText("");
+            box4.setText("");
+            box5.setText("");
+            box6.setText("");
+        } else if (mList.size() == 1) {
+            box1.setText(mList.get(0));
+            box2.setText("");
+            box3.setText("");
+            box4.setText("");
+            box5.setText("");
+            box6.setText("");
+        } else if (mList.size() == 2) {
+            box1.setText(mList.get(0));
+            box2.setText(mList.get(1));
+            box3.setText("");
+            box4.setText("");
+            box5.setText("");
+            box6.setText("");
+        } else if (mList.size() == 3) {
+            box1.setText(mList.get(0));
+            box2.setText(mList.get(1));
+            box3.setText(mList.get(2));
+            box4.setText("");
+            box5.setText("");
+            box6.setText("");
+        } else if (mList.size() == 4) {
+            box1.setText(mList.get(0));
+            box2.setText(mList.get(1));
+            box3.setText(mList.get(2));
+            box4.setText(mList.get(3));
+            box5.setText("");
+            box6.setText("");
+        } else if (mList.size() == 5) {
+            box1.setText(mList.get(0));
+            box2.setText(mList.get(1));
+            box3.setText(mList.get(2));
+            box4.setText(mList.get(3));
+            box5.setText(mList.get(4));
+            box6.setText("");
+        } else if (mList.size() == 6) {
+            box1.setText(mList.get(0));
+            box2.setText(mList.get(1));
+            box3.setText(mList.get(2));
+            box4.setText(mList.get(3));
+            box5.setText(mList.get(4));
+            box6.setText(mList.get(5));
+            //输完后自动校验密码
+            parseActionType(KeyboardEnum.sure);
+        }
+    }
+
+     /**
+      * 事件监听接口
+      */
+    public interface OnPayListener {
+        void onCancelPay();
+
+        void onSurePay(String password);
+
+        void onForgetPW();
+    }
+
+    /**
+     * 获取当前View
+     * @return
+     */
+    public View getView() {
+        return mView;
+    }
+}
+</code></pre>
+
+<p>2：定义一个枚举类配合上面的逻辑实现</p>
+
+<pre><code>package com.gybs.common.customview;
+/**
+ * 自定义支付密码类枚举
+ * Author：knight
+ * QQ：394558536
+ * Created by Administrator on 2015/3/24.
+ */
+public enum KeyboardEnum {
+    one(ActionEnum.add,"1"),
+    two(ActionEnum.add,"2"),
+    three(ActionEnum.add,"3"),
+    four(ActionEnum.add,"4"),
+    five(ActionEnum.add,"5"),
+    sex(ActionEnum.add,"6"),
+    seven(ActionEnum.add,"7"),
+    eight(ActionEnum.add,"8"),
+    nine(ActionEnum.add,"9"),
+    zero(ActionEnum.add,"0"),
+    del(ActionEnum.delete,"del"),
+    longdel(ActionEnum.longClick,"longclick"),
+    cancel(ActionEnum.cancel,"cancel"),
+    forget(ActionEnum.forget,"forget"),
+    original(ActionEnum.original,"original"),
+    newPW(ActionEnum.newPW,"new"),
+    sure(ActionEnum.sure,"sure");
+    public enum ActionEnum{
+        add,delete,longClick,cancel,sure,forget,original,newPW
+    }
+    private ActionEnum type;
+    private String value;
+    private KeyboardEnum(ActionEnum type,String value){
+        this.type=type;
+        this.value=value;
+    }
+    public ActionEnum getType() {
+        return type;
+    }
+    public void setType(ActionEnum type) {
+        this.type = type;
+    }
+    public String getValue() {
+        return value;
+    }
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+}
+</code></pre>
+
+<p>3:定义一个dialog工具类调用上面的界面</p>
+
+<pre><code>/**
+ * 自定义支付密码dialog
+ * Author：knight
+ * QQ：394558536
+ * Created by Administrator on 2015/3/24.
+ */
+public class PayPWDialog extends Dialog  {
+    Activity activity;
+    private View view;
+    private boolean isOutSideTouch=true;
+
+    public View getView() {
+        return view;
+    }
+    public void setView(View view) {
+        this.view = view;
+    }
+    public boolean isOutSideTouch() {
+        return isOutSideTouch;
+    }
+    public void setOutSideTouch(boolean isOutSideTouch) {
+        this.isOutSideTouch = isOutSideTouch;
+    }
+    public PayPWDialog(Context context, int theme) {
+        super(context, theme);
+    }
+    public PayPWDialog(Context context) {
+        this(context,0);
+    }
+    public PayPWDialog(Activity activity, View view) {
+        super(activity, R.style.MyDialog);
+        this.activity = activity;
+        this.view=view;
+    }
+    public PayPWDialog(Activity activity, View view, int theme) {
+        super(activity,theme);
+        this.activity = activity;
+        this.view=view;
+    }
+    public PayPWDialog(Activity activity, View view, int theme, boolean isOutSide) {
+        super(activity,theme);
+        this.activity = activity;
+        this.view=view;
+        this.isOutSideTouch=isOutSide;
+    }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(view);
+        setCanceledOnTouchOutside(isOutSideTouch);
+
+        DisplayMetrics dm = new DisplayMetrics();
+        // 取得窗口属性
+        activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+        // 窗口的宽度
+        int screenWidth = dm.widthPixels;
+        int screenHeight=dm.heightPixels;
+        WindowManager.LayoutParams layoutParams = this.getWindow()
+                .getAttributes();
+        layoutParams.width = screenWidth;
+        layoutParams.height = screenHeight;
+        this.getWindow().setAttributes(layoutParams);
+    }
+
+}
+</code></pre>
+
+<p>4:在需要使用的界面直接 new PayPWDialog(&hellip;)  即可</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[电脑配置详解]]></title>
+    <link href="http://wentao1990.github.io/blog/2014/07/22/computer/"/>
+    <updated>2014-07-22T18:50:47+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2014/07/22/computer</id>
+    <content type="html"><![CDATA[<h3>在笔记本种类繁多的今天，各种硬件配置可谓是是五花八门，这选购电脑看似难事儿，但只要记住这些硬件参数，选起电脑那自然是手到擒来。下面主要介绍五个最主要的配件的配置参数。</h3>
+
+<h3>CPU(重中之重）</h3>
+
+<p>毋容置疑，cpu（处理器）是电脑的核心大脑，型号也是很多的，它是可以决定你是玩大型3D游戏还是玩4399小游戏的。</p>
+
+<h4>最常见的酷睿系列i7、i5、i3，分别对应高、中、低三档。</h4>
+
+<p>Intel在笔记本处理器上，共有U、Y、H、M、Q和X这几种分类。
+<img src="http://i.imgur.com/ctmLXam.jpg" alt="" />
+现已经更新到第六代，也就是6XXXX，比如core i5-4210U代表第四代低压i5。一般游戏玩家和adobe至少要达到i5级别。这里一定要注意啦！同代CPU中低压和标压的性能差别是非常巨大的，以后有导购跟你介绍：“看，这款可是I5芯噢！“ 你就可以果断反击：“尼玛一个低压的I5也想忽悠我！当我小白呀！ ” ^_^ 看到这里想必大家已经明白了吧？ 举个例子，同样是I7 四核八线程的CPU，其性能也会有很大区别的噢，这一点大家在选购电脑时一定要注意注意再注意。（PS，还有一款末尾带K的如 I7-6700K代表的是顶级台式机CPU噢 ）</p>
+
+<h3>显卡（核显和独显）</h3>
+
+<p>核心显卡：使用最多的显卡，集成在CPU中的显卡，现在大多达到低端独显的水平，
+可以满足多数非游戏玩家的需求。型号为HDXXXX，但不能仅根据HD后一位数字判断是第几代。 <!--more-->
+<img src="http://i.imgur.com/CAil7Ls.jpg" alt="" />
+独立显卡：非必要部件，主流一线品牌有AMD、NVIDIA两家。
+虽然这两家互相看不顺眼，但是在移动端笔记本方面，AMD还是落后于NVIDIA的，发起热来连它自己都怕，所以AMD的价格会稍微低一些。笔记本中目前主流的NVIDIA独立显卡等级从入门级到高级依次为：GT 940M，GTX950M，GTX960M，GTX965M，GTX 970M，GTX980M和台式机级GTX980。上重点，除了显卡的级别，玩游戏，做设计其实还有一个很重要的参数，那就是显存。拿游戏举例，LOL这种GTX 950M就足够让你得到顶级游戏体验，但如果想要在侠盗猎车5上达到同样的视觉体验，还是得买个至少搭载GTX965M 4G GDDR5的噢，这里的4G GDDR5代表的是3G显存。</p>
+
+<h3>内存（对性能影响较小）</h3>
+
+<p>小白没人指点的话不太会注意这个，若其他各项参数都很好，价格也便宜，那多半是内存少&hellip;&hellip;被坑了还以为自己占了多大便宜。电脑运行速度快不快就指望它了。现在一般标配是4G，在购买电脑时如果没有预留第二个内存插槽，建议直接买8G内存的版本。很多游戏玩家可能都遇到这种问题，明明其他配置老高了，为毛还是卡的跟狗一样，那有极大概率就是可用内存不足导致的。你想想，光一个系统就用去近2G内存，还有一堆诸如QQ、浏览器等乱七八糟的软件，如果你的内存只有4G，不卡才怪了！</p>
+
+<h3>硬盘（关乎你能存多少部***）</h3>
+
+<p>这是所谓放系统的地方，其好坏对系统运行速度影响很大，想想你16G的手机卡成狗的样子就知道了。现在的硬盘大致分为三种：机械硬盘、固态硬盘和混合硬盘。固态没啥好说的，三星、镁光等都还不错。这里重点说一下机械硬盘，别看都是500G或者1TB，和CPU细分低压标压一样也是有坑可挖的。好家伙，存储空间一样大，一个5400转速，一个7200转速价格能一样？所以买的时候万一有机械硬盘还是问清楚比较好。</p>
+
+<h3>屏幕（最主要的输出）</h3>
+
+<p><img src="http://i.imgur.com/Ytmwlr9.jpg" alt="" />
+可以这么说，屏幕从古到今都是笔记本行当里最黑的那块之一，也是笔记本厂家主要利润来源之一。一块屏，从10几美元到几百美元不等。不同牌子的屏幕，价格天差地别，即便是同牌子，还有好屏，次屏之分。水太深不多表，这里给大家几个看屏幕好坏的参数可做参考：（1）色域——直接决定画面色彩好坏，低于50色域以下的屏幕还是算了吧，一般70以上色域的屏幕还是较为理想的。（2）分辨率——目前主流都是1080P了，也有最新科技的4K屏，通俗的说4K屏就是4096×2160的像素分辨率的，普通玩家基本用不上。（3）刷新速度——越高越好O(∩_∩)O，低了会感觉老闪屏。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[java多线程-Runnable、thread、callable区别]]></title>
+    <link href="http://wentao1990.github.io/blog/2014/07/19/java-multithreading/"/>
+    <updated>2014-07-19T20:41:08+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2014/07/19/java-multithreading</id>
+    <content type="html"><![CDATA[<h3>多线程编程优点：</h3>
+
+<h4>进程之间不能共享内存，但线程之间共享内存非常容易。</h4>
+
+<h4>系统创建线程所分配的资源相对创建进程而言，代价非常小。</h4>
+
+<h3>Java中实现多线程有3种方法：</h3>
+
+<h4>继承Thread类</h4>
+
+<h4>实现Runnable接口</h4>
+
+<h4>实现Callable接口(参考&lt;Java编程思想(第4版)>  21.2.4章节，原来一直以为是2种，后来发现是3种)</h4>
+
+<p>第一种实现方法—继承Thread类
+继承Thread类，需要覆盖方法 run()方法，在创建Thread类的子类时需要重写 run(),加入线程所要执行的代即可。 <!--more--></p>
+
+<p>下边是一个卖票程序小例子：</p>
+
+<pre><code>package ThreadOne;
+
+public class ThreadByExtends {
+
+public static void main(String[] args) {
+    // TODO Auto-generated method stub
+    new MyThread().start();
+    new MyThread().start();
+    new MyThread().start();
+}
+
+}
+
+class MyThread extends Thread {
+private int ticket = 5;
+
+public void run() {
+
+    for (int i = 0; i &lt; 10; i++) {
+        if (ticket &gt; 0) {
+            System.out.println("车票第" + ticket-- + "张");
+        }
+    }
+  }
+
+}
+</code></pre>
+
+<p>输出结果为：
+<img src="http://i.imgur.com/YyugxSw.png" alt="" />
+这样代码的写法简单，符合大家的习惯，但是直接继承Thread类有一个很大的缺点，因为“java类的继承是单一的，extends后面只能指定一个父类”，所有如果当前类继承Thread类之后就不可以继承其他类。如果我们的类已经从一个类继承（如Swing继承自 Panle 类、JFram类等），则无法再继承 Thread 类，这时如果我们又不想建立一个新的类，应该怎么办呢？</p>
+
+<h4>第二种实现方法—实现Runnable接口</h4>
+
+<p>如果要实现多继承就得要用implements，Java 提供了接口 java.lang.Runnable 来解决上边的问题。</p>
+
+<p>Runnable是可以共享数据的，多个Thread可以同时加载一个Runnable，当各自Thread获得CPU时间片的时候开始运行Runnable，Runnable里面的资源是被共享的，所以使用Runnable更加的灵活。</p>
+
+<p>下边还是卖票例子：
+    package ThreadOne;</p>
+
+<pre><code>public class ThreadRunnable {
+
+public static void main(String[] args) {
+    MyThread1 myThread = new MyThread1();
+    new Thread(myThread).start();
+    new Thread(myThread).start();
+    }
+}
+
+class MyThread1 implements Runnable {
+
+private int ticket = 5;
+
+public void run() {
+    for (int i = 0; i &lt; 10; i++) {
+        if (ticket &gt; 0) {
+            System.out.println("ticket = " + ticket--);
+         }
+        }
+    }
+
+}
+</code></pre>
+
+<p>输出结果：
+<img src="http://i.imgur.com/zkJqH5x.png" alt="" /></p>
+
+<h4>1.在第二种方法（Runnable）中，ticket输出的顺序并不是54321，这是因为线程执行的时机难以预测，ticket&ndash;并不是原子操作(关于原子操作后边会有详解)。</h4>
+
+<h4>2.在第一种方法中，我们new了3个Thread对象，即三个线程分别执行三个对象中的代码，因此便是三个线程去独立地完成卖票的任务；而在第二种方法中，我们同样也new了3个Thread对象，但只有一个Runnable对象，3个Thread对象共享这个Runnable对象中的代码，因此，便会出现3个线程共同完成卖票任务的结果。如果我们new出3个Runnable对象，作为参数分别传入3个Thread对象中，那么3个线程便会独立执行各自Runnable对象中的代码，即3个线程各自卖5张票。</h4>
+
+<h4>3.在第二种方法中，由于3个Thread对象共同执行一个Runnable对象中的代码，因此可能会造成线程的不安全，比如可能ticket会输出-1（如果我们System.out&hellip;.语句前加上线程休眠操作，该情况将很有可能出现），这种情况的出现是由于，一个线程在判断ticket为1>0后，还没有来得及减1，另一个线程已经将ticket减1，变为了0，那么接下来之前的线程再将ticket减1，便得到了-1。这就需要加入同步操作（即互斥锁），确保同一时刻只有一个线程在执行每次for循环中的操作。而在第一种方法中，并不需要加入同步操作，因为每个线程执行自己Thread对象中的代码，不存在多个线程共同执行同一个方法的情况。</h4>
+
+<h3>第三种—实现Callable接口</h3>
+
+<p>Runnable是执行工作的独立任务，但是它不返回任何值。如果你希望任务在完成的能返回一个值，那么可以实现Callable接口而不是Runnable接口。在Java SE5中引入的Callable是一种具有类型参数的泛型，它的参数类型表示的是从方法call()(不是run())中返回的值。</p>
+
+<p>例子如下：
+    package ThreadOne;</p>
+
+<pre><code>import java.awt.Panel;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+
+public class ThreadCallable extends Panel {
+
+public static void main(String[] args) {
+
+    MyThread2 myThread2 = new MyThread2();
+
+    FutureTask&lt;Integer&gt; futureTask = new FutureTask&lt;&gt;(myThread2);
+    new Thread(futureTask, "线程名：有返回值的线程2").start();
+
+    try {
+        System.out.println("子线程的返回值：" + futureTask.get());
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+  }
+}
+
+class MyThread2 implements Callable&lt;Integer&gt; {
+
+public Integer call() throws Exception {
+    System.out.println("当前线程名——" + Thread.currentThread().getName());
+    int i = 0;
+    for (; i &lt; 5; i++) {
+        System.out.println("循环变量i的值：" + i);
+    }
+
+    return i;
+  }
+
+}
+</code></pre>
+
+<p>运行结果如下：</p>
+
+<p><img src="http://i.imgur.com/wI42btd.png" alt="" /></p>
+
+<h3>总结</h3>
+
+<p>实现Runnable接口相比继承Thread类有如下优势：</p>
+
+<p>可以避免由于Java的单继承特性而带来的局限；
+增强程序的健壮性，代码能够被多个线程共享，代码与数据是独立的；
+适合多个相同程序代码的线程区处理同一资源的情况。</p>
+
+<p>实现Runnable接口和实现Callable接口的区别:</p>
+
+<p>Runnable是自从java1.1就有了，而Callable是1.5之后才加上去的
+Callable规定的方法是call(),Runnable规定的方法是run()
+Callable的任务执行后可返回值，而Runnable的任务是不能返回值(是void)
+call方法可以抛出异常，run方法不可以
+运行Callable任务可以拿到一个Future对象，表示异步计算的结果。它提供了检查计算是否完成的方法，以等待计算的完成，并检索计算的结果。通过Future对象可以了解任务执行情况，可取消任务的执行，还可获取执行结果。
+加入线程池运行，Runnable使用ExecutorService的execute方法，Callable使用submit方法。</p>
+
+<p>参考</p>
+
+<p><a href="http://blog.csdn.net/ns_code/article/details/17161237">http://blog.csdn.net/ns_code/article/details/17161237</a></p>
+
+<p><a href="http://tonl.iteye.com/blog/1874187">http://tonl.iteye.com/blog/1874187</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Android项目开发实践功能收集]]></title>
+    <link href="http://wentao1990.github.io/blog/2014/07/07/androidUtils/"/>
+    <updated>2014-07-07T22:56:26+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2014/07/07/androidUtils</id>
+    <content type="html"><![CDATA[<h4>以下主要是整理了一些在项目中经常遇到的功能</h4>
+
+<h5>1.判断APP是否在后台运行</h5>
+
+<pre><code>  public static boolean isBackground(Context context) {
+    ActivityManager activityManager = (ActivityManager) context
+            .getSystemService(Context.ACTIVITY_SERVICE);//获取管理应用程序的系统状态
+    List&lt;ActivityManager.RunningAppProcessInfo&gt; appProcesses = activityManager
+            .getRunningAppProcesses();//获取当前系统进程列表
+    for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+        if (appProcess.processName.equals(context.getPackageName())) {//判断是否是当前app进程
+            if (appProcess.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {//判断进程状态是否在前台运行
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+    return false;
+}
+</code></pre>
+
+<h5>2.判断系统网络状态及监听网络状态变化  <!--more--></h5>
+
+<p>a:判断网络是否连接</p>
+
+<pre><code>//获取网络连接服务管理
+ConnectivityManager cwjManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+//获取当前链接的可用的网络信息 ps :还有另外两个方法getNetworkInfo()是获取特定网络类型的链接网络信息。getAllNetworkInfo()是获取设备支持的所有网络类型的链接状态信息。
+NetworkInfo activeNetworkInfo = cwjManager.getActiveNetworkInfo();
+if(activeNetworkInfo==null){//没有链接网络
+    Intent intent = null;  
+    //跳转到网络设置界面，这里要做下判断当前系统版本是否是3.0（API&gt;10)版本以上，因为代码上有差异
+    if(android.os.Build.VERSION.SDK_INT &gt; 10) { 
+        intent = new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS);  
+    }else{
+        intent = new Intent();  
+        ComponentName component = new ComponentName("com.android.settings", "com.android.settings.WirelessSettings");
+        intent.setComponent(component);
+        intent.setAction("android.intent.action.VIEW"); 
+    }
+}
+</code></pre>
+
+<p>b:监听网络状态变化</p>
+
+<p>  注册一个广播接收者即可，如下：</p>
+
+<pre><code> private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if(intent.getAction()==android.net.conn.CONNECTIVITY_CHANGE){//网络状态改变广播
+            //相关操作
+            ......
+        }
+
+};
+</code></pre>
+
+<h5>3.使用手机设备播放声音</h5>
+
+<p>这里使用用户设置的铃声为例，如下：</p>
+
+<pre><code>  public static void startAlarm(Context context) {
+    MediaPlayer mMediaPlayer = MediaPlayer.create(context, getSystemDefultRingtoneUri(context));//获取播放器
+    mMediaPlayer.setLooping(true);//是否循环播放
+    try {
+        mMediaPlayer.prepare();//准备
+        mMediaPlayer.start();//播放
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
+ /**
+ * 获取系统默认通知铃声的Uri
+ * @param context
+ * @return 铃声的uri
+ */
+private static Uri getSystemDefultRingtoneUri(Context context) {
+    return RingtoneManager.getActualDefaultRingtoneUri(context,
+            RingtoneManager.TYPE_NOTIFICATION);
+}
+</code></pre>
+
+<h5>4.实现单行GridView滚动效果</h5>
+
+<p>图例：（里面只显示一行多个元素，可左右滑动）</p>
+
+<p><img src="http://i.imgur.com/WHllCt7.png" alt="" /></p>
+
+<p>步骤：
+a:在xml文件里定义一个GridView控件，如下：</p>
+
+<pre><code> &lt;HorizontalScrollView
+    android:layout_width="match_parent"
+    android:layout_height="100dp" &gt;
+    &lt;LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" &gt;
+        &lt;GridView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:gravity="center"
+            android:numColumns="auto_fit"//设置自动调整列数
+            android:stretchMode="spacingWidthUniform" &gt;//均匀缩放元素间隔
+        &lt;/GridView&gt;
+    &lt;/LinearLayout&gt;
+&lt;/HorizontalScrollView&gt;
+</code></pre>
+
+<p>b:在代码中动态绘制GridView的宽高，如下：</p>
+
+<pre><code>/**
+ * 设置单列显示的GridView宽高参数
+ * 
+ * @param mGridView 
+ * @param cloths 要显示的元素集合
+ */
+private void setGridView(GridView mGridView, List&lt;ClothInfos&gt; cloths) {
+    int size = cloths.size();
+    int length = 100;//单个元素的宽
+
+    DisplayMetrics dm = new DisplayMetrics();
+    //API 17之后使用，获取的像素宽高包含虚拟键所占空间，在API 17之前通过反射获取  
+    //context.getWindowManager().getDefaultDisplay().getRealMetrics(dm);  
+    //获取的像素宽高不包含虚拟键所占空间 
+    getWindowManager().getDefaultDisplay().getMetrics(dm);
+    float density = dm.density;//获取缩放因子 dip
+    int gridviewWidth = (int) (size * (length + 4) * density);//计算GridView的宽度
+    int itemWidth = (int) (length * density);//计算单个元素的宽度
+
+    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+            gridviewWidth, LinearLayout.LayoutParams.FILL_PARENT);
+
+    mGridView.setLayoutParams(params); // 设置GridView的宽高
+    mGridView.setColumnWidth(itemWidth); // 设置GridView的item宽
+    mGridView.setHorizontalSpacing(5); // 设置GridView的item间距
+    mGridView.setStretchMode(GridView.NO_STRETCH);
+    mGridView.setNumColumns(size); // 设置GridView的item数量
+}
+</code></pre>
+
+<p>注意：在获取屏幕像素宽高时不要加上虚拟按键的部分</p>
+]]></content>
+  </entry>
   
 </feed>
