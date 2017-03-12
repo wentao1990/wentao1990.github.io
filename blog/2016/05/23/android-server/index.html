@@ -93,7 +93,7 @@
 
 <h4>4.IntentService相对于Service来说，有几个非常有用的优点</h4>
 
-<p>IntentService使用队列的方式将请求的Intent加入队列，然后开启一个worker thread(线程)来处理队列中的Intent，对于异步的startService请求，IntentService会处理完成一个之后再处理第二个，每一个请求都会在一个单独的worker thread中处理，不会阻塞应用程序的主线程，这里就给我们提供了一个思路，如果有耗时的操作与其在Service里面开启新线程还不如使用IntentService来处理耗时操作。</p>
+<p>IntentService使用队列的方式将请求的Intent加入队列，然后开启一个worker thread(线程)来处理队列中的Intent，对于异步的startService请求，IntentService会处理完成一个之后再处理第二个，每一个请求都会在一个单独的worker thread中处理，不会阻塞应用程序的主线程，这里就给我们提供了一个思路，如果有耗时的操作与其在Service里面开启新线程还不如使用IntentService来处理耗时操作。 <!--more--></p>
 
 <p>因为最大部分的service不需要同时处理多个请求(处理多个请求是一个比较危险的多线程的场景),这样在在这种情况下呢，最好使用IntentService类如果你实现你的服务。</p>
 
@@ -312,7 +312,20 @@
 
 <aside class="sidebar">
   
-    <section>
+    <section> 
+  <h1>文章分类</h1> 
+  <ul id="categories"> 
+    <li class='category'><a href='/blog/categories/android/'>android (23)</a></li>
+<li class='category'><a href='/blog/categories/java/'>java (1)</a></li>
+<li class='category'><a href='/blog/categories/mysql/'>mysql (1)</a></li>
+<li class='category'><a href='/blog/categories/server/'>server (1)</a></li>
+<li class='category'><a href='/blog/categories/unity3d/'>unity3d (1)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (2)</a></li>
+<li class='category'><a href='/blog/categories/数据库/'>数据库 (1)</a></li>
+<li class='category'><a href='/blog/categories/硬件/'>硬件 (1)</a></li>
+ 
+  </ul> 
+</section><section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
     

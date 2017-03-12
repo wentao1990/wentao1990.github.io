@@ -5,11 +5,14 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: Android - 临渊羡鱼不如退而结网</title>
+  <title>临渊羡鱼不如退而结网</title>
   <meta name="author" content="武文涛">
 
   
-  <meta name="description" content="Category: android">
+  <meta name="description" content="2017 Android开发之架构模式选择
+Mar 01 2017 posted in android 2016 转：Android最佳性能实践——合理管理内存
+Aug 07 2016 posted in android 如何快速搭建一个完整的移动直播系统？
+Jul 19 2016 posted &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://wentao1990.github.io/blog/categories/android/">
+  <link rel="canonical" href="http://wentao1990.github.io/blog/archives/.bak">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="临渊羡鱼不如退而结网" type="application/atom+xml">
@@ -67,12 +70,7 @@
       <div>
 <article role="article">
   
-  <header>
-    <h1 class="entry-title">Category: Android</h1>
-    
-  </header>
-  
-  <div id="blog-archives" class="category">
+  <div id="blog-archives">
 
 
 
@@ -103,6 +101,20 @@
 
 <footer>
   <span class="categories">posted in <a class='category' href='/blog/categories/android/'>android</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/2016/07/19/server/">如何快速搭建一个完整的移动直播系统？</a></h1>
+<time datetime="2016-07-19T22:53:30+08:00" pubdate><span class='month'>Jul</span> <span class='day'>19</span> <span class='year'>2016</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/server/'>server</a></span>
 </footer>
 
 
@@ -157,6 +169,16 @@
 
 <article>
   
+<h1><a href="/blog/2015/11/02/android-image/">Android Image</a></h1>
+<time datetime="2015-11-02T00:00:00+08:00" pubdate><span class='month'>Nov</span> <span class='day'>02</span> <span class='year'>2015</span></time>
+
+
+</article>
+
+
+
+<article>
+  
 <h1><a href="/blog/2015/08/12/android-commonAdapter/">打造可以共用的Adapter</a></h1>
 <time datetime="2015-08-12T19:14:31+08:00" pubdate><span class='month'>Aug</span> <span class='day'>12</span> <span class='year'>2015</span></time>
 
@@ -176,6 +198,20 @@
 
 <footer>
   <span class="categories">posted in <a class='category' href='/blog/categories/android/'>android</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/2015/07/05/network-port/">熟悉网络端口</a></h1>
+<time datetime="2015-07-05T22:55:10+08:00" pubdate><span class='month'>Jul</span> <span class='day'>05</span> <span class='year'>2015</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/web/'>web</a></span>
 </footer>
 
 
@@ -213,6 +249,16 @@
 
 <article>
   
+<h1><a href="/blog/2015/06/08/adjust/">Activity全屏模式下设置adjustResize模式失效，输入框会被软键盘挡到</a></h1>
+<time datetime="2015-06-08T23:00:52+08:00" pubdate><span class='month'>Jun</span> <span class='day'>08</span> <span class='year'>2015</span></time>
+
+
+</article>
+
+
+
+<article>
+  
 <h1><a href="/blog/2015/05/19/androidDataLeak/">Android应用安全开发之防范无意识的数据泄露</a></h1>
 <time datetime="2015-05-19T22:08:15+08:00" pubdate><span class='month'>May</span> <span class='day'>19</span> <span class='year'>2015</span></time>
 
@@ -241,6 +287,20 @@
 
 <article>
   
+<h1><a href="/blog/2015/04/13/web-browser/">42种常见的浏览器兼容性问题</a></h1>
+<time datetime="2015-04-13T19:33:34+08:00" pubdate><span class='month'>Apr</span> <span class='day'>13</span> <span class='year'>2015</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/web/'>web</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
 <h1><a href="/blog/2015/03/28/customPay/">仿支付宝&微信支付密码界面</a></h1>
 <time datetime="2015-03-28T22:52:26+08:00" pubdate><span class='month'>Mar</span> <span class='day'>28</span> <span class='year'>2015</span></time>
 
@@ -255,6 +315,34 @@
 
   
   <h2>2014</h2>
+
+<article>
+  
+<h1><a href="/blog/2014/07/22/computer/">电脑配置详解</a></h1>
+<time datetime="2014-07-22T18:50:47+08:00" pubdate><span class='month'>Jul</span> <span class='day'>22</span> <span class='year'>2014</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/ying-jian/'>硬件</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/2014/07/19/java-multithreading/">java多线程-Runnable、thread、callable区别</a></h1>
+<time datetime="2014-07-19T20:41:08+08:00" pubdate><span class='month'>Jul</span> <span class='day'>19</span> <span class='year'>2014</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/java/'>java</a></span>
+</footer>
+
+
+</article>
+
+
 
 <article>
   
@@ -292,6 +380,16 @@
 <footer>
   <span class="categories">posted in <a class='category' href='/blog/categories/android/'>android</a></span>
 </footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/2014/06/15/tcp/">TCP的阻塞和重传机制</a></h1>
+<time datetime="2014-06-15T21:28:57+08:00" pubdate><span class='month'>Jun</span> <span class='day'>15</span> <span class='year'>2014</span></time>
 
 
 </article>
@@ -350,6 +448,20 @@
 
 <footer>
   <span class="categories">posted in <a class='category' href='/blog/categories/android/'>android</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/2013/05/11/mysql-optimize/">Mysql查询优化技巧</a></h1>
+<time datetime="2013-05-11T22:45:58+08:00" pubdate><span class='month'>May</span> <span class='day'>11</span> <span class='year'>2013</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/mysql/'>mysql</a>, <a class='category' href='/blog/categories/shu-ju-ku/'>数据库</a></span>
 </footer>
 
 

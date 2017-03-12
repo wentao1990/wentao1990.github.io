@@ -89,7 +89,7 @@
 
 <h3>避免创建不必要的对象</h3>
 
-<p>创建对象从来都不应该是一件随意的事情，因为创建一个对象就意味着垃圾回收器需要回收一个对象，而这两步操作都是需要消耗时间的。虽说创建一个对象的代价确实非常小，并且Android 2.3版本当中又增加了并发垃圾回收器机制，这让GC操作时的停顿时间也变得难以察觉，但是这些理由都不足以让我们可以肆意地创建对象，需要创建的对象我们自然要创建，但是不必要的对象我们就应该尽量避免创建。</p>
+<p>创建对象从来都不应该是一件随意的事情，因为创建一个对象就意味着垃圾回收器需要回收一个对象，而这两步操作都是需要消耗时间的。虽说创建一个对象的代价确实非常小，并且Android 2.3版本当中又增加了并发垃圾回收器机制，这让GC操作时的停顿时间也变得难以察觉，但是这些理由都不足以让我们可以肆意地创建对象，需要创建的对象我们自然要创建，但是不必要的对象我们就应该尽量避免创建。  <!--more--></p>
 
 <h4>下面来看一些我们可以避免创建对象的场景：</h4>
 
@@ -271,7 +271,20 @@ public void two() {
 
 <aside class="sidebar">
   
-    <section>
+    <section> 
+  <h1>文章分类</h1> 
+  <ul id="categories"> 
+    <li class='category'><a href='/blog/categories/android/'>android (23)</a></li>
+<li class='category'><a href='/blog/categories/java/'>java (1)</a></li>
+<li class='category'><a href='/blog/categories/mysql/'>mysql (1)</a></li>
+<li class='category'><a href='/blog/categories/server/'>server (1)</a></li>
+<li class='category'><a href='/blog/categories/unity3d/'>unity3d (1)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (2)</a></li>
+<li class='category'><a href='/blog/categories/数据库/'>数据库 (1)</a></li>
+<li class='category'><a href='/blog/categories/硬件/'>硬件 (1)</a></li>
+ 
+  </ul> 
+</section><section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
     
