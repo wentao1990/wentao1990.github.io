@@ -4,7 +4,7 @@
   <title><![CDATA[临渊羡鱼不如退而结网]]></title>
   <link href="http://wentao1990.github.io/atom.xml" rel="self"/>
   <link href="http://wentao1990.github.io/"/>
-  <updated>2017-03-13T01:29:44+08:00</updated>
+  <updated>2017-03-17T23:28:17+08:00</updated>
   <id>http://wentao1990.github.io/</id>
   <author>
     <name><![CDATA[武文涛]]></name>
@@ -163,6 +163,263 @@
 <p>这里以 <strong>APP</strong> 开发为例，如果是一款轻量级、业务逻辑不是很复杂的 <strong>APP</strong> ，那么使用 <strong>MVC</strong> 模式足够满足需求，因为代码量不大，不至于变成臃肿的 <strong>MVC</strong> ，造成不好测试及维护问题。</p>
 
 <p>如果，开发的是一款业务逻辑复杂的 <strong>超级APP</strong> ,那么使用 <strong>MVC</strong> 模式进行开发，就会出现上面所列出的那些问题。这种情况下使用<strong>MVP</strong> 架构模式就更为妥当。有些 <strong>APP</strong> 甚至只有一个 <strong>ACTIVITY</strong>，在性能和反编译安全问题都有提升。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Android第三方网络请求框架总结]]></title>
+    <link href="http://wentao1990.github.io/blog/2016/10/06/android-01/"/>
+    <updated>2016-10-06T22:36:35+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2016/10/06/android-01</id>
+    <content type="html"><![CDATA[<h4>android-async-http （<a href="https://github.com/loopj/android-async-http">https://github.com/loopj/android-async-http</a>）</h4>
+
+<p>功能：</p>
+
+<p>•基于HttpClient；</p>
+
+<p>•在UI线程外，异步进行http请求；</p>
+
+<p>•在匿名回调中处理请求结果，callBback使用了Android的Handler发送消息机制在创建它的线程中执行；</p>
+
+<p>•自动智能请求重试；</p>
+
+<p>•持久化cookie存储，保存cookie到应用程序的SharedPreferences中；</p>
+
+<p>开发者使用：</p>
+
+<p>作者已经停止对该项目维护，在android 5.0 以后，不推荐使用HttpClient,所以不推荐使用此库。</p>
+
+<h4>Volley  （<a href="https://github.com/stormzhang/AndroidVolley">https://github.com/stormzhang/AndroidVolley</a>）</h4>
+
+<p>功能：</p>
+
+<p>•基于HttpUrlConnection;</p>
+
+<p>•封装了URL图片加载框架，支持图片加载；</p>
+
+<p>•网络请求的排序，优先级处理</p>
+
+<p>•缓存</p>
+
+<p>•多级别取消请求</p>
+
+<p>•Activity和生命周期的联动（Activity结束时同时取消所有网络请求）</p>
+
+<p>性能：</p>
+
+<p>可扩展性好：可支持HttpClient、HttpUrlConnection和OKHttp;</p>
+
+<p>开发者使用：</p>
+
+<p>封装性好，简单易用。</p>
+
+<p>应用场景：</p>
+
+<p>• 适合简单轻量级网络交互：网络请求频繁，传输数据小；</p>
+
+<p>• 不能进行大数据量的网络操作（下载视频、音频等），所以不适合用来上传文件；</p>
+
+<p>备注：Volley的request和response都是吧数据放到byte数组里，不支持输入输出流，把数据放到数组中，如果大文件多了，数组就会非常的大
+且多，消耗内存，所以不如直接返回Stream那样具备可操作性，比如下载一个大文件，不可能把整个文件都缓存到内存之后在写到文件里。</p>
+
+<h4>OKHttp （<a href="https://github.com/square/okhttp">https://github.com/square/okhttp</a>）</h4>
+
+<p>功能：</p>
+
+<p>• 高性能Http请求库，可以把它理解成是一个封装之后类似HttpUrlConnection的东西，属于同级并不是基于上述二者；</p>
+
+<p>• 支持SPDY，共享同一个Socket来处理同一个服务器的所有请求；</p>
+
+<p>• 支持http 2.0、websocket；</p>
+
+<p>• 支持同步、异步；</p>
+
+<p>• 封装了线程池、数据转换、参数使用、错误处理等；</p>
+
+<p>• 无缝的支持GZIP来减少数据流量；</p>
+
+<p>• 缓存响应数据来减少重复的网络请求</p>
+
+<p>• 能从很多常用的连接问题中自动恢复；</p>
+
+<p>• 解决了代理服务器问题和SSL握手失败问题；</p>
+
+<p>性能：</p>
+
+<p>基于NIO 和 Okio，所有性能更好：请求、处理速度快（IO:阻塞式； NIO：非阻塞式；Okio 是 Square 公司基于 IO 和NIO 基础上做的一个更简单、高效处理数据流的一个库）；</p>
+
+<p>开发者使用：</p>
+
+<p>• Api调用更加简单、方便；</p>
+
+<p>• 使用时需要进行多一层封装；</p>
+
+<p>应用场景：</p>
+
+<p>重量级网络交互场景：网络请求频繁、传输数据量大（其实更推荐Retrofit,反正Retrofit是基于 OKHttp的）；</p>
+
+<p>备注：</p>
+
+<p>Android 4.4 的源码中可以看到，HttpUrlConnection已经替换成OkHttp实现了，所以我们更有理由相信OkHttp的强大；</p>
+
+<h4>Retrofit （<a href="https://github.com/square/retrofit">https://github.com/square/retrofit</a>）</h4>
+
+<p>功能：</p>
+
+<p>• 基于OkHttp</p>
+
+<p>• RESTful Api 设计风格</p>
+
+<p>• 支持同步、异步；</p>
+
+<p>• 通过注解配置请求（包括请求方法、请求参数、请求头、返回值等）</p>
+
+<p>• 可以搭配多种Connverter 将获得的数据解析&amp;序列化</p>
+
+<p>• 支持Gson(默认）、Jackson 、Protobuf等</p>
+
+<p>• 支持对 RXjava 的支持；</p>
+
+<p>性能：</p>
+
+<p>• 性能最好，处理最快；</p>
+
+<p>• 扩展性差（高度封装所带来的必然后果；解析数据都是使用统一的converter，如果服务器不能给出统一的API形式，将很难进行处理。</p>
+
+<p>开发者使用：</p>
+
+<p>• 简洁易用（RestfulAPI设计风格）；</p>
+
+<p>• 代码简化（更加高度的封装和注解用法）；</p>
+
+<p>• 解耦的更彻底、职责更细分；</p>
+
+<p>• 易于其它框架联合使用（RXjava）；</p>
+
+<p>• 使用方法较多，原理复杂，存在一定门槛；</p>
+
+<p>应用场景：</p>
+
+<p>任何场景下优先选择，特别是：后台API遵循RESTful的风格&amp;项目中有使用RXjava;</p>
+
+<h4>总结：</h4>
+
+<p>网络请求库没有说哪个最好，只有最合适，只有真的了解其使用场景才能很好的选择网络请求库。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Android性能优化]]></title>
+    <link href="http://wentao1990.github.io/blog/2016/08/09/android-01/"/>
+    <updated>2016-08-09T19:50:35+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2016/08/09/android-01</id>
+    <content type="html"><![CDATA[<h4>网络相关优化</h4>
+
+<p>1.http头信息带Cache-Control域，确定缓存过期时间，防止重复请求。</p>
+
+<p>2.直接用IP直连，不用域名，策略性更新本地IP列表。-DNS解析过程耗时百毫秒左右，并且还有可能存在DNS劫持。</p>
+
+<p>3.图片、JS、CSS等静态资源，采用CDN（7牛之类的第三方服务已经搭建部署好了）</p>
+
+<p>4.全局图片处理采用漏斗模型全局掌控，所请求的图片大小依照业务大小提供（最大不超过屏幕分辨率需要），如果请求原图，也不要超过 GL10.GL_MAX_TEXTURE_SIZE。</p>
+
+<p>5.全局缩略图直接采用webp，在尽可能不损失图片质量的前提下，图片大小与png缩小30%~70%。</p>
+
+<p>6.如果列表里的缩略图服务器处理好的小图，可以考虑直接在列表数据请求中，直接以base64在列表数据中直接带上图片（国内还比较少，海外有些这种做法，好像web端比较常见）</p>
+
+<p>7.轮询或者socket心跳采用系统 AlarmManager提供的闹钟服务来做，保证在系统休眠的时候cpu可以得到休眠，在需要唤醒时可以唤醒（持有cpu唤醒锁）</p>
+
+<p>8.可以通过将零散的网路的请求打包进行一次操作，避免过多的无线信号引起电量消耗。</p>
+
+<h4>传输数据格式选择</h4>
+
+<p>1.如果是需要全局数据的，考虑使用Protobuffers(序列化反序列化性能高于Json)，并且考虑使用 nano protocol buffer。</p>
+
+<p>2.如果传输回来的数据不需要全量读取，考虑使用 Flatbuffers (序列化反序列化几乎不耗时，耗时是在读取对象时(就这一部分如果需要优化，可以参看 Flatbuffer Use Optimize</p>
+
+<h4>输入流</h4>
+
+<p>使用具有缓存策略的输入流</p>
+
+<pre><code>   原            建议替换为
+InputStream    BufferedInputStream
+Reader         BufferedReader
+</code></pre>
+
+<h4>数据结构</h4>
+
+<p>如果已知大概需要多大，就直接给初始大小，减少扩容时额外开销。</p>
+
+<p>•ArrayList :里面就一数据，内存小，有序取值快，扩容效率低。</p>
+
+<p>•LinkedList :里面就一双向链表，内存大，随机插入删除快，扩容率高。</p>
+
+<p>•HashSet :里面就HashMap,用key对外存储，目的就是不允许重复元素。</p>
+
+<p>•ConcruuenHashMap :线程安全，采用细分锁，锁颗粒更小，并发性能更优.</p>
+
+<p>•Collections.synchronizedMap : 线程安全，采用当前对象作为锁，颗粒较大，并发性能较差。</p>
+
+<p>•SparseArray、 SparseBooleanArray、 SparseIntArray: 针对Key为 Int、 Boolean进行了优化，采用二分法查找，简单数组存储。相比 HashMap而言， HashMap每添加一个数据，大约会需要申请额外的32字节的数据，因此 Sparsexxx在内存方面的开销会小很多。</p>
+
+<h4>编码习惯</h4>
+
+<p>1.尽量简化，不做没必要的操作。</p>
+
+<p>2.尽量避免分配内存（创建对象）。</p>
+
+<p>3.如果你确定不需要访问类成员，就把方法static，这样调用速度可以提升15%~20%，因为不需要切换对象状态。</p>
+
+<p>4.如果某个参数是常量，要加上static final ,这样可以让Class首次初始化的时候不用调用<clinit>来创建 static方法，而是在编译时就直接将常量替换代码中使用的位置。</p>
+
+<p>5.Android开发中，类内尽量避免通过 get/set访问成员变量，虽然这在语言的开发中是一个好的习惯，但是Android虚拟机中，对方法的调用开销远大于对变量的直接访问。在没有JIT的情况下，直接的变量访问比调用方法快3倍，在JIT下，直接的变量访问更是比调用方法快7倍!</p>
+
+<p>6.当内部类需要访问外部类的私有 方法/变量时，考虑将这些外部类的私有 方法/变量改用包可见的方式。首先在编写代码的时候，通过内部类访问外部类的私有 方法/变量是合法的，但是在编译的时候为了满足这个会将需要被内部类访问的私有 方法/变量封装一层包可见的方法，实现让内部类访问这些私有的 方法/变量，根据前面我们有提到说方法的调用开销大于变量的调用，因此这样使得性能变差，所以我们在编码的时候可以考虑直接将需要被内部类调用的外部类私有 方法/变量，改为包可见。</p>
+
+<p>7.尽量少使用 float。在很多现代设备中， double的性能与 float的性能几乎没有差别，但是从大小上面 double是 float的两倍的大小。</p>
+
+<p>8.尽量考虑使用整型而非浮点数，在较好的Android设备中，浮点数比整型慢一倍。</p>
+
+<p>9.尽量不要使用除法操作，有很多处理器有乘法器，但是没有除法器，也就是说在这些设备中需要将除法分解为其他的计算方式速度会比较慢。</p>
+
+<p>10.尽量使用系统sdk中提供的方法，而非自己去实现。如 String.indexOf()相关的API，Dalvik将会替换为内部方法； System.arraycopy()方法在Nexus One手机上，会比我们上层写的类似方法的执行速度快9倍。</p>
+
+<p>11.谨慎编写native，性能不一定更好，Native并不是用于使得性能更好，而是用于有些已经存在的库是使用native语言实现的，我们需要引入Android，这时才使用。1) 需要多出开销在维持Java-native的通信；2) 在native中创建的资源由于在native heap上面，因此需要主动的释放；3) 需要对不同的处理器架构进行支持，存在明显的兼容性问题需要解决。</p>
+
+<p>12.在没有JIT的设备中，面向接口编程的模式(如 Map map)，相比直接访问对象类(如 HashMap map)，会慢6%，但是在存在JIT的设备中，两者的速度差不多。但是内存占用方面面向接口变成会消耗更多内存，因此如果你的面向接口编程不是十分的必要的情况下可以考虑不用。</p>
+
+<p>13.在没有JIT的设备中，访问本地化变量相对与成员变量会快20%，但是在存在JIT的设备中，两者速度差不多。</p>
+
+<h4>遍历优化</h4>
+
+<p>尽量使用 Iterable而不是通过长度判断来进行遍历。</p>
+
+<pre><code>// 这种性能是最差的，JIT也无法对其优化。
+public void zero() {
+    int sum = 0;
+    for (int i = 0; i &lt; mArray.length; ++i) {
+        sum += mArray[i].mSplat;
+    }
+}
+// 相对zero()来说，这种写法会更快些，在存在JIT的情况下速度几乎和two()速度一样快。
+public void one() {
+    int sum = 0;
+    // 1) 通过本地化变量，减少查询，在不存在JIT的手机下，优化较明显。
+    Foo[] localArray = mArray;
+    // 2) 获取队列长度，减少每次遍历访问变量的长度，有效优化。
+    int len = localArray.length;
+    for (int i = 0; i &lt; len; ++i) {
+        sum += localArray[i].mSplat;
+    }
+}
+// 在无JIT的设备中，是最快的遍历方式，在存在JIT的设备中，与one()差不多快。
+public void two() {
+    int sum = 0;
+    for (Foo a : mArray) {
+        sum += a.mSplat;
+    }
+}
+</code></pre>
 ]]></content>
   </entry>
   
@@ -2748,217 +3005,6 @@ static void Foo.access$200(Foo foo, int value) {
 这份文档中的每个主张都有基准测试作为支持。你可以在code.google.com的dalvik项目中找到基准测试的代码。
 基准测试是用Caliper Java微基准测试框架构建的。微基准测试很难走对，Caliper帮你完成了其中的困难工作。即使当你察觉某些情况的测试结果并非你所想象的那样(虚拟机总是在优化你的代码那)。我们强烈推荐你用Caliper来运行你自己的微基准测试。
 同时你也会发现Traceview对分析很有用，但必须了解，他目前是不支持JIT的，这可能导致那些在JIT上可以胜出的代码超时。特别重要的，当根据Taceview的数据作出更改后，确保代码在没有Traceview时，确实跑的快了。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[电脑配置详解]]></title>
-    <link href="http://wentao1990.github.io/blog/2014/07/22/computer/"/>
-    <updated>2014-07-22T18:50:47+08:00</updated>
-    <id>http://wentao1990.github.io/blog/2014/07/22/computer</id>
-    <content type="html"><![CDATA[<h3>在笔记本种类繁多的今天，各种硬件配置可谓是是五花八门，这选购电脑看似难事儿，但只要记住这些硬件参数，选起电脑那自然是手到擒来。下面主要介绍五个最主要的配件的配置参数。</h3>
-
-<h3>CPU(重中之重）</h3>
-
-<p>毋容置疑，cpu（处理器）是电脑的核心大脑，型号也是很多的，它是可以决定你是玩大型3D游戏还是玩4399小游戏的。</p>
-
-<h4>最常见的酷睿系列i7、i5、i3，分别对应高、中、低三档。</h4>
-
-<p>Intel在笔记本处理器上，共有U、Y、H、M、Q和X这几种分类。
-<img src="http://i.imgur.com/ctmLXam.jpg" alt="" />
-现已经更新到第六代，也就是6XXXX，比如core i5-4210U代表第四代低压i5。一般游戏玩家和adobe至少要达到i5级别。这里一定要注意啦！同代CPU中低压和标压的性能差别是非常巨大的，以后有导购跟你介绍：“看，这款可是I5芯噢！“ 你就可以果断反击：“尼玛一个低压的I5也想忽悠我！当我小白呀！ ” ^_^ 看到这里想必大家已经明白了吧？ 举个例子，同样是I7 四核八线程的CPU，其性能也会有很大区别的噢，这一点大家在选购电脑时一定要注意注意再注意。（PS，还有一款末尾带K的如 I7-6700K代表的是顶级台式机CPU噢 ）</p>
-
-<h3>显卡（核显和独显）</h3>
-
-<p>核心显卡：使用最多的显卡，集成在CPU中的显卡，现在大多达到低端独显的水平，
-可以满足多数非游戏玩家的需求。型号为HDXXXX，但不能仅根据HD后一位数字判断是第几代。 <!--more-->
-<img src="http://i.imgur.com/CAil7Ls.jpg" alt="" />
-独立显卡：非必要部件，主流一线品牌有AMD、NVIDIA两家。
-虽然这两家互相看不顺眼，但是在移动端笔记本方面，AMD还是落后于NVIDIA的，发起热来连它自己都怕，所以AMD的价格会稍微低一些。笔记本中目前主流的NVIDIA独立显卡等级从入门级到高级依次为：GT 940M，GTX950M，GTX960M，GTX965M，GTX 970M，GTX980M和台式机级GTX980。上重点，除了显卡的级别，玩游戏，做设计其实还有一个很重要的参数，那就是显存。拿游戏举例，LOL这种GTX 950M就足够让你得到顶级游戏体验，但如果想要在侠盗猎车5上达到同样的视觉体验，还是得买个至少搭载GTX965M 4G GDDR5的噢，这里的4G GDDR5代表的是3G显存。</p>
-
-<h3>内存（对性能影响较小）</h3>
-
-<p>小白没人指点的话不太会注意这个，若其他各项参数都很好，价格也便宜，那多半是内存少&hellip;&hellip;被坑了还以为自己占了多大便宜。电脑运行速度快不快就指望它了。现在一般标配是4G，在购买电脑时如果没有预留第二个内存插槽，建议直接买8G内存的版本。很多游戏玩家可能都遇到这种问题，明明其他配置老高了，为毛还是卡的跟狗一样，那有极大概率就是可用内存不足导致的。你想想，光一个系统就用去近2G内存，还有一堆诸如QQ、浏览器等乱七八糟的软件，如果你的内存只有4G，不卡才怪了！</p>
-
-<h3>硬盘（关乎你能存多少部***）</h3>
-
-<p>这是所谓放系统的地方，其好坏对系统运行速度影响很大，想想你16G的手机卡成狗的样子就知道了。现在的硬盘大致分为三种：机械硬盘、固态硬盘和混合硬盘。固态没啥好说的，三星、镁光等都还不错。这里重点说一下机械硬盘，别看都是500G或者1TB，和CPU细分低压标压一样也是有坑可挖的。好家伙，存储空间一样大，一个5400转速，一个7200转速价格能一样？所以买的时候万一有机械硬盘还是问清楚比较好。</p>
-
-<h3>屏幕（最主要的输出）</h3>
-
-<p><img src="http://i.imgur.com/Ytmwlr9.jpg" alt="" />
-可以这么说，屏幕从古到今都是笔记本行当里最黑的那块之一，也是笔记本厂家主要利润来源之一。一块屏，从10几美元到几百美元不等。不同牌子的屏幕，价格天差地别，即便是同牌子，还有好屏，次屏之分。水太深不多表，这里给大家几个看屏幕好坏的参数可做参考：（1）色域——直接决定画面色彩好坏，低于50色域以下的屏幕还是算了吧，一般70以上色域的屏幕还是较为理想的。（2）分辨率——目前主流都是1080P了，也有最新科技的4K屏，通俗的说4K屏就是4096×2160的像素分辨率的，普通玩家基本用不上。（3）刷新速度——越高越好O(∩_∩)O，低了会感觉老闪屏。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[java多线程-Runnable、thread、callable区别]]></title>
-    <link href="http://wentao1990.github.io/blog/2014/07/19/java-multithreading/"/>
-    <updated>2014-07-19T20:41:08+08:00</updated>
-    <id>http://wentao1990.github.io/blog/2014/07/19/java-multithreading</id>
-    <content type="html"><![CDATA[<h3>多线程编程优点：</h3>
-
-<h4>进程之间不能共享内存，但线程之间共享内存非常容易。</h4>
-
-<h4>系统创建线程所分配的资源相对创建进程而言，代价非常小。</h4>
-
-<h3>Java中实现多线程有3种方法：</h3>
-
-<h4>继承Thread类</h4>
-
-<h4>实现Runnable接口</h4>
-
-<h4>实现Callable接口(参考&lt;Java编程思想(第4版)>  21.2.4章节，原来一直以为是2种，后来发现是3种)</h4>
-
-<p>第一种实现方法—继承Thread类
-继承Thread类，需要覆盖方法 run()方法，在创建Thread类的子类时需要重写 run(),加入线程所要执行的代即可。 <!--more--></p>
-
-<p>下边是一个卖票程序小例子：</p>
-
-<pre><code>package ThreadOne;
-
-public class ThreadByExtends {
-
-public static void main(String[] args) {
-    // TODO Auto-generated method stub
-    new MyThread().start();
-    new MyThread().start();
-    new MyThread().start();
-}
-
-}
-
-class MyThread extends Thread {
-private int ticket = 5;
-
-public void run() {
-
-    for (int i = 0; i &lt; 10; i++) {
-        if (ticket &gt; 0) {
-            System.out.println("车票第" + ticket-- + "张");
-        }
-    }
-  }
-
-}
-</code></pre>
-
-<p>输出结果为：
-<img src="http://i.imgur.com/YyugxSw.png" alt="" />
-这样代码的写法简单，符合大家的习惯，但是直接继承Thread类有一个很大的缺点，因为“java类的继承是单一的，extends后面只能指定一个父类”，所有如果当前类继承Thread类之后就不可以继承其他类。如果我们的类已经从一个类继承（如Swing继承自 Panle 类、JFram类等），则无法再继承 Thread 类，这时如果我们又不想建立一个新的类，应该怎么办呢？</p>
-
-<h4>第二种实现方法—实现Runnable接口</h4>
-
-<p>如果要实现多继承就得要用implements，Java 提供了接口 java.lang.Runnable 来解决上边的问题。</p>
-
-<p>Runnable是可以共享数据的，多个Thread可以同时加载一个Runnable，当各自Thread获得CPU时间片的时候开始运行Runnable，Runnable里面的资源是被共享的，所以使用Runnable更加的灵活。</p>
-
-<p>下边还是卖票例子：
-    package ThreadOne;</p>
-
-<pre><code>public class ThreadRunnable {
-
-public static void main(String[] args) {
-    MyThread1 myThread = new MyThread1();
-    new Thread(myThread).start();
-    new Thread(myThread).start();
-    }
-}
-
-class MyThread1 implements Runnable {
-
-private int ticket = 5;
-
-public void run() {
-    for (int i = 0; i &lt; 10; i++) {
-        if (ticket &gt; 0) {
-            System.out.println("ticket = " + ticket--);
-         }
-        }
-    }
-
-}
-</code></pre>
-
-<p>输出结果：
-<img src="http://i.imgur.com/zkJqH5x.png" alt="" /></p>
-
-<h4>1.在第二种方法（Runnable）中，ticket输出的顺序并不是54321，这是因为线程执行的时机难以预测，ticket&ndash;并不是原子操作(关于原子操作后边会有详解)。</h4>
-
-<h4>2.在第一种方法中，我们new了3个Thread对象，即三个线程分别执行三个对象中的代码，因此便是三个线程去独立地完成卖票的任务；而在第二种方法中，我们同样也new了3个Thread对象，但只有一个Runnable对象，3个Thread对象共享这个Runnable对象中的代码，因此，便会出现3个线程共同完成卖票任务的结果。如果我们new出3个Runnable对象，作为参数分别传入3个Thread对象中，那么3个线程便会独立执行各自Runnable对象中的代码，即3个线程各自卖5张票。</h4>
-
-<h4>3.在第二种方法中，由于3个Thread对象共同执行一个Runnable对象中的代码，因此可能会造成线程的不安全，比如可能ticket会输出-1（如果我们System.out&hellip;.语句前加上线程休眠操作，该情况将很有可能出现），这种情况的出现是由于，一个线程在判断ticket为1>0后，还没有来得及减1，另一个线程已经将ticket减1，变为了0，那么接下来之前的线程再将ticket减1，便得到了-1。这就需要加入同步操作（即互斥锁），确保同一时刻只有一个线程在执行每次for循环中的操作。而在第一种方法中，并不需要加入同步操作，因为每个线程执行自己Thread对象中的代码，不存在多个线程共同执行同一个方法的情况。</h4>
-
-<h3>第三种—实现Callable接口</h3>
-
-<p>Runnable是执行工作的独立任务，但是它不返回任何值。如果你希望任务在完成的能返回一个值，那么可以实现Callable接口而不是Runnable接口。在Java SE5中引入的Callable是一种具有类型参数的泛型，它的参数类型表示的是从方法call()(不是run())中返回的值。</p>
-
-<p>例子如下：
-    package ThreadOne;</p>
-
-<pre><code>import java.awt.Panel;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
-
-public class ThreadCallable extends Panel {
-
-public static void main(String[] args) {
-
-    MyThread2 myThread2 = new MyThread2();
-
-    FutureTask&lt;Integer&gt; futureTask = new FutureTask&lt;&gt;(myThread2);
-    new Thread(futureTask, "线程名：有返回值的线程2").start();
-
-    try {
-        System.out.println("子线程的返回值：" + futureTask.get());
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-  }
-}
-
-class MyThread2 implements Callable&lt;Integer&gt; {
-
-public Integer call() throws Exception {
-    System.out.println("当前线程名——" + Thread.currentThread().getName());
-    int i = 0;
-    for (; i &lt; 5; i++) {
-        System.out.println("循环变量i的值：" + i);
-    }
-
-    return i;
-  }
-
-}
-</code></pre>
-
-<p>运行结果如下：</p>
-
-<p><img src="http://i.imgur.com/wI42btd.png" alt="" /></p>
-
-<h3>总结</h3>
-
-<p>实现Runnable接口相比继承Thread类有如下优势：</p>
-
-<p>可以避免由于Java的单继承特性而带来的局限；
-增强程序的健壮性，代码能够被多个线程共享，代码与数据是独立的；
-适合多个相同程序代码的线程区处理同一资源的情况。</p>
-
-<p>实现Runnable接口和实现Callable接口的区别:</p>
-
-<p>Runnable是自从java1.1就有了，而Callable是1.5之后才加上去的
-Callable规定的方法是call(),Runnable规定的方法是run()
-Callable的任务执行后可返回值，而Runnable的任务是不能返回值(是void)
-call方法可以抛出异常，run方法不可以
-运行Callable任务可以拿到一个Future对象，表示异步计算的结果。它提供了检查计算是否完成的方法，以等待计算的完成，并检索计算的结果。通过Future对象可以了解任务执行情况，可取消任务的执行，还可获取执行结果。
-加入线程池运行，Runnable使用ExecutorService的execute方法，Callable使用submit方法。</p>
-
-<p>参考</p>
-
-<p><a href="http://blog.csdn.net/ns_code/article/details/17161237">http://blog.csdn.net/ns_code/article/details/17161237</a></p>
-
-<p><a href="http://tonl.iteye.com/blog/1874187">http://tonl.iteye.com/blog/1874187</a></p>
 ]]></content>
   </entry>
   

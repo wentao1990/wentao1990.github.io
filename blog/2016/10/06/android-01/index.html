@@ -1,0 +1,343 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Android第三方网络请求框架总结 - 临渊羡鱼不如退而结网</title>
+  <meta name="author" content="武文涛">
+
+  
+  <meta name="description" content="android-async-http （https://github.com/loopj/android-async-http） 功能： •基于HttpClient； •在UI线程外，异步进行http请求； •在匿名回调中处理请求结果， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://wentao1990.github.io/blog/2016/10/06/android-01/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="临渊羡鱼不如退而结网" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">临渊羡鱼不如退而结网</a></h1>
+  
+    <h2>你所浪费的今天,是昨天死去的人奢望的明天;你所厌恶的现在,是未来的你回不去的曾经;</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.baidu.com" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="wentao1990.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">文章</a></li>
+  <li><a href="/blog/archives">档案</a></li>
+  <li><a href="/aboutme">关于</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Android第三方网络请求框架总结</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-10-06T22:36:35+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:36 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h4>android-async-http （<a href="https://github.com/loopj/android-async-http">https://github.com/loopj/android-async-http</a>）</h4>
+
+<p>功能：</p>
+
+<p>•基于HttpClient；</p>
+
+<p>•在UI线程外，异步进行http请求；</p>
+
+<p>•在匿名回调中处理请求结果，callBback使用了Android的Handler发送消息机制在创建它的线程中执行；</p>
+
+<p>•自动智能请求重试；</p>
+
+<p>•持久化cookie存储，保存cookie到应用程序的SharedPreferences中；</p>
+
+<p>开发者使用：</p>
+
+<p>作者已经停止对该项目维护，在android 5.0 以后，不推荐使用HttpClient,所以不推荐使用此库。</p>
+
+<h4>Volley  （<a href="https://github.com/stormzhang/AndroidVolley">https://github.com/stormzhang/AndroidVolley</a>）</h4>
+
+<p>功能：</p>
+
+<p>•基于HttpUrlConnection;</p>
+
+<p>•封装了URL图片加载框架，支持图片加载；</p>
+
+<p>•网络请求的排序，优先级处理</p>
+
+<p>•缓存</p>
+
+<p>•多级别取消请求</p>
+
+<p>•Activity和生命周期的联动（Activity结束时同时取消所有网络请求）</p>
+
+<p>性能：</p>
+
+<p>可扩展性好：可支持HttpClient、HttpUrlConnection和OKHttp;</p>
+
+<p>开发者使用：</p>
+
+<p>封装性好，简单易用。</p>
+
+<p>应用场景：</p>
+
+<p>• 适合简单轻量级网络交互：网络请求频繁，传输数据小；</p>
+
+<p>• 不能进行大数据量的网络操作（下载视频、音频等），所以不适合用来上传文件；</p>
+
+<p>备注：Volley的request和response都是吧数据放到byte数组里，不支持输入输出流，把数据放到数组中，如果大文件多了，数组就会非常的大
+且多，消耗内存，所以不如直接返回Stream那样具备可操作性，比如下载一个大文件，不可能把整个文件都缓存到内存之后在写到文件里。</p>
+
+<h4>OKHttp （<a href="https://github.com/square/okhttp">https://github.com/square/okhttp</a>）</h4>
+
+<p>功能：</p>
+
+<p>• 高性能Http请求库，可以把它理解成是一个封装之后类似HttpUrlConnection的东西，属于同级并不是基于上述二者；</p>
+
+<p>• 支持SPDY，共享同一个Socket来处理同一个服务器的所有请求；</p>
+
+<p>• 支持http 2.0、websocket；</p>
+
+<p>• 支持同步、异步；</p>
+
+<p>• 封装了线程池、数据转换、参数使用、错误处理等；</p>
+
+<p>• 无缝的支持GZIP来减少数据流量；</p>
+
+<p>• 缓存响应数据来减少重复的网络请求</p>
+
+<p>• 能从很多常用的连接问题中自动恢复；</p>
+
+<p>• 解决了代理服务器问题和SSL握手失败问题；</p>
+
+<p>性能：</p>
+
+<p>基于NIO 和 Okio，所有性能更好：请求、处理速度快（IO:阻塞式； NIO：非阻塞式；Okio 是 Square 公司基于 IO 和NIO 基础上做的一个更简单、高效处理数据流的一个库）；</p>
+
+<p>开发者使用：</p>
+
+<p>• Api调用更加简单、方便；</p>
+
+<p>• 使用时需要进行多一层封装；</p>
+
+<p>应用场景：</p>
+
+<p>重量级网络交互场景：网络请求频繁、传输数据量大（其实更推荐Retrofit,反正Retrofit是基于 OKHttp的）；</p>
+
+<p>备注：</p>
+
+<p>Android 4.4 的源码中可以看到，HttpUrlConnection已经替换成OkHttp实现了，所以我们更有理由相信OkHttp的强大；</p>
+
+<h4>Retrofit （<a href="https://github.com/square/retrofit">https://github.com/square/retrofit</a>）</h4>
+
+<p>功能：</p>
+
+<p>• 基于OkHttp</p>
+
+<p>• RESTful Api 设计风格</p>
+
+<p>• 支持同步、异步；</p>
+
+<p>• 通过注解配置请求（包括请求方法、请求参数、请求头、返回值等）</p>
+
+<p>• 可以搭配多种Connverter 将获得的数据解析&amp;序列化</p>
+
+<p>• 支持Gson(默认）、Jackson 、Protobuf等</p>
+
+<p>• 支持对 RXjava 的支持；</p>
+
+<p>性能：</p>
+
+<p>• 性能最好，处理最快；</p>
+
+<p>• 扩展性差（高度封装所带来的必然后果；解析数据都是使用统一的converter，如果服务器不能给出统一的API形式，将很难进行处理。</p>
+
+<p>开发者使用：</p>
+
+<p>• 简洁易用（RestfulAPI设计风格）；</p>
+
+<p>• 代码简化（更加高度的封装和注解用法）；</p>
+
+<p>• 解耦的更彻底、职责更细分；</p>
+
+<p>• 易于其它框架联合使用（RXjava）；</p>
+
+<p>• 使用方法较多，原理复杂，存在一定门槛；</p>
+
+<p>应用场景：</p>
+
+<p>任何场景下优先选择，特别是：后台API遵循RESTful的风格&amp;项目中有使用RXjava;</p>
+
+<h4>总结：</h4>
+
+<p>网络请求库没有说哪个最好，只有最合适，只有真的了解其使用场景才能很好的选择网络请求库。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">武文涛</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2016-10-06T22:36:35+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:36 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/android/'>android</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+     <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more">分享到：</a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间">QQ空间</a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博">新浪微博</a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博">腾讯微博</a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信">微信</a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网">人人网</a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":["mshare","qzone","tsina","bdysc","weixin","renren","tqf","tieba","douban","bdhome","sqq","ty","evernotecn","copy"],"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{"bdSize":16},"image":{"viewList":["qzone","tsina","tqq","weixin","renren"],"viewText":"分享到：","viewSize":"24"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","weixin","renren"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2016/08/09/android-01/" title="Previous Post: android性能优化">&laquo; android性能优化</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2017/03/01/android-mvp/" title="Next Post: Android开发之架构模式选择">Android开发之架构模式选择 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section> 
+  <h1>文章分类</h1> 
+  <ul id="categories"> 
+    <li class='category'><a href='/blog/categories/android/'>android (25)</a></li>
+<li class='category'><a href='/blog/categories/hardware/'>hardware (1)</a></li>
+<li class='category'><a href='/blog/categories/java/'>java (1)</a></li>
+<li class='category'><a href='/blog/categories/mysql/'>mysql (1)</a></li>
+<li class='category'><a href='/blog/categories/server/'>server (1)</a></li>
+<li class='category'><a href='/blog/categories/unity3d/'>unity3d (1)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (2)</a></li>
+ 
+  </ul> 
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2017/03/01/android-mvp/">Android开发之架构模式选择</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/10/06/android-01/">Android第三方网络请求框架总结</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/08/09/android-01/">Android性能优化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/08/07/android-performs1/">转：Android最佳性能实践——合理管理内存</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/07/19/server/">如何快速搭建一个完整的移动直播系统？</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2017 - 武文涛 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -128,6 +128,303 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2016/10/06/android-01/">Android第三方网络请求框架总结</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-10-06T22:36:35+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:36 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h4>android-async-http （<a href="https://github.com/loopj/android-async-http">https://github.com/loopj/android-async-http</a>）</h4>
+
+<p>功能：</p>
+
+<p>•基于HttpClient；</p>
+
+<p>•在UI线程外，异步进行http请求；</p>
+
+<p>•在匿名回调中处理请求结果，callBback使用了Android的Handler发送消息机制在创建它的线程中执行；</p>
+
+<p>•自动智能请求重试；</p>
+
+<p>•持久化cookie存储，保存cookie到应用程序的SharedPreferences中；</p>
+
+<p>开发者使用：</p>
+
+<p>作者已经停止对该项目维护，在android 5.0 以后，不推荐使用HttpClient,所以不推荐使用此库。</p>
+
+<h4>Volley  （<a href="https://github.com/stormzhang/AndroidVolley">https://github.com/stormzhang/AndroidVolley</a>）</h4>
+
+<p>功能：</p>
+
+<p>•基于HttpUrlConnection;</p>
+
+<p>•封装了URL图片加载框架，支持图片加载；</p>
+
+<p>•网络请求的排序，优先级处理</p>
+
+<p>•缓存</p>
+
+<p>•多级别取消请求</p>
+
+<p>•Activity和生命周期的联动（Activity结束时同时取消所有网络请求）</p>
+
+<p>性能：</p>
+
+<p>可扩展性好：可支持HttpClient、HttpUrlConnection和OKHttp;</p>
+
+<p>开发者使用：</p>
+
+<p>封装性好，简单易用。</p>
+
+<p>应用场景：</p>
+
+<p>• 适合简单轻量级网络交互：网络请求频繁，传输数据小；</p>
+
+<p>• 不能进行大数据量的网络操作（下载视频、音频等），所以不适合用来上传文件；</p>
+
+<p>备注：Volley的request和response都是吧数据放到byte数组里，不支持输入输出流，把数据放到数组中，如果大文件多了，数组就会非常的大
+且多，消耗内存，所以不如直接返回Stream那样具备可操作性，比如下载一个大文件，不可能把整个文件都缓存到内存之后在写到文件里。</p>
+
+<h4>OKHttp （<a href="https://github.com/square/okhttp">https://github.com/square/okhttp</a>）</h4>
+
+<p>功能：</p>
+
+<p>• 高性能Http请求库，可以把它理解成是一个封装之后类似HttpUrlConnection的东西，属于同级并不是基于上述二者；</p>
+
+<p>• 支持SPDY，共享同一个Socket来处理同一个服务器的所有请求；</p>
+
+<p>• 支持http 2.0、websocket；</p>
+
+<p>• 支持同步、异步；</p>
+
+<p>• 封装了线程池、数据转换、参数使用、错误处理等；</p>
+
+<p>• 无缝的支持GZIP来减少数据流量；</p>
+
+<p>• 缓存响应数据来减少重复的网络请求</p>
+
+<p>• 能从很多常用的连接问题中自动恢复；</p>
+
+<p>• 解决了代理服务器问题和SSL握手失败问题；</p>
+
+<p>性能：</p>
+
+<p>基于NIO 和 Okio，所有性能更好：请求、处理速度快（IO:阻塞式； NIO：非阻塞式；Okio 是 Square 公司基于 IO 和NIO 基础上做的一个更简单、高效处理数据流的一个库）；</p>
+
+<p>开发者使用：</p>
+
+<p>• Api调用更加简单、方便；</p>
+
+<p>• 使用时需要进行多一层封装；</p>
+
+<p>应用场景：</p>
+
+<p>重量级网络交互场景：网络请求频繁、传输数据量大（其实更推荐Retrofit,反正Retrofit是基于 OKHttp的）；</p>
+
+<p>备注：</p>
+
+<p>Android 4.4 的源码中可以看到，HttpUrlConnection已经替换成OkHttp实现了，所以我们更有理由相信OkHttp的强大；</p>
+
+<h4>Retrofit （<a href="https://github.com/square/retrofit">https://github.com/square/retrofit</a>）</h4>
+
+<p>功能：</p>
+
+<p>• 基于OkHttp</p>
+
+<p>• RESTful Api 设计风格</p>
+
+<p>• 支持同步、异步；</p>
+
+<p>• 通过注解配置请求（包括请求方法、请求参数、请求头、返回值等）</p>
+
+<p>• 可以搭配多种Connverter 将获得的数据解析&amp;序列化</p>
+
+<p>• 支持Gson(默认）、Jackson 、Protobuf等</p>
+
+<p>• 支持对 RXjava 的支持；</p>
+
+<p>性能：</p>
+
+<p>• 性能最好，处理最快；</p>
+
+<p>• 扩展性差（高度封装所带来的必然后果；解析数据都是使用统一的converter，如果服务器不能给出统一的API形式，将很难进行处理。</p>
+
+<p>开发者使用：</p>
+
+<p>• 简洁易用（RestfulAPI设计风格）；</p>
+
+<p>• 代码简化（更加高度的封装和注解用法）；</p>
+
+<p>• 解耦的更彻底、职责更细分；</p>
+
+<p>• 易于其它框架联合使用（RXjava）；</p>
+
+<p>• 使用方法较多，原理复杂，存在一定门槛；</p>
+
+<p>应用场景：</p>
+
+<p>任何场景下优先选择，特别是：后台API遵循RESTful的风格&amp;项目中有使用RXjava;</p>
+
+<h4>总结：</h4>
+
+<p>网络请求库没有说哪个最好，只有最合适，只有真的了解其使用场景才能很好的选择网络请求库。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/08/09/android-01/">Android性能优化</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-08-09T19:50:35+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>7:50 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h4>网络相关优化</h4>
+
+<p>1.http头信息带Cache-Control域，确定缓存过期时间，防止重复请求。</p>
+
+<p>2.直接用IP直连，不用域名，策略性更新本地IP列表。-DNS解析过程耗时百毫秒左右，并且还有可能存在DNS劫持。</p>
+
+<p>3.图片、JS、CSS等静态资源，采用CDN（7牛之类的第三方服务已经搭建部署好了）</p>
+
+<p>4.全局图片处理采用漏斗模型全局掌控，所请求的图片大小依照业务大小提供（最大不超过屏幕分辨率需要），如果请求原图，也不要超过 GL10.GL_MAX_TEXTURE_SIZE。</p>
+
+<p>5.全局缩略图直接采用webp，在尽可能不损失图片质量的前提下，图片大小与png缩小30%~70%。</p>
+
+<p>6.如果列表里的缩略图服务器处理好的小图，可以考虑直接在列表数据请求中，直接以base64在列表数据中直接带上图片（国内还比较少，海外有些这种做法，好像web端比较常见）</p>
+
+<p>7.轮询或者socket心跳采用系统 AlarmManager提供的闹钟服务来做，保证在系统休眠的时候cpu可以得到休眠，在需要唤醒时可以唤醒（持有cpu唤醒锁）</p>
+
+<p>8.可以通过将零散的网路的请求打包进行一次操作，避免过多的无线信号引起电量消耗。</p>
+
+<h4>传输数据格式选择</h4>
+
+<p>1.如果是需要全局数据的，考虑使用Protobuffers(序列化反序列化性能高于Json)，并且考虑使用 nano protocol buffer。</p>
+
+<p>2.如果传输回来的数据不需要全量读取，考虑使用 Flatbuffers (序列化反序列化几乎不耗时，耗时是在读取对象时(就这一部分如果需要优化，可以参看 Flatbuffer Use Optimize</p>
+
+<h4>输入流</h4>
+
+<p>使用具有缓存策略的输入流</p>
+
+<pre><code>   原            建议替换为
+InputStream    BufferedInputStream
+Reader         BufferedReader
+</code></pre>
+
+<h4>数据结构</h4>
+
+<p>如果已知大概需要多大，就直接给初始大小，减少扩容时额外开销。</p>
+
+<p>•ArrayList :里面就一数据，内存小，有序取值快，扩容效率低。</p>
+
+<p>•LinkedList :里面就一双向链表，内存大，随机插入删除快，扩容率高。</p>
+
+<p>•HashSet :里面就HashMap,用key对外存储，目的就是不允许重复元素。</p>
+
+<p>•ConcruuenHashMap :线程安全，采用细分锁，锁颗粒更小，并发性能更优.</p>
+
+<p>•Collections.synchronizedMap : 线程安全，采用当前对象作为锁，颗粒较大，并发性能较差。</p>
+
+<p>•SparseArray、 SparseBooleanArray、 SparseIntArray: 针对Key为 Int、 Boolean进行了优化，采用二分法查找，简单数组存储。相比 HashMap而言， HashMap每添加一个数据，大约会需要申请额外的32字节的数据，因此 Sparsexxx在内存方面的开销会小很多。</p>
+
+<h4>编码习惯</h4>
+
+<p>1.尽量简化，不做没必要的操作。</p>
+
+<p>2.尽量避免分配内存（创建对象）。</p>
+
+<p>3.如果你确定不需要访问类成员，就把方法static，这样调用速度可以提升15%~20%，因为不需要切换对象状态。</p>
+
+<p>4.如果某个参数是常量，要加上static final ,这样可以让Class首次初始化的时候不用调用<clinit>来创建 static方法，而是在编译时就直接将常量替换代码中使用的位置。</p>
+
+<p>5.Android开发中，类内尽量避免通过 get/set访问成员变量，虽然这在语言的开发中是一个好的习惯，但是Android虚拟机中，对方法的调用开销远大于对变量的直接访问。在没有JIT的情况下，直接的变量访问比调用方法快3倍，在JIT下，直接的变量访问更是比调用方法快7倍!</p>
+
+<p>6.当内部类需要访问外部类的私有 方法/变量时，考虑将这些外部类的私有 方法/变量改用包可见的方式。首先在编写代码的时候，通过内部类访问外部类的私有 方法/变量是合法的，但是在编译的时候为了满足这个会将需要被内部类访问的私有 方法/变量封装一层包可见的方法，实现让内部类访问这些私有的 方法/变量，根据前面我们有提到说方法的调用开销大于变量的调用，因此这样使得性能变差，所以我们在编码的时候可以考虑直接将需要被内部类调用的外部类私有 方法/变量，改为包可见。</p>
+
+<p>7.尽量少使用 float。在很多现代设备中， double的性能与 float的性能几乎没有差别，但是从大小上面 double是 float的两倍的大小。</p>
+
+<p>8.尽量考虑使用整型而非浮点数，在较好的Android设备中，浮点数比整型慢一倍。</p>
+
+<p>9.尽量不要使用除法操作，有很多处理器有乘法器，但是没有除法器，也就是说在这些设备中需要将除法分解为其他的计算方式速度会比较慢。</p>
+
+<p>10.尽量使用系统sdk中提供的方法，而非自己去实现。如 String.indexOf()相关的API，Dalvik将会替换为内部方法； System.arraycopy()方法在Nexus One手机上，会比我们上层写的类似方法的执行速度快9倍。</p>
+
+<p>11.谨慎编写native，性能不一定更好，Native并不是用于使得性能更好，而是用于有些已经存在的库是使用native语言实现的，我们需要引入Android，这时才使用。1) 需要多出开销在维持Java-native的通信；2) 在native中创建的资源由于在native heap上面，因此需要主动的释放；3) 需要对不同的处理器架构进行支持，存在明显的兼容性问题需要解决。</p>
+
+<p>12.在没有JIT的设备中，面向接口编程的模式(如 Map map)，相比直接访问对象类(如 HashMap map)，会慢6%，但是在存在JIT的设备中，两者的速度差不多。但是内存占用方面面向接口变成会消耗更多内存，因此如果你的面向接口编程不是十分的必要的情况下可以考虑不用。</p>
+
+<p>13.在没有JIT的设备中，访问本地化变量相对与成员变量会快20%，但是在存在JIT的设备中，两者速度差不多。</p>
+
+<h4>遍历优化</h4>
+
+<p>尽量使用 Iterable而不是通过长度判断来进行遍历。</p>
+
+<pre><code>// 这种性能是最差的，JIT也无法对其优化。
+public void zero() {
+    int sum = 0;
+    for (int i = 0; i &lt; mArray.length; ++i) {
+        sum += mArray[i].mSplat;
+    }
+}
+// 相对zero()来说，这种写法会更快些，在存在JIT的情况下速度几乎和two()速度一样快。
+public void one() {
+    int sum = 0;
+    // 1) 通过本地化变量，减少查询，在不存在JIT的手机下，优化较明显。
+    Foo[] localArray = mArray;
+    // 2) 获取队列长度，减少每次遍历访问变量的长度，有效优化。
+    int len = localArray.length;
+    for (int i = 0; i &lt; len; ++i) {
+        sum += localArray[i].mSplat;
+    }
+}
+// 在无JIT的设备中，是最快的遍历方式，在存在JIT的设备中，与one()差不多快。
+public void two() {
+    int sum = 0;
+    for (Foo a : mArray) {
+        sum += a.mSplat;
+    }
+}
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2016/08/07/android-performs1/">转：Android最佳性能实践——合理管理内存</a></h1>
     
     
@@ -410,84 +707,6 @@ comments: true</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/07/09/android-safety/">浅谈App安全</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-07-09T20:52:25+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:52 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h5>前言：大多数开发者认为，iOS系统的封闭性使APP也更加安全，事实上，根据国外某安全服务商的最新调查显示：iOS前100名付费应用中87%均遭黑客破解。内购破解、源代码破解、本地数据窃取、本地数据窃取等手段时刻都在威胁着移动APP的安全。由于现在智能手机的普及度越来越高，APP的安全问题也越来越多的曝光在群众视野之内，仔细查阅下资料，真是与PC端程序有过之而无不及。本文楼主就以Android应用APP为例，介绍下破解和防破解的一些常用手段。</h5>
-
-<p>（早在大学期间，我就和室友一起编写过一些游戏脚本兜售给玩家，以此赚取一些生活费用。那时我们用VB语言编写一些简单的游戏挂机辅助软件，就是模拟按键操作，由于当时对行业认知有限，我们编写的软件只是简单的加了个Protect外壳就投入到市场上，后来发现淘宝上有三五家商家在兜售我们的破解软件。）</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/07/09/android-safety/">阅读更多 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/07/05/network-port/">熟悉网络端口</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-07-05T22:55:10+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>10:55 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>计算机中的“端口”是英文port意译，可以认为计算机与外界通信交流的出口。其硬件领域的端口又称接口，如USB端口、串口端口，软件领域的端口一般指网络中面向连接服务和无连接服务的通信协议端口是—种抽象的软件结构，包括一些数据结构和I/O基本输入输出缓冲区，这类端口也是黑客们入侵计算机的途径之一。 在一台计算机中最多有65536个端口，我们可以按照端口号将他们划分为以下三类。</p>
-
-<h3>1、公认端口</h3>
-
-<p>从O到1023，它们紧密绑定(binding)于一服务．通常这些端口的通信明确表明了某种服务的协议，例如．80端口实际上总是月于HTTPP通信。</p>
-
-<h3>2、注册端口</h3>
-
-<p>从1024到49151，他们松散的绑定于一服务。也就是说有许多服务绑定于这些端口，这些端口同样用于许多其他目的，例如：许多系统处理动态端口从1024左右开始．</p>
-
-<h3>3、动态和/或私有端口 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/07/05/network-port/">阅读更多 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -501,7 +720,7 @@ comments: true</p>
     <section> 
   <h1>文章分类</h1> 
   <ul id="categories"> 
-    <li class='category'><a href='/blog/categories/android/'>android (23)</a></li>
+    <li class='category'><a href='/blog/categories/android/'>android (25)</a></li>
 <li class='category'><a href='/blog/categories/hardware/'>hardware (1)</a></li>
 <li class='category'><a href='/blog/categories/java/'>java (1)</a></li>
 <li class='category'><a href='/blog/categories/mysql/'>mysql (1)</a></li>
@@ -519,19 +738,19 @@ comments: true</p>
       </li>
     
       <li class="post">
+        <a href="/blog/2016/10/06/android-01/">Android第三方网络请求框架总结</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/08/09/android-01/">Android性能优化</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/08/07/android-performs1/">转：Android最佳性能实践——合理管理内存</a>
       </li>
     
       <li class="post">
         <a href="/blog/2016/07/19/server/">如何快速搭建一个完整的移动直播系统？</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/05/23/android-server/">Service与 IntentService 的区别与使用场景</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/04/08/android-imageview/">自定义任意形状的ImageView</a>
       </li>
     
   </ul>

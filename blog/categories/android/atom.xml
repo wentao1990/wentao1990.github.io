@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Android | 临渊羡鱼不如退而结网]]></title>
   <link href="http://wentao1990.github.io/blog/categories/android/atom.xml" rel="self"/>
   <link href="http://wentao1990.github.io/"/>
-  <updated>2017-03-13T01:29:44+08:00</updated>
+  <updated>2017-03-17T23:28:17+08:00</updated>
   <id>http://wentao1990.github.io/</id>
   <author>
     <name><![CDATA[武文涛]]></name>
@@ -163,6 +163,263 @@
 <p>这里以 <strong>APP</strong> 开发为例，如果是一款轻量级、业务逻辑不是很复杂的 <strong>APP</strong> ，那么使用 <strong>MVC</strong> 模式足够满足需求，因为代码量不大，不至于变成臃肿的 <strong>MVC</strong> ，造成不好测试及维护问题。</p>
 
 <p>如果，开发的是一款业务逻辑复杂的 <strong>超级APP</strong> ,那么使用 <strong>MVC</strong> 模式进行开发，就会出现上面所列出的那些问题。这种情况下使用<strong>MVP</strong> 架构模式就更为妥当。有些 <strong>APP</strong> 甚至只有一个 <strong>ACTIVITY</strong>，在性能和反编译安全问题都有提升。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Android第三方网络请求框架总结]]></title>
+    <link href="http://wentao1990.github.io/blog/2016/10/06/android-01/"/>
+    <updated>2016-10-06T22:36:35+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2016/10/06/android-01</id>
+    <content type="html"><![CDATA[<h4>android-async-http （<a href="https://github.com/loopj/android-async-http">https://github.com/loopj/android-async-http</a>）</h4>
+
+<p>功能：</p>
+
+<p>•基于HttpClient；</p>
+
+<p>•在UI线程外，异步进行http请求；</p>
+
+<p>•在匿名回调中处理请求结果，callBback使用了Android的Handler发送消息机制在创建它的线程中执行；</p>
+
+<p>•自动智能请求重试；</p>
+
+<p>•持久化cookie存储，保存cookie到应用程序的SharedPreferences中；</p>
+
+<p>开发者使用：</p>
+
+<p>作者已经停止对该项目维护，在android 5.0 以后，不推荐使用HttpClient,所以不推荐使用此库。</p>
+
+<h4>Volley  （<a href="https://github.com/stormzhang/AndroidVolley">https://github.com/stormzhang/AndroidVolley</a>）</h4>
+
+<p>功能：</p>
+
+<p>•基于HttpUrlConnection;</p>
+
+<p>•封装了URL图片加载框架，支持图片加载；</p>
+
+<p>•网络请求的排序，优先级处理</p>
+
+<p>•缓存</p>
+
+<p>•多级别取消请求</p>
+
+<p>•Activity和生命周期的联动（Activity结束时同时取消所有网络请求）</p>
+
+<p>性能：</p>
+
+<p>可扩展性好：可支持HttpClient、HttpUrlConnection和OKHttp;</p>
+
+<p>开发者使用：</p>
+
+<p>封装性好，简单易用。</p>
+
+<p>应用场景：</p>
+
+<p>• 适合简单轻量级网络交互：网络请求频繁，传输数据小；</p>
+
+<p>• 不能进行大数据量的网络操作（下载视频、音频等），所以不适合用来上传文件；</p>
+
+<p>备注：Volley的request和response都是吧数据放到byte数组里，不支持输入输出流，把数据放到数组中，如果大文件多了，数组就会非常的大
+且多，消耗内存，所以不如直接返回Stream那样具备可操作性，比如下载一个大文件，不可能把整个文件都缓存到内存之后在写到文件里。</p>
+
+<h4>OKHttp （<a href="https://github.com/square/okhttp">https://github.com/square/okhttp</a>）</h4>
+
+<p>功能：</p>
+
+<p>• 高性能Http请求库，可以把它理解成是一个封装之后类似HttpUrlConnection的东西，属于同级并不是基于上述二者；</p>
+
+<p>• 支持SPDY，共享同一个Socket来处理同一个服务器的所有请求；</p>
+
+<p>• 支持http 2.0、websocket；</p>
+
+<p>• 支持同步、异步；</p>
+
+<p>• 封装了线程池、数据转换、参数使用、错误处理等；</p>
+
+<p>• 无缝的支持GZIP来减少数据流量；</p>
+
+<p>• 缓存响应数据来减少重复的网络请求</p>
+
+<p>• 能从很多常用的连接问题中自动恢复；</p>
+
+<p>• 解决了代理服务器问题和SSL握手失败问题；</p>
+
+<p>性能：</p>
+
+<p>基于NIO 和 Okio，所有性能更好：请求、处理速度快（IO:阻塞式； NIO：非阻塞式；Okio 是 Square 公司基于 IO 和NIO 基础上做的一个更简单、高效处理数据流的一个库）；</p>
+
+<p>开发者使用：</p>
+
+<p>• Api调用更加简单、方便；</p>
+
+<p>• 使用时需要进行多一层封装；</p>
+
+<p>应用场景：</p>
+
+<p>重量级网络交互场景：网络请求频繁、传输数据量大（其实更推荐Retrofit,反正Retrofit是基于 OKHttp的）；</p>
+
+<p>备注：</p>
+
+<p>Android 4.4 的源码中可以看到，HttpUrlConnection已经替换成OkHttp实现了，所以我们更有理由相信OkHttp的强大；</p>
+
+<h4>Retrofit （<a href="https://github.com/square/retrofit">https://github.com/square/retrofit</a>）</h4>
+
+<p>功能：</p>
+
+<p>• 基于OkHttp</p>
+
+<p>• RESTful Api 设计风格</p>
+
+<p>• 支持同步、异步；</p>
+
+<p>• 通过注解配置请求（包括请求方法、请求参数、请求头、返回值等）</p>
+
+<p>• 可以搭配多种Connverter 将获得的数据解析&amp;序列化</p>
+
+<p>• 支持Gson(默认）、Jackson 、Protobuf等</p>
+
+<p>• 支持对 RXjava 的支持；</p>
+
+<p>性能：</p>
+
+<p>• 性能最好，处理最快；</p>
+
+<p>• 扩展性差（高度封装所带来的必然后果；解析数据都是使用统一的converter，如果服务器不能给出统一的API形式，将很难进行处理。</p>
+
+<p>开发者使用：</p>
+
+<p>• 简洁易用（RestfulAPI设计风格）；</p>
+
+<p>• 代码简化（更加高度的封装和注解用法）；</p>
+
+<p>• 解耦的更彻底、职责更细分；</p>
+
+<p>• 易于其它框架联合使用（RXjava）；</p>
+
+<p>• 使用方法较多，原理复杂，存在一定门槛；</p>
+
+<p>应用场景：</p>
+
+<p>任何场景下优先选择，特别是：后台API遵循RESTful的风格&amp;项目中有使用RXjava;</p>
+
+<h4>总结：</h4>
+
+<p>网络请求库没有说哪个最好，只有最合适，只有真的了解其使用场景才能很好的选择网络请求库。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Android性能优化]]></title>
+    <link href="http://wentao1990.github.io/blog/2016/08/09/android-01/"/>
+    <updated>2016-08-09T19:50:35+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2016/08/09/android-01</id>
+    <content type="html"><![CDATA[<h4>网络相关优化</h4>
+
+<p>1.http头信息带Cache-Control域，确定缓存过期时间，防止重复请求。</p>
+
+<p>2.直接用IP直连，不用域名，策略性更新本地IP列表。-DNS解析过程耗时百毫秒左右，并且还有可能存在DNS劫持。</p>
+
+<p>3.图片、JS、CSS等静态资源，采用CDN（7牛之类的第三方服务已经搭建部署好了）</p>
+
+<p>4.全局图片处理采用漏斗模型全局掌控，所请求的图片大小依照业务大小提供（最大不超过屏幕分辨率需要），如果请求原图，也不要超过 GL10.GL_MAX_TEXTURE_SIZE。</p>
+
+<p>5.全局缩略图直接采用webp，在尽可能不损失图片质量的前提下，图片大小与png缩小30%~70%。</p>
+
+<p>6.如果列表里的缩略图服务器处理好的小图，可以考虑直接在列表数据请求中，直接以base64在列表数据中直接带上图片（国内还比较少，海外有些这种做法，好像web端比较常见）</p>
+
+<p>7.轮询或者socket心跳采用系统 AlarmManager提供的闹钟服务来做，保证在系统休眠的时候cpu可以得到休眠，在需要唤醒时可以唤醒（持有cpu唤醒锁）</p>
+
+<p>8.可以通过将零散的网路的请求打包进行一次操作，避免过多的无线信号引起电量消耗。</p>
+
+<h4>传输数据格式选择</h4>
+
+<p>1.如果是需要全局数据的，考虑使用Protobuffers(序列化反序列化性能高于Json)，并且考虑使用 nano protocol buffer。</p>
+
+<p>2.如果传输回来的数据不需要全量读取，考虑使用 Flatbuffers (序列化反序列化几乎不耗时，耗时是在读取对象时(就这一部分如果需要优化，可以参看 Flatbuffer Use Optimize</p>
+
+<h4>输入流</h4>
+
+<p>使用具有缓存策略的输入流</p>
+
+<pre><code>   原            建议替换为
+InputStream    BufferedInputStream
+Reader         BufferedReader
+</code></pre>
+
+<h4>数据结构</h4>
+
+<p>如果已知大概需要多大，就直接给初始大小，减少扩容时额外开销。</p>
+
+<p>•ArrayList :里面就一数据，内存小，有序取值快，扩容效率低。</p>
+
+<p>•LinkedList :里面就一双向链表，内存大，随机插入删除快，扩容率高。</p>
+
+<p>•HashSet :里面就HashMap,用key对外存储，目的就是不允许重复元素。</p>
+
+<p>•ConcruuenHashMap :线程安全，采用细分锁，锁颗粒更小，并发性能更优.</p>
+
+<p>•Collections.synchronizedMap : 线程安全，采用当前对象作为锁，颗粒较大，并发性能较差。</p>
+
+<p>•SparseArray、 SparseBooleanArray、 SparseIntArray: 针对Key为 Int、 Boolean进行了优化，采用二分法查找，简单数组存储。相比 HashMap而言， HashMap每添加一个数据，大约会需要申请额外的32字节的数据，因此 Sparsexxx在内存方面的开销会小很多。</p>
+
+<h4>编码习惯</h4>
+
+<p>1.尽量简化，不做没必要的操作。</p>
+
+<p>2.尽量避免分配内存（创建对象）。</p>
+
+<p>3.如果你确定不需要访问类成员，就把方法static，这样调用速度可以提升15%~20%，因为不需要切换对象状态。</p>
+
+<p>4.如果某个参数是常量，要加上static final ,这样可以让Class首次初始化的时候不用调用<clinit>来创建 static方法，而是在编译时就直接将常量替换代码中使用的位置。</p>
+
+<p>5.Android开发中，类内尽量避免通过 get/set访问成员变量，虽然这在语言的开发中是一个好的习惯，但是Android虚拟机中，对方法的调用开销远大于对变量的直接访问。在没有JIT的情况下，直接的变量访问比调用方法快3倍，在JIT下，直接的变量访问更是比调用方法快7倍!</p>
+
+<p>6.当内部类需要访问外部类的私有 方法/变量时，考虑将这些外部类的私有 方法/变量改用包可见的方式。首先在编写代码的时候，通过内部类访问外部类的私有 方法/变量是合法的，但是在编译的时候为了满足这个会将需要被内部类访问的私有 方法/变量封装一层包可见的方法，实现让内部类访问这些私有的 方法/变量，根据前面我们有提到说方法的调用开销大于变量的调用，因此这样使得性能变差，所以我们在编码的时候可以考虑直接将需要被内部类调用的外部类私有 方法/变量，改为包可见。</p>
+
+<p>7.尽量少使用 float。在很多现代设备中， double的性能与 float的性能几乎没有差别，但是从大小上面 double是 float的两倍的大小。</p>
+
+<p>8.尽量考虑使用整型而非浮点数，在较好的Android设备中，浮点数比整型慢一倍。</p>
+
+<p>9.尽量不要使用除法操作，有很多处理器有乘法器，但是没有除法器，也就是说在这些设备中需要将除法分解为其他的计算方式速度会比较慢。</p>
+
+<p>10.尽量使用系统sdk中提供的方法，而非自己去实现。如 String.indexOf()相关的API，Dalvik将会替换为内部方法； System.arraycopy()方法在Nexus One手机上，会比我们上层写的类似方法的执行速度快9倍。</p>
+
+<p>11.谨慎编写native，性能不一定更好，Native并不是用于使得性能更好，而是用于有些已经存在的库是使用native语言实现的，我们需要引入Android，这时才使用。1) 需要多出开销在维持Java-native的通信；2) 在native中创建的资源由于在native heap上面，因此需要主动的释放；3) 需要对不同的处理器架构进行支持，存在明显的兼容性问题需要解决。</p>
+
+<p>12.在没有JIT的设备中，面向接口编程的模式(如 Map map)，相比直接访问对象类(如 HashMap map)，会慢6%，但是在存在JIT的设备中，两者的速度差不多。但是内存占用方面面向接口变成会消耗更多内存，因此如果你的面向接口编程不是十分的必要的情况下可以考虑不用。</p>
+
+<p>13.在没有JIT的设备中，访问本地化变量相对与成员变量会快20%，但是在存在JIT的设备中，两者速度差不多。</p>
+
+<h4>遍历优化</h4>
+
+<p>尽量使用 Iterable而不是通过长度判断来进行遍历。</p>
+
+<pre><code>// 这种性能是最差的，JIT也无法对其优化。
+public void zero() {
+    int sum = 0;
+    for (int i = 0; i &lt; mArray.length; ++i) {
+        sum += mArray[i].mSplat;
+    }
+}
+// 相对zero()来说，这种写法会更快些，在存在JIT的情况下速度几乎和two()速度一样快。
+public void one() {
+    int sum = 0;
+    // 1) 通过本地化变量，减少查询，在不存在JIT的手机下，优化较明显。
+    Foo[] localArray = mArray;
+    // 2) 获取队列长度，减少每次遍历访问变量的长度，有效优化。
+    int len = localArray.length;
+    for (int i = 0; i &lt; len; ++i) {
+        sum += localArray[i].mSplat;
+    }
+}
+// 在无JIT的设备中，是最快的遍历方式，在存在JIT的设备中，与one()差不多快。
+public void two() {
+    int sum = 0;
+    for (Foo a : mArray) {
+        sum += a.mSplat;
+    }
+}
+</code></pre>
 ]]></content>
   </entry>
   
@@ -493,255 +750,6 @@ class RoboWay extends RoboActivity {
 </code></pre>
 
 <p>我们可以看到源代码里头的第15行handlerMessage方法里当处理完请求后就会调用stopself()方法了，外界就不用调用了，此外还有一点我们可以看到代码最后一行第110行，onhandleIntent()是一个抽象类，而其他类都是抽象类，所以我们就可以理解为什么只需要重写onhandleIntent()方法了吧。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[自定义任意形状的ImageView]]></title>
-    <link href="http://wentao1990.github.io/blog/2016/04/08/android-imageview/"/>
-    <updated>2016-04-08T22:22:25+08:00</updated>
-    <id>http://wentao1990.github.io/blog/2016/04/08/android-imageview</id>
-    <content type="html"><![CDATA[<h4>参考</h4>
-
-<p>Xfermode in android - 解释文档和模式部分写得很好
-Android中Canvas绘图之PorterDuffXfermode使用及工作原理详解 - 代码实践分析部分值得细看</p>
-
-<p>网上大部分文章都说有3个类可用, 但是实际上仅需要掌握PoterDuffXfermode, 因为只有它支持硬件加速, 官方的文档的描述中Xfermode的直接继承类也只有它了, 所以一般只用它.</p>
-
-<p>PoterDuffXfermode</p>
-
-<p>Porter-Duff 操作是 1 组 12 项用于描述数字图像合成的基本手法，包括Clear、Source Only、Destination Only、Source Over、Source In、SourceOut、Source Atop、Destination Over、Destination In、DestinationOut、Destination Atop、XOR。通过组合使用 Porter-Duff 操作，可完成任意 2D图像的合成。Thomas Porter 和 Tom Duff 发表于 1984年原始论文的扫描版本
-简单来说就是一种图像合成的理论依据, 规定了合成图像时的像素操作. Android中支持总共18种模式, 就不一一列举了. 看懂文档就行.</p>
-
-<!--more-->
-
-
-<h3>文档解释</h3>
-
-<pre><code>public enum Mode { 
-    // ... 
-    /** [Sa + (1 - Sa)*Da, Dc + (1 - Da)*Sc] */ 
-    DST_OVER (4), 
-    /** [Sa * Da, Sa * Dc] */ 
-    DST_IN (6), 
-    // ...以下省略
-}
-</code></pre>
-
-<p>文档中每个模式对应一条公式, 公式中的缩写表示:
-SRC = source, 表示即将要画的像素
-DST = destination, 表示已经存在的像素
-Sa = Source alpha, 透明通道值
-Da = Dest alpha
-Sc = Source color, 颜色值
-Dc = Dst color
-[AlphaValue, ColorValue] -> 第一个值为进行像素操作后的透明通道值, 第二个值为操作后的颜色值</p>
-
-<h4>举个例子:</h4>
-
-<p>DST_IN - [Sa Da, Sa Dc]
-为了简化分析, 假设透明通道值不是0就是1
-主要看颜色值的计算 Sa * Dc, 当Sa = 1的时候, 颜色值就是Dc, 也就是说在准备画的像素的alpha值为1的地方, 直接显示原来的像素, Sa = 0的时候不显示任何颜色, 并且只有在Sa和Da都是1的地方才会显示颜色.</p>
-
-<p>加入透明通道值的分析参考Xfermode in android</p>
-
-<p>看懂文档后我们就可以利用Xfermode做各种图形效果, Xfermode可以做的事情理论上</p>
-
-<p>可完成任意 2D图像的合成
-远远不限于实现任意形状的ImageView. 接下来就一步步分析如下实现任意形状的ImageView和我遇到的问题.</p>
-
-<p>实现任意形状ImageView</p>
-
-<p>分析</p>
-
-<p>为了最简化代码, 最好能够复用ImageView, 而ImageView#onDraw就是把图片画在屏幕上, 也就是说经过ImageView#onDraw方法后, 图片像素会变成DST(已经存在的像素).</p>
-
-<p>所以要实现任意形状最直接的办法应该是根据形状裁剪图片像素, 即显示DST和SRC重合的部分的DST像素, 形状内的像素自然是SRC(即将要画的像素), 转化成公式应该是Sa * Dc, 查模式说明文档找到我们需要的模式DST_IN - [Sa * Da, Sa * Dc]</p>
-
-<p>所以我们的核心代码应该如下</p>
-
-<pre><code>super.onDraw(canvas);// 画图片
-mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));// 设置Xfermode模式
-canvas.drawXX();// 画多边形覆盖在图片上
-</code></pre>
-
-<p>使用saveLayer</p>
-
-<p>在实际测试的时候会发现, 多边形外的像素会变成黑色(也有可能是白色), 这是因为默认情况画布只有一个图层(就是Photoshop里面的图层概念), 此时的DST不仅是图片, 还包括图片后面的背景像素, 如果清除了多边形外的像素, 当然背景也会被清除掉了, 而一般情况下我们仅需要处理图片本身, 所以实际使用中通常会使用Canvas#saveLayer来创建新的透明图层来进行图像合成的操作, 此时背景的像素就不会被纳入DST中.</p>
-
-<p>核心代码变成</p>
-
-<pre><code>int layerId = canvas.saveLayer(0, 0, canvas.getWidth(), canvas.getHeight(), null, Canvas.ALL_SAVE_FLAG);// 新增透明图层
-super.onDraw(canvas);// 画图片
-mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));// 设置Xfermode模式
-canvas.drawXX();// 画多边形覆盖在图片上
-canvas.restoreToCount(layerId);// 合并图层
-</code></pre>
-
-<h4>使用Bitmap</h4>
-
-<p>如果我想制作圆形图片, 那么直接通过Canvas#drawCircle画圆, 实际运行就会发现结果跟预测的不同, 圆形外的像素并没有消失, 为什么?</p>
-
-<p>这是因为直接通过Canvas#drawXX方法画图时, SRC仅是图形内的像素, 例如你画了一个圆, 那么SRC(即将要画的像素)仅是圆内的像素, 也就是说图片与圆不重叠的像素并不会有任何变化, 当然就不会消失了.
-所以要想圆形外的像素会消失, 我们要把圆形外的像素也纳入SRC并且使其透明通道值为0.</p>
-
-<p>所以进行"过滤"操作的时候, 例如DST_IN, 仅显示即将要画的像素一般会先创建一个Bitmap实例, 并先在Bitmap画要保留的图形, 然后再把Bitmap画在图片上, 此时SRC的像素包括了整个Bitmap而不仅仅是图形内的像素</p>
-
-<p>.假设我们要制作的是菱形的图片, 那么代码就变成</p>
-
-<pre><code>    // 创建一个跟图片一样大小的Bitmap, 并画一个旋转了45度的正方形
-private Bitmap createMask() { 
-    int maskWidth = getMeasuredWidth(); 
-    int maskHeight = getMeasuredHeight(); 
-    Bitmap mask = Bitmap.createBitmap(maskWidth, maskHeight, Bitmap.Config.ALPHA_8); 
-    Canvas canvas = new Canvas(mask); 
-    canvas.translate(maskWidth / 2, 0); 
-    canvas.rotate(45); 
-    int rectSize = (int) (maskWidth / 2 / Math.sin(Math.toRadians(45))); 
-    canvas.drawRect(0, 0, rectSize, rectSize, mPaint);
-}
-
-// 核心操作
-int layerId = canvas.saveLayer(0, 0, canvas.getWidth(), canvas.getHeight(), null, Canvas.ALL_SAVE_FLAG);// 新增透明图层
-super.onDraw(canvas);// 画图片
-mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));// 设置Xfermode模式
-canvas.drawBitmap(createMask(), 0, 0, mPaint);// 画多边形覆盖在图片上
-canvas.restoreToCount(layerId);
-</code></pre>
-
-<p>这里有个小技巧, 在创建Bitmap的时候使用了Bitmap.Config.ALPHA_8, 这是因为DST_IN的公式中仅使用了Sa, 不需要有颜色, 所以只使用ALPHA_8就足够了, 可以节省内存.</p>
-
-<p>效果图</p>
-
-<p><img src="http://i.imgur.com/WF3dwTc.png" alt="" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[IP/TCP/UDP/HTTP浅谈]]></title>
-    <link href="http://wentao1990.github.io/blog/2016/01/11/android-iptcphttp/"/>
-    <updated>2016-01-11T18:46:25+08:00</updated>
-    <id>http://wentao1990.github.io/blog/2016/01/11/android-iptcphttp</id>
-    <content type="html"><![CDATA[<h4>前言：</h4>
-
-<p>在世界上各地，各种各样的电脑运行着各自不同的操作系统为大家服务，这些电脑在表达同一种信息的时候所使用的方法是千差万别。就好像圣经中上帝打乱了各地人的口音，让他们无法合作一样。计算机使用者意识到，计算机只是单兵作战并不会发挥太大的作用。只有把它们联合起来，电脑才会发挥出它最大的潜力。于是人们就想方设法的用电线把电脑连接到了一起。但是简单的连到一起是远远不够的，就好像语言不同的两个人互相见了面，完全不能交流信息。因而他们需要定义一些共通的东西来进行交流，TCP/IP就是为此而生。TCP/IP不是一个协议，而是一个协议族的统称。里面包括了IP协议，IMCP协议，TCP协议，以及我们更加熟悉的http、ftp、pop3协议等等。电脑有了这些，就好像学会了外语一样，就可以和其他的计算机终端做自由的交流了。  <!--more--></p>
-
-<h4>协议分层：</h4>
-
-<p>提到协议分层，我们很容易联想到ISO-OSI的七层协议经典架构，但是TCP/IP协议族的结构则稍有不同。</p>
-
-<p>如图所示：</p>
-
-<p><img src="http://i.imgur.com/FFdYFsO.jpg" alt="" /></p>
-
-<p>TCP/IP协议族按照层次由上到下，层层包装。</p>
-
-<p>第一层：应用层，这里面有http、ftp等协议。</p>
-
-<p>第二层：传输层，这里面有TCP和UDP等协议。</p>
-
-<p>第三层：网络层，IP协议就在这里，它负责对数据加上IP地址和其他数据，以确定传输目标。</p>
-
-<p>第四层:数据链路层,这个层次为待传送的数据加入一个以太网协议头，并进行CRC编码，为最后的数据传输做准备。（1.为IP模块发送和 接收IP数据报。2.为ARP模块发送ARP请求和接收ARP应答。3.为RARP发送RARP请 求和接收RARP应答）。</p>
-
-<p>第五层：物理层，负责网络的传输，这个层次的定义包括网线的制式，网卡的定义等等。注：有些书籍并不把这层归纳在TCP/IP协议族中。</p>
-
-<h3>IP协议</h3>
-
-<p>IP协议是TCP/IP协议的核心，所有的TCP，UDP，IMCP，IGCP的数据都以IP数据格式传输。要注意的是，IP不是可靠的协议，这是说，IP协议没有提供一种数据未传达以后的处理机制&ndash;这被认为是上层协议&ndash;TCP或UDP要做的事情。所以这也就出现了TCP是一个可靠的协议，而UDP就没有那么可靠的区别。</p>
-
-<h3>TCP协议</h3>
-
-<p>1.是面向连接的。应用程序在使用TCP协议时，必须进行连接；当然，数据传输结束后，要断开TCP连接。</p>
-
-<p>2.TCP连接是点对点的。</p>
-
-<p>3.TCP连接时可靠的。也就是说传输的数据时无差错的、不丢失、不重复、有序到达的。</p>
-
-<p>4.是全双工的。即TCP连接的两端都设有发送缓存和接收缓存，用来存放双向通信的数据。</p>
-
-<p>5.是面向字节流的。也就是说TCP将应用程序交下来的数据看成仅仅是一连串的无结构的字节流，其不知道这些字节流的具体含义。TCP议无法保证发送的数据块的具体大小，因为TCP协议的发送的数据大小收到对方给出的窗口值和当前的网络拥塞度的影响。</p>
-
-<p>TCP的连接端点是套接字。套接字是IP地址拼接上端口号组成的，即点分方式的十进制后面是端口号，中间用逗号或冒号隔开。如下方式：
-套接字Socket=(IP地址：端口号)</p>
-
-<h4>TCP协议应用场景：</h4>
-
-<p>TCP一般用于那些对于数据严谨准确率高但同时非紧急实时性的场景，比如：文件传输（FTP HTTP 对数据准确性要求高，速度可以相对慢）、发送或接收邮件（POP IMAP SMTP 对数据准确性要求高，非紧急应用）、远程登录（TELNET SSH 对数据准确性有一定要求，有连接的概念）等等。</p>
-
-<h3>UDP协议</h3>
-
-<p>UDP本身是一种不可靠的协议，UDP协议在IP协议上增加了复用、分用和差错检测功能。</p>
-
-<p>1.是无连接的。相比于TCP协议，UDP协议在传送数据前不需要建立连接，当然也就没有释放连接。</p>
-
-<p>2.是尽最大努力交付的。也就是说UDP协议无法保证数据能够准确的交付到目的主机。也不需要对接收到的UDP报文进行确认。</p>
-
-<p>3.是面向报文的。也就是说UDP协议将应用层传输下来的数据封装在一个UDP包中，不进行拆分或合并。因此，运输层在收到对方的UDP包后，会去掉首部后，将数据原封不动的交给应用进程。</p>
-
-<p>4.没有拥塞控制。因此UDP协议的发送速率不送网络的拥塞度影响。</p>
-
-<p>5.UDP支持一对一、一对多、多对一和多对多的交互通信。</p>
-
-<p>6.UDP的头部占用较小，只占用8个字节。</p>
-
-<h4>UDP协议应用场景：</h4>
-
-<p>UDP协议一般应用与那些对于数据不是很严谨高准确率但对速度实时性较高的场景，比如：即时通信（QQ聊天 对数据准确性和丢包要求比较低，但速度必须快），在线视频（RTSP 速度一定要快，保证视频连续，但是偶尔花了一个图像帧，人们还是能接受的），网络语音电话、视频会议（VoIP 语音数据包一般比较小，需要高速发送，偶尔断音或串音也没有问题）等等。</p>
-
-<h3>HTTP协议</h3>
-
-<p>HTTP是一个属于应用层的面向对象的协议，由于其简捷、快速的方式，适用于分布式超媒体信息系统。</p>
-
-<p>1.支持客户/服务器模式。</p>
-
-<p>2.简单快速：客户向服务器请求服务时，只需传送请求方法和路径。请求方法常用的有GET、HEAD、POST。每种方法规定了客户与服务器联系的类型不同。由于HTTP协议简单，使得HTTP服务器的程序规模小，因而通信速度很快。</p>
-
-<p>3.灵活：HTTP允许传输任意类型的数据对象。正在传输的类型由Content-Type加以标记。</p>
-
-<p>4.无连接：无连接的含义是限制每次连接只处理一个请求。服务器处理完客户的请求，并收到客户的应答后，即断开连接。采用这种方式可以节省传输时间。</p>
-
-<p>5.无状态：HTTP协议是无状态协议。无状态是指协议对于事务处理没有记忆能力。缺少状态意味着如果后续处理需要前面的信息，则它必须重传，这样可能导致每次连接传送的数据量增大。另一方面，在服务器不需要先前信息时它的应答就较快。</p>
-
-<h4>HTTP应用场景：</h4>
-
-<p>Http请求主要有http协议，基于http协议的soap协议，常见的http数据请求方式有get和post，web服务</p>
-
-<p>优点：</p>
-
-<p>1.基于应用级的接口使用方便</p>
-
-<p>2.要求的开发水平不高，容错性强</p>
-
-<p>缺点：</p>
-
-<p>1.传输速度慢，数据包大。</p>
-
-<p>2.如实现实时交互，服务器性能压力大</p>
-
-<p>3.数据传输安全性差</p>
-
-<h4>HTTP常用状态码：</h4>
-
-<p>206 - 断点下载时用到，客户端请求了一部分内容，服务器成功把这部分内容返回给它，这时候就是用这个状态。</p>
-
-<p>301 - 永久跳转，原地址不存在了，url被指向到另一个地址。这个主要是搜索引擎相关，影响爬虫的检索行为。</p>
-
-<p>302 - 临时跳转，服务器会返回一个新的url给客户端，客户端可以继续访问这个url来获取内容。</p>
-
-<p>304 - 资源没有改变，客户端可以使用本地缓存的内容，常见于静态内容访问。</p>
-
-<p>413 - 请求实体太大。常见的情况是上传大文件，但超出了服务器(比如nginx)限制。或者请求头或请求体超出了后端的server(比如tomcat)的设置（比如当前域名下cookie太多，超出了请求头限制）</p>
-
-<p>416 - 跟断点续传有关，客户端请求的范围超出了服务器上文件大小。</p>
-
-<p>500 - 服务器内部错误，不能返回正常的结果。比如最常见的应用抛出空指针异常未进行处理。</p>
-
-<p>502 - 网关错误。常见的情况是反向代理后端的服务器(比如resin或tomcat)没有启动。</p>
-
-<p>503 - 服务不可用。比如服务器负载太高或者服务器已经停止服务。</p>
-
-<p>504 - 网关超时。比如请求时长超出了服务器的响应时间限制。</p>
 ]]></content>
   </entry>
   
