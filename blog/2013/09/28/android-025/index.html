@@ -1,0 +1,377 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Android性能优化 - 沧笙踏歌</title>
+  <meta name="author" content="文涛">
+
+  
+  <meta name="description" content="网络相关优化 1.http头信息带Cache-Control域，确定缓存过期时间，防止重复请求。 2.直接用IP直连，不用域名，策略性更新本地IP列表。-DNS解析过程耗时百毫秒左右，并且还有可能存在DNS劫持。 3.图片、JS、CSS等静态资源，采用CDN（7牛之类的第三方服务已经搭建部署好了 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://wentao1990.github.io/blog/2013/09/28/android-025">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="沧笙踏歌" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><div class="header-left">
+  <hgroup>
+  <h1><a href="/">沧笙踏歌</a></h1>
+  
+  <div class="subtitle">
+    <h2>静水流深，沧笙踏歌，如花美眷，只缘敢你一回顾，使我常思朝与暮。转身后，一缕香远，逝雪浅，春意浓，笑意深。</h2>
+  </div>
+  
+  </hgroup>
+  
+</div>
+
+<div class="header-right">
+  <ul class="main-navigation">
+ <div> 
+  <li><a href="/">博文</a></li></div><div class="spacer"></div>
+     <div> 
+  <li><a href="/projects">工程</a></li></div><div class="spacer"></div>
+       <div> 
+  <li><a href="/blog/archives">档案</a></li></div><div class="spacer"></div>
+         <div> 
+  <li><a href="/aboutme">关于</a></li></div>
+</ul>
+
+
+
+
+</div>
+</header>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Android性能优化</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-28T19:50:35+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h4>网络相关优化</h4>
+
+<p>1.http头信息带Cache-Control域，确定缓存过期时间，防止重复请求。</p>
+
+<p>2.直接用IP直连，不用域名，策略性更新本地IP列表。-DNS解析过程耗时百毫秒左右，并且还有可能存在DNS劫持。</p>
+
+<p>3.图片、JS、CSS等静态资源，采用CDN（7牛之类的第三方服务已经搭建部署好了）</p>
+
+<p>4.全局图片处理采用漏斗模型全局掌控，所请求的图片大小依照业务大小提供（最大不超过屏幕分辨率需要），如果请求原图，也不要超过 GL10.GL_MAX_TEXTURE_SIZE。</p>
+
+<p>5.全局缩略图直接采用webp，在尽可能不损失图片质量的前提下，图片大小与png缩小30%~70%。 <!--more--></p>
+
+<p>6.如果列表里的缩略图服务器处理好的小图，可以考虑直接在列表数据请求中，直接以base64在列表数据中直接带上图片（国内还比较少，海外有些这种做法，好像web端比较常见）</p>
+
+<p>7.轮询或者socket心跳采用系统 AlarmManager提供的闹钟服务来做，保证在系统休眠的时候cpu可以得到休眠，在需要唤醒时可以唤醒（持有cpu唤醒锁）</p>
+
+<p>8.可以通过将零散的网路的请求打包进行一次操作，避免过多的无线信号引起电量消耗。</p>
+
+<h4>传输数据格式选择</h4>
+
+<p>1.如果是需要全局数据的，考虑使用Protobuffers(序列化反序列化性能高于Json)，并且考虑使用 nano protocol buffer。</p>
+
+<p>2.如果传输回来的数据不需要全量读取，考虑使用 Flatbuffers (序列化反序列化几乎不耗时，耗时是在读取对象时(就这一部分如果需要优化，可以参看 Flatbuffer Use Optimize</p>
+
+<h4>输入流</h4>
+
+<p>使用具有缓存策略的输入流</p>
+
+<pre><code>   原            建议替换为
+InputStream    BufferedInputStream
+Reader         BufferedReader
+</code></pre>
+
+<h4>数据结构</h4>
+
+<p>如果已知大概需要多大，就直接给初始大小，减少扩容时额外开销。</p>
+
+<p>•ArrayList :里面就一数据，内存小，有序取值快，扩容效率低。</p>
+
+<p>•LinkedList :里面就一双向链表，内存大，随机插入删除快，扩容率高。</p>
+
+<p>•HashSet :里面就HashMap,用key对外存储，目的就是不允许重复元素。</p>
+
+<p>•ConcruuenHashMap :线程安全，采用细分锁，锁颗粒更小，并发性能更优.</p>
+
+<p>•Collections.synchronizedMap : 线程安全，采用当前对象作为锁，颗粒较大，并发性能较差。</p>
+
+<p>•SparseArray、 SparseBooleanArray、 SparseIntArray: 针对Key为 Int、 Boolean进行了优化，采用二分法查找，简单数组存储。相比 HashMap而言， HashMap每添加一个数据，大约会需要申请额外的32字节的数据，因此 Sparsexxx在内存方面的开销会小很多。</p>
+
+<h4>编码习惯</h4>
+
+<p>1.尽量简化，不做没必要的操作。</p>
+
+<p>2.尽量避免分配内存（创建对象）。</p>
+
+<p>3.如果你确定不需要访问类成员，就把方法static，这样调用速度可以提升15%~20%，因为不需要切换对象状态。</p>
+
+<p>4.如果某个参数是常量，要加上static final ,这样可以让Class首次初始化的时候不用调用<clinit>来创建 static方法，而是在编译时就直接将常量替换代码中使用的位置。</p>
+
+<p>5.Android开发中，类内尽量避免通过 get/set访问成员变量，虽然这在语言的开发中是一个好的习惯，但是Android虚拟机中，对方法的调用开销远大于对变量的直接访问。在没有JIT的情况下，直接的变量访问比调用方法快3倍，在JIT下，直接的变量访问更是比调用方法快7倍!</p>
+
+<p>6.当内部类需要访问外部类的私有 方法/变量时，考虑将这些外部类的私有 方法/变量改用包可见的方式。首先在编写代码的时候，通过内部类访问外部类的私有 方法/变量是合法的，但是在编译的时候为了满足这个会将需要被内部类访问的私有 方法/变量封装一层包可见的方法，实现让内部类访问这些私有的 方法/变量，根据前面我们有提到说方法的调用开销大于变量的调用，因此这样使得性能变差，所以我们在编码的时候可以考虑直接将需要被内部类调用的外部类私有 方法/变量，改为包可见。</p>
+
+<p>7.尽量少使用 float。在很多现代设备中， double的性能与 float的性能几乎没有差别，但是从大小上面 double是 float的两倍的大小。</p>
+
+<p>8.尽量考虑使用整型而非浮点数，在较好的Android设备中，浮点数比整型慢一倍。</p>
+
+<p>9.尽量不要使用除法操作，有很多处理器有乘法器，但是没有除法器，也就是说在这些设备中需要将除法分解为其他的计算方式速度会比较慢。</p>
+
+<p>10.尽量使用系统sdk中提供的方法，而非自己去实现。如 String.indexOf()相关的API，Dalvik将会替换为内部方法； System.arraycopy()方法在Nexus One手机上，会比我们上层写的类似方法的执行速度快9倍。</p>
+
+<p>11.谨慎编写native，性能不一定更好，Native并不是用于使得性能更好，而是用于有些已经存在的库是使用native语言实现的，我们需要引入Android，这时才使用。1) 需要多出开销在维持Java-native的通信；2) 在native中创建的资源由于在native heap上面，因此需要主动的释放；3) 需要对不同的处理器架构进行支持，存在明显的兼容性问题需要解决。</p>
+
+<p>12.在没有JIT的设备中，面向接口编程的模式(如 Map map)，相比直接访问对象类(如 HashMap map)，会慢6%，但是在存在JIT的设备中，两者的速度差不多。但是内存占用方面面向接口变成会消耗更多内存，因此如果你的面向接口编程不是十分的必要的情况下可以考虑不用。</p>
+
+<p>13.在没有JIT的设备中，访问本地化变量相对与成员变量会快20%，但是在存在JIT的设备中，两者速度差不多。</p>
+
+<h4>遍历优化</h4>
+
+<p>尽量使用 Iterable而不是通过长度判断来进行遍历。</p>
+
+<pre><code>// 这种性能是最差的，JIT也无法对其优化。
+public void zero() {
+    int sum = 0;
+    for (int i = 0; i &lt; mArray.length; ++i) {
+        sum += mArray[i].mSplat;
+    }
+}
+// 相对zero()来说，这种写法会更快些，在存在JIT的情况下速度几乎和two()速度一样快。
+public void one() {
+    int sum = 0;
+    // 1) 通过本地化变量，减少查询，在不存在JIT的手机下，优化较明显。
+    Foo[] localArray = mArray;
+    // 2) 获取队列长度，减少每次遍历访问变量的长度，有效优化。
+    int len = localArray.length;
+    for (int i = 0; i &lt; len; ++i) {
+        sum += localArray[i].mSplat;
+    }
+}
+// 在无JIT的设备中，是最快的遍历方式，在存在JIT的设备中，与one()差不多快。
+public void two() {
+    int sum = 0;
+    for (Foo a : mArray) {
+        sum += a.mSplat;
+    }
+}
+</code></pre>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">文涛</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-28T19:50:35+08:00" pubdate data-updated="true"></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/android/'>android</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/09/23/android-025/" title="Previous Post: Service与 IntentService 的区别与使用场景">&laquo; Service与 IntentService 的区别与使用场景</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/10/06/android-026/" title="Next Post: android第三方网络请求框架总结">android第三方网络请求框架总结 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  <section>
+  <p>Hi ,我是 <a href="https://twitter.com/martinbjeldbak">武文涛</a>!</p>
+  
+
+  <p>你可以阅读更多关于我的信息 <a href="/about/">关于</a> 
+  <p>Android开发者  产品经理 </p>
+  <div class="social-icons">
+    
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+</section>
+
+  <section>
+  <h1>最新</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/04/08/android-024/">自定义任意形状的ImageView</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/02/android-image/">Android Image</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/19/pm-032/">如何快速搭建一个完整的移动直播系统？</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/09/android-031/">浅谈App安全</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/05/web-021/">熟悉网络端口</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+    <section>
+  <h1>分类</h1>
+    <ul id="category-list"><li class='category'><a href='/blog/categories/android/'>android (26)</a></li>
+<li class='category'><a href='/blog/categories/db/'>db (1)</a></li>
+<li class='category'><a href='/blog/categories/hardware/'>hardware (1)</a></li>
+<li class='category'><a href='/blog/categories/pm/'>pm (2)</a></li>
+<li class='category'><a href='/blog/categories/unity3d/'>unity3d (1)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (2)</a></li>
+</ul>
+</section>
+<section>
+  <h1>最新</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/04/08/android-024/">自定义任意形状的ImageView</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/02/android-image/">Android Image</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/19/pm-032/">如何快速搭建一个完整的移动直播系统？</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/09/android-031/">浅谈App安全</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/05/web-021/">熟悉网络端口</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2017 - 文涛 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+<p>
+<span>Copyright &copy; 2017  文涛 -</span>
+<span class="credit">Powered by <a href="http://octopress.org">Octopress</a> using the <a href="https://github.com/fapper/classic-martinb">classic-martinb</a> theme</span>
+</p>
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

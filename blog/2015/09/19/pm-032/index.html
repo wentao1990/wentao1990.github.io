@@ -1,0 +1,369 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>如何快速搭建一个完整的移动直播系统？ - 沧笙踏歌</title>
+  <meta name="author" content="文涛">
+
+  
+  <meta name="description" content="移动直播行业的火热会在很长一段时间内持续，通过和各行业的整合，从而成为具有无限可能性的行业。主要有以下三个原因： 第一，移动直播的UGC生产模式比PC端的直播更明显，人人都有设备，随时随地开播，完全顺应了互联网时代的开放性原则，能刺激更多人去创造和传播优质内容。 第二，网络带宽和速度在逐渐提高， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://wentao1990.github.io/blog/2015/09/19/pm-032">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="沧笙踏歌" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><div class="header-left">
+  <hgroup>
+  <h1><a href="/">沧笙踏歌</a></h1>
+  
+  <div class="subtitle">
+    <h2>静水流深，沧笙踏歌，如花美眷，只缘敢你一回顾，使我常思朝与暮。转身后，一缕香远，逝雪浅，春意浓，笑意深。</h2>
+  </div>
+  
+  </hgroup>
+  
+</div>
+
+<div class="header-right">
+  <ul class="main-navigation">
+ <div> 
+  <li><a href="/">博文</a></li></div><div class="spacer"></div>
+     <div> 
+  <li><a href="/projects">工程</a></li></div><div class="spacer"></div>
+       <div> 
+  <li><a href="/blog/archives">档案</a></li></div><div class="spacer"></div>
+         <div> 
+  <li><a href="/aboutme">关于</a></li></div>
+</ul>
+
+
+
+
+</div>
+</header>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">如何快速搭建一个完整的移动直播系统？</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-09-19T22:53:30+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>移动直播行业的火热会在很长一段时间内持续，通过和各行业的整合，从而成为具有无限可能性的行业。主要有以下三个原因：</p>
+
+<p>第一，移动直播的UGC生产模式比PC端的直播更明显，人人都有设备，随时随地开播，完全顺应了互联网时代的开放性原则，能刺激更多人去创造和传播优质内容。</p>
+
+<p>第二，网络带宽和速度在逐渐提高，网络成本在逐渐下降，为移动直播提供一个极佳的发展环境。文字、声音、视频、游戏等都会在移动直播中呈现，创造出更加丰富的用户体验。 直播可以以SDK的形式接入到自己的应用中 ，比如，教育领域中的课后辅导完全可以以直播的形式开展业务、电商也可借助直播让用户挑选商品，促进销售。 <!--more--></p>
+
+<p>第三， 一个与VR/AR技术相结合的移动直播为整个行业的未来提供了新的发展空间。 VR/AR直播能够让用户身临其境，带动主播与观众更贴近真实的互动，大大提高平台的用户参与度。</p>
+
+<p>当下，有技术实力和流量优势的互联网从业者都不愿错过直播这个风口，如何快速搭建一个直播系统成了大家关心的问题，我想和大家分享下我的经验。我从事于一家直播产品开发商，我们的产品为了快速赶上市场，使用了云服务提供商的直播SDK。</p>
+
+<p>从业者都知道，一个完整直播产品应该包含以下环节：推流端（采集、前处理、编码、推流）、服务端处理（转码、录制、截图、鉴黄）、播放器（拉流、解码、渲染）、互动系统（聊天室、礼物系统、赞）。 下面我就一一讲述下直播SDK在各个环节所做的工作。</p>
+
+<h3>一、移动直播推流端需要做哪些工作？</h3>
+
+<p>直播推流端即主播端，主要通过手机摄像头采集视频数据和麦克风采集音频数据，经过一系列前处理、编码、封装，然后推流到CDN进行分发。
+<img src="http://i.imgur.com/xzp325c.jpg" alt="" /></p>
+
+<h4>1、采集</h4>
+
+<p>移动直播SDK通过手机摄像头和麦克风直接采集音视频数据。其中，视频采样数据一般采用RGB或YUV格式、音频采样数据一般采用PCM格式。采集到的原始音视频的体积是非常大的，需要经过压缩技术处理来提高传输效率。</p>
+
+<h4>2、前处理</h4>
+
+<p>在这个环节主要处理美颜、水印、模糊等效果。美颜功能几乎是直播的标配功能。我们调研中发现太多case是因为没有美颜功能被抛弃使用的。另外国家明确提出了，所有直播都必须打有水印并回放留存15天以上。</p>
+
+<p>美颜实际上是通过算法去识别图像中的皮肤部分，对皮肤区域进行色值调整。 通过颜色对比找到皮肤区域，可以进行色值调整、添加白色图层或调整透明度等来达到美白效果。在美颜处理方面，最著名的GPUImage提供了丰富的效果，同时可以支持iOS和Android，支持自己写算法实现自己最理想的效果。GPUImage内置了120多种常见滤镜效果，添加滤镜只需要简单调用几行代码就可以了。</p>
+
+<h4>3、编码</h4>
+
+<p>为了便于手机视频的推流、拉流以及存储，通常采用视频编码压缩技术来减少视频的体积，现在比较常用的视频编码是H.264。在音频方面，比较常用的是AAC编码格式，其它如MP3、WMA也是可选方案。视频经过编码压缩大大提高了视频的存储和传输效率，当然，经过压缩后的视频在播放时必须进行解码。</p>
+
+<p>相较于之前的H.264，2012年诞生的H.265编解码标准有了相当大的改善，做到了仅需要原来一半带宽即可播放相同质量的视频，低于1.5Mbps的网络也能传输1080p的高清视频。像阿里云、金山云都在推自己的H.265编解码技术，随着直播的快速发展和对带宽的依赖，H.265编解码技术已有全面取代H.264的趋势。</p>
+
+<p>H264和H265个模块技术差异：
+<img src="http://i.imgur.com/f2WDB3V.jpg" alt="" />
+另外，硬件编码已经成为移动直播的首选方案，软编码处理在720p以上的视频颓势非常明显 。在iOS平台上硬件编码的兼容性比较好，可以直接采用，但在Android平台上，Media Codec编码器针对不同的芯片平台表现差异还是非常大的，要完全实现全平台兼容的成本还是非常高的。</p>
+
+<h4>4、推流</h4>
+
+<p>要想用于推流还必须把音视频数据使用传输协议进行封装，变成流数据。 常用的流传输协议有RTSP、RTMP、HLS等，使用RTMP传输的延时通常在1–3秒，对于移动直播这种实时性要求非常高的场景，RTMP也成为移动直播中最常用的流传输协议。最后通过一定的Qos算法将音视频流数据推送到网络断，通过CDN进行分发。在直播场景中，网络不稳定是非常常见的，这时就需要Qos来保证网络不稳情况下的用户观看直播的体验，通常是通过主播端和播放端设置缓存，让码率均匀。另外，针对实时变化的网络状况，动态码率和帧率也是最常用的策略。</p>
+
+<p>当然，在网络传输方面全部自己来做基本不现实，找提供推流服务的CDN服务商提供解决方案是最好的选择。据了解，阿里云是国内唯一能自研CDN缓存服务器的厂商，性能非常有保障。当然，大多数直播平台都会同时接入多个视频云服务提供商，这样可以做拉流线路互备，对推流后视频集群再进行优化也可提高直播的流畅性和稳定性。</p>
+
+<h3>二、服务端处理需要做哪些工作？</h3>
+
+<p>要想适配各终端和平台，服务端还需要对流进行转码，如支持RTMP、HLS、FLV等格式拉流，支持一路转多路适配不同网络和分辨率的终端设备。</p>
+
+<h4>1、截图、录制、水印</h4>
+
+<p>像阿里云等云服务商都提供了实时转码技术，将用户推流码率较高（比如720P）实时转化成较低清晰度（比如360P）的流以适应播放端的需求。如果要自己搭建实时转码系统，这个成本是极高的，一台8核设备只能实时转10路流，如果一个正常的直播平台有1000路流，就需要100台设备，加上后期的运维成本，一般公司就吃不消了。</p>
+
+<h4>2、鉴黄</h4>
+
+<p>2016年4月14日，文化部查出了斗鱼、虎牙、YY、熊猫TV、六间房、9158等涉嫌提供含宣扬淫秽、暴力、教唆犯罪的网络直播平台，被列入查处名单。政府介入管制有利于直播行业打造健康的生态，进入良性发展。这也意味着为了安全直播产品鉴黄成了必需环节，使用技术手段去鉴黄是移动直播平台必然采用的方案。</p>
+
+<p>市面上提供鉴黄服务的方案主要有两种：</p>
+
+<p>第一种是对视频进行截图，然后对图片进行鉴黄，返回鉴黄结果和分值。 典型的企业有阿里（绿网）、图谱科技，他们目前都支持直接传入视频，经过服务端分析返回结果。通常由业务系统接入鉴黄服务，根据鉴黄结果对直播流进行控制，如切断直播流、封禁账号等。</p>
+
+<p>第二种是和CDN结合，直接对直播流进行分析，识别结果分为色情、疑似色情、性感和正常，业务系统根据识别结果直接控制直播流。 典型的企业是Viscovery，这套方案的优点是实时性保证比较好，缺点是必须部署到CDN或自己的机房，使用成本相对高一些。</p>
+
+<p>还有一种一站式直播解决方案提供商，他们的做法是，用户只需在控制台对鉴黄服务进行配置就可以针对每个应用、每一路直播流进行实时审核。在控制台中，云服务商实时将鉴黄结果返回，用户可以直接查看色情直播和违规界面的截图，同时可以对直播流进行控制，切断问题直播流。该服务商还提供了短信、邮件和站内信功能，避免漏掉任何一个非法视频，给平台造成损失，我们就使用了这种方式。
+<img src="http://i.imgur.com/wKXx4p9.jpg" alt="" /></p>
+
+<h3>三、播放器端需要做哪些工作？</h3>
+
+<p>在播放器端如何做到秒开，直播过程中保证画面和声音清晰度的同时，稳定、流程、无卡顿的直播流量，这些工作都需要播放器端配合服务端来做优化，做到精确调度。</p>
+
+<h4>1、拉流</h4>
+
+<p>拉流实际是推流的逆过程。首先通过播放端获取码流，标准的拉流格式有RTMP、HLS、FLV等。RTMP是Adobe的专利协议，开源软件和开源库都支持的比较好，如开源的librtmp库，播放端只要支持flashPlayer的就能非常简单的播放RTMP直播，直播延迟一般在1–3秒。</p>
+
+<p>HLS是苹果提出的基于HTTP的流媒体传输协议，HTML5可以直接打开播放，通过微信、QQ等软件分享出去，用户也可以直接观看直播，可以说移动直播app，HLS拉流协议是必须支持的，缺点是延迟通常大于10秒。FLV（HTTP-FLV）协议是使用HTTP协议传输流媒体内容的一个协议，也不用担心被Adobe的专利绑架，直播延迟同样可以做到1–3秒。</p>
+
+<p>各拉流协议的差异：</p>
+
+<p>我们使用的云服务的直播拉流技术提供了以上三种格式，满足不同业务场景的需求，如对即时性要求较高或有互动需求的可以采用RTMP或FLV格式进行直播拉流播放；对于有回放或跨平台需求的，推荐使用HLS。当然，三种协议是可以同时使用的，分别用到自己的场景就可以了。</p>
+
+<h4>2、解码和渲染</h4>
+
+<p>拉流获取封装的视频数据后，必须通过解码器解码、渲染后才能在播放器上播放。它是编码的逆过程，是指从音视频的数据中提取原始数据。前面介绍的H.264和H.265编码格式都是有损压缩，所以在提取后的原始数据，并非原始采样数据，存在一定的信息丢失。因此，在视频体积最小的情况下通过各种编码参数保留最好的原始画面，成为了各视频公司的核心机密。</p>
+
+<p>考虑对高清的支持，解码肯定还是要选择硬解码的。前面介绍过，iOS系统由于硬件比较单一、比较封闭，支持的比较好，Android系统由于平台差异非常大，编解码要完全兼容各平台还需要很多工作要做。</p>
+
+<p>四、移动直播中的交互系统</p>
+
+<p>移动直播中最常见的交互有聊天室（弹幕）、点赞、打赏和礼物等，交互系统涉及消息的实时性和互动性，在技术实现上大多是使用IM的功能来实现的。对于在线人数比较多的房间，弹幕消息量是非常大，主播与用户其实都看不过来，为了缓解服务器压力，在产品策略需要做一些必要的优化。</p>
+
+<p>1、聊天室</p>
+
+<p>移动直播中的弹幕交互是用户和主播互动的主要方式，实际上就是IM中的聊天室功能。聊天室和群聊功能类似，但聊天室的消息是不需要分发给不在线的用户的，历史消息也不需要查看，用户只有进入聊天室后才能查看聊天消息和群成员信息。面对复杂多变的网络状况，还需要根据用户位置就近选择近对应运营商的单线机房接入弹幕消息服务，让弹幕更及时。</p>
+
+<p>2、礼物系统</p>
+
+<p>礼物系统更是绝大多数移动直播平台的标配了，它是这些平台主要的收入来源。送礼物的形式也增强了用户和主播之间的互动交流，也是主播依赖平台的最主要原因。</p>
+
+<p>礼物的收发在技术实现上也是用聊天室接口做的，通常采用IM中的自定义消息实现，当用户收到或发送礼物时将自定义消息对应的礼物图形渲染出来。</p>
+
+<p>原文出处：<a href="http://www.leiphone.com/news/201607/Nhq9iveY5y5fQ3Gw.html">http://www.leiphone.com/news/201607/Nhq9iveY5y5fQ3Gw.html</a></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">文涛</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-09-19T22:53:30+08:00" pubdate data-updated="true"></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/pm/'>pm</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/07/09/android-031/" title="Previous Post: 浅谈App安全">&laquo; 浅谈App安全</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/11/02/android-image/" title="Next Post: Android Image">Android Image &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  <section>
+  <p>Hi ,我是 <a href="https://twitter.com/martinbjeldbak">武文涛</a>!</p>
+  
+
+  <p>你可以阅读更多关于我的信息 <a href="/about/">关于</a> 
+  <p>Android开发者  产品经理 </p>
+  <div class="social-icons">
+    
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+</section>
+
+  <section>
+  <h1>最新</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/04/08/android-024/">自定义任意形状的ImageView</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/02/android-image/">Android Image</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/19/pm-032/">如何快速搭建一个完整的移动直播系统？</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/09/android-031/">浅谈App安全</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/05/web-021/">熟悉网络端口</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+    <section>
+  <h1>分类</h1>
+    <ul id="category-list"><li class='category'><a href='/blog/categories/android/'>android (26)</a></li>
+<li class='category'><a href='/blog/categories/db/'>db (1)</a></li>
+<li class='category'><a href='/blog/categories/hardware/'>hardware (1)</a></li>
+<li class='category'><a href='/blog/categories/pm/'>pm (2)</a></li>
+<li class='category'><a href='/blog/categories/unity3d/'>unity3d (1)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (2)</a></li>
+</ul>
+</section>
+<section>
+  <h1>最新</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/04/08/android-024/">自定义任意形状的ImageView</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/02/android-image/">Android Image</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/19/pm-032/">如何快速搭建一个完整的移动直播系统？</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/09/android-031/">浅谈App安全</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/05/web-021/">熟悉网络端口</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2017 - 文涛 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+<p>
+<span>Copyright &copy; 2017  文涛 -</span>
+<span class="credit">Powered by <a href="http://octopress.org">Octopress</a> using the <a href="https://github.com/fapper/classic-martinb">classic-martinb</a> theme</span>
+</p>
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

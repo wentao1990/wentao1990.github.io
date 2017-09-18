@@ -1,0 +1,426 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Android应用开发浅谈 - 沧笙踏歌</title>
+  <meta name="author" content="文涛">
+
+  
+  <meta name="description" content="Android应用程序运行的移动设备受限于其运算能力，存储空间，及电池续航。由此，它必须是高效的。电池续航可能是一个促使你优化程序的原因，即使他看起来已经运行的足够快了。由于续航对用户的重要性，当电量耗损陡增时，意味这用户迟早会发现是由于你的程序。 虽然这份文档主要包含着细微的优化， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://wentao1990.github.io/blog/2013/05/30/android-016">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="沧笙踏歌" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><div class="header-left">
+  <hgroup>
+  <h1><a href="/">沧笙踏歌</a></h1>
+  
+  <div class="subtitle">
+    <h2>静水流深，沧笙踏歌，如花美眷，只缘敢你一回顾，使我常思朝与暮。转身后，一缕香远，逝雪浅，春意浓，笑意深。</h2>
+  </div>
+  
+  </hgroup>
+  
+</div>
+
+<div class="header-right">
+  <ul class="main-navigation">
+ <div> 
+  <li><a href="/">博文</a></li></div><div class="spacer"></div>
+     <div> 
+  <li><a href="/projects">工程</a></li></div><div class="spacer"></div>
+       <div> 
+  <li><a href="/blog/archives">档案</a></li></div><div class="spacer"></div>
+         <div> 
+  <li><a href="/aboutme">关于</a></li></div>
+</ul>
+
+
+
+
+</div>
+</header>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Android应用开发浅谈</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-30T19:29:47+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3>Android应用程序运行的移动设备受限于其运算能力，存储空间，及电池续航。由此，它必须是高效的。电池续航可能是一个促使你优化程序的原因，即使他看起来已经运行的足够快了。由于续航对用户的重要性，当电量耗损陡增时，意味这用户迟早会发现是由于你的程序。</h3>
+
+<p>虽然这份文档主要包含着细微的优化，但这些绝不能成为你软件成败的关键。选择合适的算法和数据结构永远是你最先应该考虑的事情，但这超出这份文档之外。<!--more--></p>
+
+<h4>1. 介绍</h4>
+
+<p>写出高效的代码有两条基本的原则：
+◆ 不作没有必要的工作
+◆ 尽量避免内存分配。</p>
+
+<h4>2. 明智的优化</h4>
+
+<p>这份文档是关于Android规范的细微优化，所以先确保你已经了解哪些代码需要优化，并且知道如何去衡量你所做修改所带来的效果(好或坏)。用开投资开发的时间是有限的，所以明智的时间规划很重要。
+这份文档同时确保你在算法和数据结构上作出最佳选择，同时考虑了API选择所带来的潜在影响。使用恰当的数据结构和算法比这里的任何建议都有价值，考虑API版本带来的影响会如实你选择更好的实现。
+当你优化Android程序时会遇到的一个棘手问题是确保你的程序能在不同的硬件平台上运行。不同版本的虚拟机在不同处理器上的运行速度各不相同。并且不是简单的设备A比设备B快或者慢，并针对一个设备与其他设备之间做出排列。特别的，模拟器上只能评测小部分可以在设备上体现的东西。有无JIT的设备间也有着巨大差异：对于有JIT设备好的代码有时对无JIT的设备并不是最好的。如果你想知道程序在设备上的表现，就必须在上面进行测试</p>
+
+<h4>3. 避免创建不必要的对象</h4>
+
+<p>对象创建永远不会免费的。每个线程的分代GC给临时对象分配一个地址池能降低分配开销，但分配内存往往需要比不分配内存高的代价。
+如果在用户界面周期内分配对象，会强制一个周期性的垃圾回收，给用户体验造成小小的停顿间隙。Gingerbread中介绍的并发回收也许有用，但应该避免不必要的工作。
+因此，避免创建不需要的对象实例。下面是几个例子：
+◆ 如果有一个返回String的方法，他的返回值通常附加在一个StringBuffer上，改变声明和实现，这样函数直接在其后面附加，而非创建一个短暂存在的临时变量。
+◆ 当从输入的数据集合中读取数据时，考虑返回原始数据的子串，而非新建一个拷贝。这样你会创建一个新的对象，但是他们共享该数据的char数组。换来的是即使你仅仅使用原始输入的一部分，你也需要保证它一直存在于内存中。
+一个更彻底的观点是将多维数组切割成一维数组：
+◆ Int类型的数组比Integer类型的好。推而广之，两个平行的int数组要比一个(int,int)型的对象数组高效。这个定理对于任何基本数据类型的组合都通用。
+◆ 如果需要实现存放元组(Foo,Bar)对象的容器，记住两个平行数组Foo[], Bar[]会优于一个(Foo,Bar)对象的数组。(例外情况是：当你设计API给其他代码调用时，最好用好的API设计来换取小的速度提升。但在自己的内部代码中，尽量尝试高效的实现。)
+通常来说，尽量避免创建短时临时对象。少的对象创建意味着低频的垃圾回收。这对于用户体验产生直接的影响。</p>
+
+<h4>4. 性能之谜</h4>
+
+<p>前一个版本的文档给出了好多误导人的主张，这里做一些澄清：
+◆ 在没有JIT的设备上，调用方法所传递的对象采用具体的类型而非接口类型会更有效(比如，传递HashMap map比传递Map map调用一个方法耗费的开销小，尽管两种情况下的map都是HashMap)。但这并不是两倍慢的情形，事实上，只相差6%，而JIT使这两种调用的效率不分伯仲。
+◆ 在没有JIT的设备上，访问缓存后的字段比直接访问字段快大概20%。在有JIT的情况下，字段访问和局部访问耗费是一样的 。所以这里不值得优化，除非你觉得他会让你的代码更易读(对于final,static，及static final 变量同样适用).</p>
+
+<h4>5. 用静态代替虚拟</h4>
+
+<p>如果不需要访问某对象的字段，将方法设置为静态，调用会加速15%到20%。这也是一种好的做法，因为你可以通过方法声明知晓调用该方法不需要更新此对象的状态。</p>
+
+<h4>6. 避免内部的Getters/Setters</h4>
+
+<p>在源生语言像C++中，通常做法是用Getters(i=getCount())代替直接访问字段(i=mCount)。这是C++中一个好的习惯，因为编译器会内联这些访问，如果需要约束或者调试这些域的访问，你可以在任何时间添加代码。
+在Android中，这是个不好的想法。虚方法调用代价比直接存取字段高昂的多。按照通常面向对象语言的做法在公共接口中使用Getters和Setters是有原因的，但应该在一个经常访问其字段的类中采用直接访问。
+无JIT时，直接字段访问大约比调用无关紧要的getter来访问快3倍。有JIT时(直接访问字段开销和访问局部变量是一样的)，要快7倍。在Froyo版本中确实如此，但以后会在JIT中改进Getter方法的内联。</p>
+
+<h4>7. 对常量使用Static Final修饰符</h4>
+
+<p>考虑下面类首的声明：</p>
+
+<pre><code>//Java代码
+static int intVal = 42; static String strVal = "Hello, world!";
+</code></pre>
+
+<p>编译器生成一个类初始化方法clinit, 当类初次被使用时执行，这个方法将42存入intVal中，并得到类字符串常量strVal的引用。当这些值在后面被引用时，他们通过字段查找进行访问。
+我们改进实现，采用 final关键字：</p>
+
+<pre><code>//Java代码
+static final int intVal = 42; static final String strVal = "Hello, world!";
+</code></pre>
+
+<p>类不再需要clinit方法，因为常量进入了dex文件中的静态字段初始化器中。引用intVal的代码，直接调用整形值42，而访问strVal时也会采用相对开销较小的 string constant(字符串常量)指令替代字段查找。(这种优化仅仅是针对基本数据类型和String类型常量的，而非任意的引用类型。但尽可能的将常量声明为static final类型是一种好的做法。</p>
+
+<h4>8. 使用改进的For循环语法</h4>
+
+<p>改进的for循环(有时被称为for-each循环)能够用于实现了iterable接口的集合类及数组中。在集合类中，迭代器促使接口访问hasNext()和next()方法，在ArrayList中，计数循环迭代要快3倍(无论有没有JIT)，但其他集合类中，改进的for循环语法和迭代器具有相同的效率。
+这里有一些迭代数组的实现：</p>
+
+<pre><code>//Java代码
+static class Foo { 
+    int mSplat; 
+} 
+Foo[] mArray = ... 
+public void zero() {
+     int sum = 0; 
+     for (int i = 0; i mArray.length; ++i) { 
+            sum += mArray[i].mSplat; 
+            }
+         }
+ public void one() { 
+    int sum = 0;
+     Foo[] localArray = mArray;
+     int len = localArray.length;
+     for (int i = 0; i len; ++i) {
+        sum += localArray[i].mSplat; 
+    }
+ }
+ public void two() {
+     int sum = 0;
+     for (Foo a : mArray) { 
+        sum += a.mSplat; 
+        }
+     }
+</code></pre>
+
+<p>zero()是当中最慢的，因为对于这个遍历中的历次迭代，JIT不能优化获取数组长度的开销。
+One()稍快，将所有东西都放进局部变量中，避免了查找。但仅只有数组长度促使了性能的改善。
+Two()是在无JIT的设备上运行最快的，对于有JIT的设备则和one()不分上下。他采用了JDK1.5中的改进for循环语法。
+结论：优先采用改进的for循环，但在性能要求苛刻的ArrayList迭代中考虑采用手写计数循环。</p>
+
+<h4>9. 在私有内部内中，考虑用包访问权限替代私有访问权限</h4>
+
+<p>考虑下面的定义：</p>
+
+<pre><code>//Java代码
+public class Foo { 
+    private class Inner {
+         void stuff() {
+             Foo.this.doStuff(Foo.this.mValue);
+                 }
+             }
+    private int mValue; public void run() { 
+        Inner in = new Inner();
+        mValue = 27;
+        in.stuff(); 
+        }
+    private void doStuff(int value) { 
+        System.out.println("Value is " + value); 
+        } 
+    }
+</code></pre>
+
+<p>需要注意的关键是：我们定义的一个私有内部类(Foo$Inner)直接访问外部类中的一个私有方法和私有变量。这是合法的，代码也会打印出预期的Value is 27。
+但问题是虚拟机认为从Foo$Inner中直接访问Foo的私有成员是非法的，因为他们是两个不同的类，尽管Java语言允许内部类访问外部类的私有成员，编译器生成几个综合方法来桥接这些间隙。</p>
+
+<pre><code>//Java代码
+/*package*/ 
+static int Foo.access$100(Foo foo) { 
+    return foo.mValue; 
+    }
+ /*package*/ 
+static void Foo.access$200(Foo foo, int value) { 
+    foo.doStuff(value); 
+    }
+</code></pre>
+
+<p>内部类会在外部类中任何需要访问mValue字段或者doStuff方法的地方调用这些静态方法。这意味着这些代码将直接存取成员变量归结为通过存取器方法访问。之前提到存取器访问如何比直接访问慢，这例子说明，某些语言约定导致了不可见的性能问题。
+如果你在高性能的Hotspot中使用这些代码，可以通过声明被内部类访问的字段和成员为包访问权限，而非私有。不幸的是这意味着这些字段会被其他处于同一个包中的类访问，因此在公共API中不宜采用。</p>
+
+<h4>10. 合理利用浮点数</h4>
+
+<p>通常的经验是，在Android设备中，浮点数会比整型慢两倍，在缺少FPU，或是JIT的G1以及有FPU和JIT的Nexus One中确实如此(两种设备间算数运算的绝对速度差大约是10倍).
+速度术语中，在现代硬件上，float和double之间并没有不同。更广泛的讲，double大约2倍大。在没有存储空间问题的桌面机器中，double的优先级高于float。
+但即使是整型，有些芯片拥有硬件乘法，却缺少除法。这种情况下，整型除法和求模运算是通过软件实现的，考虑下当你设计Hash表，或是做大量的算术。</p>
+
+<h4>11. 了解并使用类库</h4>
+
+<p>除了通常的那些有限选择类库代码而非自己的原因外，考虑到系统空闲时用手写的汇编程序来替代类库方法，这可能比JIT中能生成的最好的等效Java代码还要好。典型的例子就是String.indexOf，Dalvik用内部内联来替代。同样的，System.arraycopy方法比Nexus One中有JIT的自行编码循环快9倍.</p>
+
+<h4>12. 合理利用本地方法</h4>
+
+<p>本地方法并不是一定比Java高效，至少，Java和native之间过渡的关联是有消耗的。而JIT并不能越过这个界限进行优化。当你分配本地资源时(本地堆上的内存，文件说明符等)，往往很难实时的回收这些资源。同时你也需要在各个结构中编译你的代码，而非依赖JIT。甚至可能需要针对相同的架构来编译出不同版本：针对ARM处理器的GI编译的本地代码，并不能充分利用Nexus One上的ARM，而针对Nexus One上ARM编译的本地代码不能在G1的ARM上运行。
+当存在有你想部署到Android上的本地代码库时，本地代码显得尤为有用，而非为了Java应用程序的提速。
+结语
+最后：通常权衡的，先确定存在问题，再进行优化。确认你知道当前的性能，否则无法衡量你进行尝试所得到的提升。
+这份文档中的每个主张都有基准测试作为支持。你可以在code.google.com的dalvik项目中找到基准测试的代码。
+基准测试是用Caliper Java微基准测试框架构建的。微基准测试很难走对，Caliper帮你完成了其中的困难工作。即使当你察觉某些情况的测试结果并非你所想象的那样(虚拟机总是在优化你的代码那)。我们强烈推荐你用Caliper来运行你自己的微基准测试。
+同时你也会发现Traceview对分析很有用，但必须了解，他目前是不支持JIT的，这可能导致那些在JIT上可以胜出的代码超时。特别重要的，当根据Taceview的数据作出更改后，确保代码在没有Traceview时，确实跑的快了。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">文涛</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-30T19:29:47+08:00" pubdate data-updated="true"></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/android/'>android</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/05/22/android-015r/" title="Previous Post: 电脑配置详解">&laquo; 电脑配置详解</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/06/02/android-017/" title="Next Post: 仿支付宝&微信支付密码界面">仿支付宝&微信支付密码界面 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  <section>
+  <p>Hi ,我是 <a href="https://twitter.com/martinbjeldbak">武文涛</a>!</p>
+  
+
+  <p>你可以阅读更多关于我的信息 <a href="/about/">关于</a> 
+  <p>Android开发者  产品经理 </p>
+  <div class="social-icons">
+    
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+</section>
+
+  <section>
+  <h1>最新</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/04/08/android-024/">自定义任意形状的ImageView</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/02/android-image/">Android Image</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/19/pm-032/">如何快速搭建一个完整的移动直播系统？</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/09/android-031/">浅谈App安全</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/05/web-021/">熟悉网络端口</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+    <section>
+  <h1>分类</h1>
+    <ul id="category-list"><li class='category'><a href='/blog/categories/android/'>android (26)</a></li>
+<li class='category'><a href='/blog/categories/db/'>db (1)</a></li>
+<li class='category'><a href='/blog/categories/hardware/'>hardware (1)</a></li>
+<li class='category'><a href='/blog/categories/pm/'>pm (2)</a></li>
+<li class='category'><a href='/blog/categories/unity3d/'>unity3d (1)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (2)</a></li>
+</ul>
+</section>
+<section>
+  <h1>最新</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/04/08/android-024/">自定义任意形状的ImageView</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/02/android-image/">Android Image</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/19/pm-032/">如何快速搭建一个完整的移动直播系统？</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/09/android-031/">浅谈App安全</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/05/web-021/">熟悉网络端口</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2017 - 文涛 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+<p>
+<span>Copyright &copy; 2017  文涛 -</span>
+<span class="credit">Powered by <a href="http://octopress.org">Octopress</a> using the <a href="https://github.com/fapper/classic-martinb">classic-martinb</a> theme</span>
+</p>
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

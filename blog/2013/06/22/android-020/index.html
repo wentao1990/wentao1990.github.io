@@ -1,0 +1,338 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Activity全屏模式下设置adjustResize模式失效，输入框会被软键盘挡到 - 沧笙踏歌</title>
+  <meta name="author" content="文涛">
+
+  
+  <meta name="description" content="下面先介绍下adjustUnspecified、adjustResize、adjustPan三种模式的区别 1.adjustUnspecified ： Activity在没有被指定是adjustResize模式还是adjustPan模式时，系统会根据该Activity窗口是否有滚动控件， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://wentao1990.github.io/blog/2013/06/22/android-020">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="沧笙踏歌" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><div class="header-left">
+  <hgroup>
+  <h1><a href="/">沧笙踏歌</a></h1>
+  
+  <div class="subtitle">
+    <h2>静水流深，沧笙踏歌，如花美眷，只缘敢你一回顾，使我常思朝与暮。转身后，一缕香远，逝雪浅，春意浓，笑意深。</h2>
+  </div>
+  
+  </hgroup>
+  
+</div>
+
+<div class="header-right">
+  <ul class="main-navigation">
+ <div> 
+  <li><a href="/">博文</a></li></div><div class="spacer"></div>
+     <div> 
+  <li><a href="/projects">工程</a></li></div><div class="spacer"></div>
+       <div> 
+  <li><a href="/blog/archives">档案</a></li></div><div class="spacer"></div>
+         <div> 
+  <li><a href="/aboutme">关于</a></li></div>
+</ul>
+
+
+
+
+</div>
+</header>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Activity全屏模式下设置adjustResize模式失效，输入框会被软键盘挡到</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-22T23:00:52+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3>下面先介绍下adjustUnspecified、adjustResize、adjustPan三种模式的区别</h3>
+
+<h5>1.adjustUnspecified ：</h5>
+
+<p>Activity在没有被指定是adjustResize模式还是adjustPan模式时，系统会根据该Activity窗口是否有滚动控件，自动的挑选这两个模式的一种。如果该Activity有滚动控件，该窗口则使用adjustResize模式，重新调整大小，通过滚动可以使窗口的所有内容在一个更小的区域全部展示出来。如果该Activity没有滚动控件，则采用adjustPan模式。</p>
+
+<h5>2.adjustResize：</h5>
+
+<p>Activity的主窗口总是调整大小，来为屏幕上的软键盘腾出空间。  <!--more--></p>
+
+<h5>3.adjustPan：</h5>
+
+<p>Activity的主窗口不会调整大小来为软键盘腾出空间。然而，窗口的内容自动的移动以便当前焦点永远不会被软键盘遮盖住，这样用户总是可以看到他们将要打字的内容。这通常看来是不令人满意的，因为用户可能需要关闭软键盘，才可以点击那些被软键盘遮住的控件。   <!--more--></p>
+
+<h4>根据以上的解释就可以很好的选择了，如果带背景图片的Activity为了防止图片变形，那么就只能选择adjustPan模式了。但是，不管选择哪种模式，在Activiy全屏下就是无效的。</h4>
+
+<p>这个问题出现了很早，至少在2009年以前就出现了，google的Android团队一直都没有解决。<a href="http://code.google.com/p/android/issues/detail?id=5497">http://code.google.com/p/android/issues/detail?id=5497</a>   ，在Android官方问题回馈帖，这个问题的代号为“5497” ，不过这个世界永远都不缺少大神，在此推荐这其中的一个解决方法，来自：stackoverflow.com，实测有效。</p>
+
+<p>首先：要在工程里引入AndroidBug5497Workaround类，代码如下：</p>
+
+<pre><code>public class AndroidBug5497Workaround {
+    public static void assistActivity (Activity activity) {
+        new AndroidBug5497Workaround(activity);
+    }
+
+    private View mChildOfContent;
+    private int usableHeightPrevious;
+    private FrameLayout.LayoutParams frameLayoutParams;
+
+    private AndroidBug5497Workaround(Activity activity) {
+        FrameLayout content = (FrameLayout) activity.findViewById(android.R.id.content);
+        mChildOfContent = content.getChildAt(0);
+        mChildOfContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            public void onGlobalLayout() {
+                possiblyResizeChildOfContent();
+            }
+        });
+        frameLayoutParams = (FrameLayout.LayoutParams) mChildOfContent.getLayoutParams();
+    }
+
+    private void possiblyResizeChildOfContent() {
+        int usableHeightNow = computeUsableHeight();
+        if (usableHeightNow != usableHeightPrevious) {
+            int usableHeightSansKeyboard = mChildOfContent.getRootView().getHeight();
+            int heightDifference = usableHeightSansKeyboard - usableHeightNow;
+            if (heightDifference &gt; (usableHeightSansKeyboard/4)) {
+                // keyboard probably just became visible
+                frameLayoutParams.height = usableHeightSansKeyboard - heightDifference+50;
+            } else {
+                // keyboard probably just became hidden
+                frameLayoutParams.height = usableHeightSansKeyboard;
+            }
+            mChildOfContent.requestLayout();
+            usableHeightPrevious = usableHeightNow;
+        }
+    }
+
+    private int computeUsableHeight() {
+        Rect r = new Rect();
+        mChildOfContent.getWindowVisibleDisplayFrame(r);
+        return (r.bottom - r.top);
+    }
+
+}
+</code></pre>
+
+<p>然后：在Activity的setContentView(R.layout)后面加上AndroidBug5497Workaround.assistActivity(this)即可，如下：</p>
+
+<pre><code>setContentView(R.layout.activity);
+//一定要在setContentView后面调用
+AndroidBug5497Workaround.assistActivity(this);
+</code></pre>
+
+<p>以上完美解决这个问题，感谢解决问题的大神。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">文涛</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-22T23:00:52+08:00" pubdate data-updated="true"></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/06/16/android-018/" title="Previous Post: <译>Android-高性能编码优化">&laquo; <译>Android-高性能编码优化</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/08/12/android-022/" title="Next Post: 打造可以共用的Adapter">打造可以共用的Adapter &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  <section>
+  <p>Hi ,我是 <a href="https://twitter.com/martinbjeldbak">武文涛</a>!</p>
+  
+
+  <p>你可以阅读更多关于我的信息 <a href="/about/">关于</a> 
+  <p>Android开发者  产品经理 </p>
+  <div class="social-icons">
+    
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+</section>
+
+  <section>
+  <h1>最新</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/04/08/android-024/">自定义任意形状的ImageView</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/02/android-image/">Android Image</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/19/pm-032/">如何快速搭建一个完整的移动直播系统？</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/09/android-031/">浅谈App安全</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/05/web-021/">熟悉网络端口</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+    <section>
+  <h1>分类</h1>
+    <ul id="category-list"><li class='category'><a href='/blog/categories/android/'>android (26)</a></li>
+<li class='category'><a href='/blog/categories/db/'>db (1)</a></li>
+<li class='category'><a href='/blog/categories/hardware/'>hardware (1)</a></li>
+<li class='category'><a href='/blog/categories/pm/'>pm (2)</a></li>
+<li class='category'><a href='/blog/categories/unity3d/'>unity3d (1)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (2)</a></li>
+</ul>
+</section>
+<section>
+  <h1>最新</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/04/08/android-024/">自定义任意形状的ImageView</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/02/android-image/">Android Image</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/19/pm-032/">如何快速搭建一个完整的移动直播系统？</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/09/android-031/">浅谈App安全</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/05/web-021/">熟悉网络端口</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2017 - 文涛 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+<p>
+<span>Copyright &copy; 2017  文涛 -</span>
+<span class="credit">Powered by <a href="http://octopress.org">Octopress</a> using the <a href="https://github.com/fapper/classic-martinb">classic-martinb</a> theme</span>
+</p>
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

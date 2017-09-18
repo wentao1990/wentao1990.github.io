@@ -1,0 +1,443 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>沧笙踏歌</title>
+  <meta name="author" content="文涛">
+
+  
+  <meta name="description" content="图片加载在Android开发中是非常重要，好的图片加载库也比比皆是。ImageLoader、Picasso、Glide、Fresco均是优秀的图片加载库。
+以上提到的几种图片加载库各有特色。用法与比较，网上已经很多了。 出于学习的角度，个人认为从Picasso入手较好。代码量小，同时API优美， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://wentao1990.github.io/posts/6">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="沧笙踏歌" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><div class="header-left">
+  <hgroup>
+  <h1><a href="/">沧笙踏歌</a></h1>
+  
+  <div class="subtitle">
+    <h2>静水流深，沧笙踏歌，如花美眷，只缘敢你一回顾，使我常思朝与暮。转身后，一缕香远，逝雪浅，春意浓，笑意深。</h2>
+  </div>
+  
+  </hgroup>
+  
+</div>
+
+<div class="header-right">
+  <ul class="main-navigation">
+ <div class="selected"> 
+  <li><a href="/">博文</a></li></div><div class="spacer"></div>
+     <div> 
+  <li><a href="/projects">工程</a></li></div><div class="spacer"></div>
+       <div> 
+  <li><a href="/blog/archives">档案</a></li></div><div class="spacer"></div>
+         <div> 
+  <li><a href="/aboutme">关于</a></li></div>
+</ul>
+
+
+
+
+</div>
+</header>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/03/19/android-009/">Android之图片加载库Picasso源码分析</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-19T23:08:20+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>图片加载在Android开发中是非常重要，好的图片加载库也比比皆是。ImageLoader、Picasso、Glide、Fresco均是优秀的图片加载库。
+以上提到的几种图片加载库各有特色。用法与比较，网上已经很多了。</p>
+
+<p>出于学习的角度，个人认为从Picasso入手较好。代码量小，同时API优美，很适合我们学习。</p>
+
+<h5>PS:建议先大致看一下源码。</h5>
+
+<p>我们对图片加载的要求</p>
+
+<p>● 加载速度要快</p>
+
+<p>● 资源消耗要低</p>
+
+<p>● 加载图片不能错位</p>
+
+<h5>Picasso是否满足要求?   </div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/03/19/android-009/">阅读更多 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/03/01/android-008/">Android开发工具类之DownloadManagerPro</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-01T22:22:25+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h4>这个工具类就是Android系统下载管理DownloadManager的一个增强类，提供了一些增强方法。或许大家不太了解这个安卓系统自带的DownloadManager这个类，我先做一个简单介绍吧。DownloadManager是系统开放给第三方应用使用的类，包含两个静态内部类DownloadManager.Query和DownloadManager.Request。</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/03/01/android-008/">阅读更多 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/12/13/android-007/">Unity3D项目融合到Android项目中</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-13T19:44:10+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>需求：</h2>
+
+<h3>有一个Android项目，里面要添加一个unity3D做的模块，然后把它们融合到一个项目中，这是两个独立的项目，需要把unity3D融合到Android项目中，如果是在项目设计架构之前选择一个为基点做二次开发，那就没有这么奇葩的需求了，然并卵！</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/12/13/android-007/">阅读更多 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/12/03/android-006/">Android项目开发实践功能收集</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-03T22:56:26+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h4>以下主要是整理了一些在项目中经常遇到的功能</h4>
+
+<h5>1.判断APP是否在后台运行</h5>
+
+<pre><code>  public static boolean isBackground(Context context) {
+    ActivityManager activityManager = (ActivityManager) context
+            .getSystemService(Context.ACTIVITY_SERVICE);//获取管理应用程序的系统状态
+    List&lt;ActivityManager.RunningAppProcessInfo&gt; appProcesses = activityManager
+            .getRunningAppProcesses();//获取当前系统进程列表
+    for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+        if (appProcess.processName.equals(context.getPackageName())) {//判断是否是当前app进程
+            if (appProcess.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {//判断进程状态是否在前台运行
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+    return false;
+}
+</code></pre>
+
+<h5>2.判断系统网络状态及监听网络状态变化  </div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/12/03/android-006/">阅读更多 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/11/22/android-005/">Android之Context详解</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-22T22:08:10+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h4>Context可能是Android应用中最常用的元素，而它也可能是最容易误用的。</h4>
+
+<p><strong>Context</strong>对象是如此常见和传递使用，它可能会很容易产生并不是你预期的情形。加载资源、启动一个新的Activity、获取系统服务、获取内部文件路径以及创建view(其实还远不止这些)统统都需要Context对象来完成。我(原文作者)想做的只是给大家提供一些Context是如何工作的见解，以及让大家在应用中更有效的使用Context的技巧。</p>
+
+<h5>Context的类型</h5>
+
+<p>并不是所有的context实例都是等价的。根据Android应用的组件不同，你访问的context推向有些细微的差别。</p>
+
+<p>1.Application - 是一个运行在你的应用进程中的单例。在Activity或者Service中，它可以通过getApplication()函数获得，或者人和继承于context的对象中，通过getApplicationContext()方法获得。不管你是通过何种方法在哪里获得的，在一个进程内，你总是获得到同一个实例。     </div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/11/22/android-005/">阅读更多 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="7">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="5">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  <section>
+  <p>Hi ,我是 <a href="https://twitter.com/martinbjeldbak">武文涛</a>!</p>
+  
+
+  <p>你可以阅读更多关于我的信息 <a href="/about/">关于</a> 
+  <p>Android开发者  产品经理 </p>
+  <div class="social-icons">
+    
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+</section>
+
+  <section>
+  <h1>最新</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/04/08/android-024/">自定义任意形状的ImageView</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/02/android-image/">Android Image</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/19/pm-032/">如何快速搭建一个完整的移动直播系统？</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/09/android-031/">浅谈App安全</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/05/web-021/">熟悉网络端口</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+    <section>
+  <h1>分类</h1>
+    <ul id="category-list"><li class='category'><a href='/blog/categories/android/'>android (26)</a></li>
+<li class='category'><a href='/blog/categories/db/'>db (1)</a></li>
+<li class='category'><a href='/blog/categories/hardware/'>hardware (1)</a></li>
+<li class='category'><a href='/blog/categories/pm/'>pm (2)</a></li>
+<li class='category'><a href='/blog/categories/unity3d/'>unity3d (1)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (2)</a></li>
+</ul>
+</section>
+<section>
+  <h1>最新</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/04/08/android-024/">自定义任意形状的ImageView</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/02/android-image/">Android Image</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/19/pm-032/">如何快速搭建一个完整的移动直播系统？</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/09/android-031/">浅谈App安全</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/05/web-021/">熟悉网络端口</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2017 - 文涛 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+<p>
+<span>Copyright &copy; 2017  文涛 -</span>
+<span class="credit">Powered by <a href="http://octopress.org">Octopress</a> using the <a href="https://github.com/fapper/classic-martinb">classic-martinb</a> theme</span>
+</p>
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

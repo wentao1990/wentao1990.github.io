@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Unity3d | 临渊羡鱼不如退而结网]]></title>
+  <title><![CDATA[Category: Unity3d | 沧笙踏歌]]></title>
   <link href="http://wentao1990.github.io/blog/categories/unity3d/atom.xml" rel="self"/>
   <link href="http://wentao1990.github.io/"/>
-  <updated>2017-03-17T23:30:37+08:00</updated>
+  <updated>2017-09-17T18:01:16+08:00</updated>
   <id>http://wentao1990.github.io/</id>
   <author>
-    <name><![CDATA[武文涛]]></name>
+    <name><![CDATA[文涛]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Unity3D项目融合到Android项目中]]></title>
-    <link href="http://wentao1990.github.io/blog/2015/07/03/android-unity3D/"/>
-    <updated>2015-07-03T19:44:10+08:00</updated>
-    <id>http://wentao1990.github.io/blog/2015/07/03/android-unity3D</id>
+    <link href="http://wentao1990.github.io/blog/2012/12/13/android-007/"/>
+    <updated>2012-12-13T19:44:10+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2012/12/13/android-007</id>
     <content type="html"><![CDATA[<h2>需求：</h2>
 
 <h3>有一个Android项目，里面要添加一个unity3D做的模块，然后把它们融合到一个项目中，这是两个独立的项目，需要把unity3D融合到Android项目中，如果是在项目设计架构之前选择一个为基点做二次开发，那就没有这么奇葩的需求了，然并卵！<!--more--></h3>

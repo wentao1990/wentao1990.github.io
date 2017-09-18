@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>临渊羡鱼不如退而结网</title>
-  <meta name="author" content="武文涛">
+  <title>沧笙踏歌</title>
+  <meta name="author" content="文涛">
 
   
-  <meta name="description" content="索引优化，查询优化，查询缓存，服务器设置优化，操作系统和硬件优化，应用层面优化（web服务器，缓存）等等。这里的记录的优化技巧更适用于开发人员，都是从网络上收集和自己整理的，主要是查询语句上面的优化，其它层面的优化技巧在此不做记录。 查询的开销指标： 执行时间 检查的行数 返回的行数 &hellip;">
+  <meta name="description" content="下面先介绍下adjustUnspecified、adjustResize、adjustPan三种模式的区别 1.adjustUnspecified ： Activity在没有被指定是adjustResize模式还是adjustPan模式时，系统会根据该Activity窗口是否有滚动控件， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,13 +18,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://wentao1990.github.io/posts/4/">
+  <link rel="canonical" href="http://wentao1990.github.io/posts/4">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="临渊羡鱼不如退而结网" type="application/atom+xml">
+  <link href="/atom.xml" rel="alternate" title="沧笙踏歌" type="application/atom+xml">
   <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
-  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
@@ -35,33 +35,35 @@
 </head>
 
 <body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">临渊羡鱼不如退而结网</a></h1>
+  <header role="banner"><div class="header-left">
+  <hgroup>
+  <h1><a href="/">沧笙踏歌</a></h1>
   
-    <h2>你所浪费的今天,是昨天死去的人奢望的明天;你所厌恶的现在,是未来的你回不去的曾经;</h2>
+  <div class="subtitle">
+    <h2>静水流深，沧笙踏歌，如花美眷，只缘敢你一回顾，使我常思朝与暮。转身后，一缕香远，逝雪浅，春意浓，笑意深。</h2>
+  </div>
   
-</hgroup>
+  </hgroup>
+  
+</div>
 
+<div class="header-right">
+  <ul class="main-navigation">
+ <div class="selected"> 
+  <li><a href="/">博文</a></li></div><div class="spacer"></div>
+     <div> 
+  <li><a href="/projects">工程</a></li></div><div class="spacer"></div>
+       <div> 
+  <li><a href="/blog/archives">档案</a></li></div><div class="spacer"></div>
+         <div> 
+  <li><a href="/aboutme">关于</a></li></div>
+</ul>
+
+
+
+
+</div>
 </header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-</ul>
-  
-<form action="https://www.baidu.com" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="sitesearch" value="wentao1990.github.io">
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">文章</a></li>
-  <li><a href="/blog/archives">档案</a></li>
-  <li><a href="/aboutme">关于</a></li>
-</ul>
-
-</nav>
   <div id="main">
     <div id="content">
       <div class="blog-index">
@@ -72,7 +74,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/05/11/mysql-optimize/">Mysql查询优化技巧</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/06/22/android-020/">Activity全屏模式下设置adjustResize模式失效，输入框会被软键盘挡到</a></h1>
     
     
       <p class="meta">
@@ -81,28 +83,33 @@
 
 
 
-<time class='entry-date' datetime='2013-05-11T22:45:58+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>10:45 pm</span></time>
+
+
+
+
+  
+
+
+<time datetime="2013-06-22T23:00:52+08:00" pubdate data-updated="true"></time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>索引优化，查询优化，查询缓存，服务器设置优化，操作系统和硬件优化，应用层面优化（web服务器，缓存）等等。这里的记录的优化技巧更适用于开发人员，都是从网络上收集和自己整理的，主要是查询语句上面的优化，其它层面的优化技巧在此不做记录。</p>
+  <div class="entry-content"><h3>下面先介绍下adjustUnspecified、adjustResize、adjustPan三种模式的区别</h3>
 
-<h4>查询的开销指标：</h4>
+<h5>1.adjustUnspecified ：</h5>
 
-<h4>执行时间</h4>
+<p>Activity在没有被指定是adjustResize模式还是adjustPan模式时，系统会根据该Activity窗口是否有滚动控件，自动的挑选这两个模式的一种。如果该Activity有滚动控件，该窗口则使用adjustResize模式，重新调整大小，通过滚动可以使窗口的所有内容在一个更小的区域全部展示出来。如果该Activity没有滚动控件，则采用adjustPan模式。</p>
 
-<h4>检查的行数</h4>
+<h5>2.adjustResize：</h5>
 
-<h4>返回的行数</h4>
-
-<h4>建立索引的几个准则： </div>
+<p>Activity的主窗口总是调整大小，来为屏幕上的软键盘腾出空间。  </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2013/05/11/mysql-optimize/">阅读更多 &rarr;</a>
+      <a rel="full-article" href="/blog/2013/06/22/android-020/">阅读更多 &rarr;</a>
     </footer>
   
 
@@ -114,7 +121,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/04/05/android-start/">Android之应用启动优化</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/06/16/android-018/"><译>Android-高性能编码优化</a></h1>
     
     
       <p class="meta">
@@ -123,24 +130,29 @@
 
 
 
-<time class='entry-date' datetime='2013-04-05T22:41:57+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>10:41 pm</span></time>
+
+
+
+
+  
+
+
+<time datetime="2013-06-16T20:16:21+08:00" pubdate data-updated="true"></time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><h3>在 Android 开发中,应用启动速度是一个非常重要的点,应用启动优化也是一个非常重要的过程.对于应用启动优化,其实核心思想就是在启动过程中少做事情,具体实践的时候无非就是下面几种:</h3>
+  <div class="entry-content"><p>这里先事先提醒大家一句，本篇文章中讨论的编码优化技巧都是属于一些“微优化”，也就是说即使我们都按照本篇文章的技巧来优化代码，在性能方面也是看不出有什么显著的提升的。使用合适的算法与数据结构将永远是你优化程序性能的最主要手段，但本篇文章中不会讨论这一块的内容。因此，这里我们即将学习的并不是什么灵丹妙药，而是大家应该把这些技巧当作一种好的编码规范，我们在平时写代码时就可以潜移默化地使用这些编码规范，不仅能够在微观层面提升程序一定的性能，也可以让我们的代码变得更加专业，下面就让我们来一起学习一下这些技巧。</p>
 
-<h4>异步加载</h4>
+<h3>避免创建不必要的对象</h3>
 
-<h4>延时加载</h4>
-
-<h4>懒加载 </div>
+<p>创建对象从来都不应该是一件随意的事情，因为创建一个对象就意味着垃圾回收器需要回收一个对象，而这两步操作都是需要消耗时间的。虽说创建一个对象的代价确实非常小，并且Android 2.3版本当中又增加了并发垃圾回收器机制，这让GC操作时的停顿时间也变得难以察觉，但是这些理由都不足以让我们可以肆意地创建对象，需要创建的对象我们自然要创建，但是不必要的对象我们就应该尽量避免创建。  </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2013/04/05/android-start/">阅读更多 &rarr;</a>
+      <a rel="full-article" href="/blog/2013/06/16/android-018/">阅读更多 &rarr;</a>
     </footer>
   
 
@@ -152,7 +164,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/03/19/android-picasso/">Android之图片加载库Picasso源码分析</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/06/13/web-019/">42种常见的浏览器兼容性问题</a></h1>
     
     
       <p class="meta">
@@ -161,33 +173,31 @@
 
 
 
-<time class='entry-date' datetime='2013-03-19T23:08:20+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>11:08 pm</span></time>
+
+
+
+
+  
+
+
+<time datetime="2013-06-13T19:33:34+08:00" pubdate data-updated="true"></time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>图片加载在Android开发中是非常重要，好的图片加载库也比比皆是。ImageLoader、Picasso、Glide、Fresco均是优秀的图片加载库。
-以上提到的几种图片加载库各有特色。用法与比较，网上已经很多了。</p>
+  <div class="entry-content"><h2>JavaScript</h2>
 
-<p>出于学习的角度，个人认为从Picasso入手较好。代码量小，同时API优美，很适合我们学习。</p>
+<h3>1.HTML对象获取问题</h3>
 
-<h5>PS:建议先大致看一下源码。</h5>
-
-<p>我们对图片加载的要求</p>
-
-<p>● 加载速度要快</p>
-
-<p>● 资源消耗要低</p>
-
-<p>● 加载图片不能错位</p>
-
-<h5>Picasso是否满足要求?   </div>
+<p>FireFox：document.getElementById(“idName”);
+ie:document.idname或者document.getElementById(“idName”).
+解决办法：统一使用document.getElementById(“idName”);</div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2013/03/19/android-picasso/">阅读更多 &rarr;</a>
+      <a rel="full-article" href="/blog/2013/06/13/web-019/">阅读更多 &rarr;</a>
     </footer>
   
 
@@ -199,7 +209,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/03/01/android-download/">Android开发工具类之DownloadManagerPro</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/06/02/android-017/">仿支付宝&微信支付密码界面</a></h1>
     
     
       <p class="meta">
@@ -208,18 +218,74 @@
 
 
 
-<time class='entry-date' datetime='2013-03-01T22:22:25+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2013</span></span> <span class='time'>10:22 pm</span></time>
+
+
+
+
+  
+
+
+<time datetime="2013-06-02T22:52:26+08:00" pubdate data-updated="true"></time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><h4>这个工具类就是Android系统下载管理DownloadManager的一个增强类，提供了一些增强方法。或许大家不太了解这个安卓系统自带的DownloadManager这个类，我先做一个简单介绍吧。DownloadManager是系统开放给第三方应用使用的类，包含两个静态内部类DownloadManager.Query和DownloadManager.Request。</div>
+  <div class="entry-content"><h4>这篇文章主要介绍下支付宝和微信支付密码样式实现。如下图：</h4>
+
+<p><img src="http://i.imgur.com/83WfVFz.png" alt="" /></p>
+
+<p>1：绘制一个完整的界面，如下图：</p>
+
+<p><img src="http://i.imgur.com/MqF5j8Y.png" alt="" /></p>
+
+<p>(这个界面可以根据自己的需要自定义）  </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2013/03/01/android-download/">阅读更多 &rarr;</a>
+      <a rel="full-article" href="/blog/2013/06/02/android-017/">阅读更多 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/05/30/android-016/">Android应用开发浅谈</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-30T19:29:47+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>Android应用程序运行的移动设备受限于其运算能力，存储空间，及电池续航。由此，它必须是高效的。电池续航可能是一个促使你优化程序的原因，即使他看起来已经运行的足够快了。由于续航对用户的重要性，当电量耗损陡增时，意味这用户迟早会发现是由于你的程序。</h3>
+
+<p>虽然这份文档主要包含着细微的优化，但这些绝不能成为你软件成败的关键。选择合适的算法和数据结构永远是你最先应该考虑的事情，但这超出这份文档之外。</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/05/30/android-016/">阅读更多 &rarr;</a>
     </footer>
   
 
@@ -228,48 +294,95 @@
   
   <div class="pagination">
     
+      <a class="prev" href="5">&larr; Older</a>
+    
     <a href="/blog/archives">Blog Archives</a>
     
-    <a class="next" href="/posts/3">Newer &rarr;</a>
+    <a class="next" href="3">Newer &rarr;</a>
     
   </div>
 </div>
 <aside class="sidebar">
+  <section>
+  <p>Hi ,我是 <a href="https://twitter.com/martinbjeldbak">武文涛</a>!</p>
   
-    <section> 
-  <h1>文章分类</h1> 
-  <ul id="categories"> 
-    <li class='category'><a href='/blog/categories/android/'>android (25)</a></li>
-<li class='category'><a href='/blog/categories/hardware/'>hardware (1)</a></li>
-<li class='category'><a href='/blog/categories/java/'>java (1)</a></li>
-<li class='category'><a href='/blog/categories/mysql/'>mysql (1)</a></li>
-<li class='category'><a href='/blog/categories/server/'>server (1)</a></li>
-<li class='category'><a href='/blog/categories/unity3d/'>unity3d (1)</a></li>
-<li class='category'><a href='/blog/categories/web/'>web (2)</a></li>
- 
-  </ul> 
-</section><section>
-  <h1>Recent Posts</h1>
+
+  <p>你可以阅读更多关于我的信息 <a href="/about/">关于</a> 
+  <p>Android开发者  产品经理 </p>
+  <div class="social-icons">
+    
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+</section>
+
+  <section>
+  <h1>最新</h1>
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2017/03/01/android-mvp/">Android开发之架构模式选择</a>
+        <a href="/blog/2016/04/08/android-024/">自定义任意形状的ImageView</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2016/10/06/android-01/">Android第三方网络请求框架总结</a>
+        <a href="/blog/2015/11/02/android-image/">Android Image</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2016/08/09/android-01/">Android性能优化</a>
+        <a href="/blog/2015/09/19/pm-032/">如何快速搭建一个完整的移动直播系统？</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2016/08/07/android-performs1/">转：Android最佳性能实践——合理管理内存</a>
+        <a href="/blog/2015/07/09/android-031/">浅谈App安全</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2016/07/19/server/">如何快速搭建一个完整的移动直播系统？</a>
+        <a href="/blog/2015/07/05/web-021/">熟悉网络端口</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+    <section>
+  <h1>分类</h1>
+    <ul id="category-list"><li class='category'><a href='/blog/categories/android/'>android (26)</a></li>
+<li class='category'><a href='/blog/categories/db/'>db (1)</a></li>
+<li class='category'><a href='/blog/categories/hardware/'>hardware (1)</a></li>
+<li class='category'><a href='/blog/categories/pm/'>pm (2)</a></li>
+<li class='category'><a href='/blog/categories/unity3d/'>unity3d (1)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (2)</a></li>
+</ul>
+</section>
+<section>
+  <h1>最新</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/04/08/android-024/">自定义任意形状的ImageView</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/02/android-image/">Android Image</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/19/pm-032/">如何快速搭建一个完整的移动直播系统？</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/09/android-031/">浅谈App安全</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/05/web-021/">熟悉网络端口</a>
       </li>
     
   </ul>
@@ -285,10 +398,14 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2017 - 武文涛 -
+  Copyright &copy; 2017 - 文涛 -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
+<p>
+<span>Copyright &copy; 2017  文涛 -</span>
+<span class="credit">Powered by <a href="http://octopress.org">Octopress</a> using the <a href="https://github.com/fapper/classic-martinb">classic-martinb</a> theme</span>
+</p>
 </footer>
   
 

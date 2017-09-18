@@ -1,433 +1,459 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Android | 临渊羡鱼不如退而结网]]></title>
+  <title><![CDATA[Category: Android | 沧笙踏歌]]></title>
   <link href="http://wentao1990.github.io/blog/categories/android/atom.xml" rel="self"/>
   <link href="http://wentao1990.github.io/"/>
-  <updated>2017-03-17T23:30:37+08:00</updated>
+  <updated>2017-09-17T18:01:16+08:00</updated>
   <id>http://wentao1990.github.io/</id>
   <author>
-    <name><![CDATA[武文涛]]></name>
+    <name><![CDATA[文涛]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
-    <title type="html"><![CDATA[Android开发之架构模式选择]]></title>
-    <link href="http://wentao1990.github.io/blog/2017/03/01/android-mvp/"/>
-    <updated>2017-03-01T21:20:25+08:00</updated>
-    <id>http://wentao1990.github.io/blog/2017/03/01/android-mvp</id>
-    <content type="html"><![CDATA[<h3>本文将会根据以下几个问题进行讨论</h3>
+    <title type="html"><![CDATA[自定义任意形状的ImageView]]></title>
+    <link href="http://wentao1990.github.io/blog/2016/04/08/android-024/"/>
+    <updated>2016-04-08T22:22:25+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2016/04/08/android-024</id>
+    <content type="html"><![CDATA[<h4>参考</h4>
 
-<h5>• 为什么要选择架构模式开发?</h5>
+<p>Xfermode in android - 解释文档和模式部分写得很好
+Android中Canvas绘图之PorterDuffXfermode使用及工作原理详解 - 代码实践分析部分值得细看</p>
 
-<h5>• 架构模式做的事情?</h5>
+<p>网上大部分文章都说有3个类可用, 但是实际上仅需要掌握PoterDuffXfermode, 因为只有它支持硬件加速, 官方的文档的描述中Xfermode的直接继承类也只有它了, 所以一般只用它.</p>
 
-<h5>• 主流架构MVC、MVP的介绍及区别?</h5>
+<p>PoterDuffXfermode</p>
 
-<h5>• 开发中如何选择合适的架构模式?</h5>
+<p>Porter-Duff 操作是 1 组 12 项用于描述数字图像合成的基本手法，包括Clear、Source Only、Destination Only、Source Over、Source In、SourceOut、Source Atop、Destination Over、Destination In、DestinationOut、Destination Atop、XOR。通过组合使用 Porter-Duff 操作，可完成任意 2D图像的合成。Thomas Porter 和 Tom Duff 发表于 1984年原始论文的扫描版本
+简单来说就是一种图像合成的理论依据, 规定了合成图像时的像素操作. Android中支持总共18种模式, 就不一一列举了. 看懂文档就行.</p>
 
-<h3>&mdash;&ndash;为什么要选择架构模式开发？</h3>
+<!--more-->
 
-<p>首先，让我们思考一下为什么在Android开发中如此迫切地需要一个清晰的软件架构。</p>
 
-<p><strong>Activity是上帝类</strong></p>
+<h3>文档解释</h3>
 
-<p>该段摘自“代码大全第二版”：</p>
+<pre><code>public enum Mode { 
+    // ... 
+    /** [Sa + (1 - Sa)*Da, Dc + (1 - Da)*Sc] */ 
+    DST_OVER (4), 
+    /** [Sa * Da, Sa * Dc] */ 
+    DST_IN (6), 
+    // ...以下省略
+}
+</code></pre>
 
-<blockquote><p>避免创建神类。避免创建无所不知，无所不能的上帝类。如果一个类需要花费时间从其他类中通过Get()和Set()检索数据（也说，需要深入业务并且告诉它们如何去做），所以是否应该把这些功能函数更好的组织到其它类而不是上帝类中。（Riel 1996）</p></blockquote>
+<p>文档中每个模式对应一条公式, 公式中的缩写表示:
+SRC = source, 表示即将要画的像素
+DST = destination, 表示已经存在的像素
+Sa = Source alpha, 透明通道值
+Da = Dest alpha
+Sc = Source color, 颜色值
+Dc = Dst color
+[AlphaValue, ColorValue] -> 第一个值为进行像素操作后的透明通道值, 第二个值为操作后的颜色值</p>
 
-<p>上帝类的维护成本很高，你很难理解正在进行的操作，并且难以测试和扩展，这就是为什么要避免创建上帝类的黄金法则。</p>
+<h4>举个例子:</h4>
 
-<p>然而，在Android开发中，如果你不考虑架构的话，Activity类往往会越来越大。这是因为，在Android中，允许View和其它线程共存于Activity内。其实最大的问题莫过于在Activity中同时存在业务逻辑和UI逻辑。这会增加测试和维护的成本。</p>
+<p>DST_IN - [Sa Da, Sa Dc]
+为了简化分析, 假设透明通道值不是0就是1
+主要看颜色值的计算 Sa * Dc, 当Sa = 1的时候, 颜色值就是Dc, 也就是说在准备画的像素的alpha值为1的地方, 直接显示原来的像素, Sa = 0的时候不显示任何颜色, 并且只有在Sa和Da都是1的地方才会显示颜色.</p>
 
-<p>这是为什么需要清晰架构的原因之一。不仅会造成Activity的臃肿，还会引起其他问题，如使Activity和Fragment的生命周期变复杂，以及数据绑定等。  <!--more--></p>
+<p>加入透明通道值的分析参考Xfermode in android</p>
 
-<h3>&mdash;&ndash;架构模式做的事情?</h3>
+<p>看懂文档后我们就可以利用Xfermode做各种图形效果, Xfermode可以做的事情理论上</p>
 
-<p><strong>1.低耦合性（强调视图和业务分离）</strong></p>
+<p>可完成任意 2D图像的合成
+远远不限于实现任意形状的ImageView. 接下来就一步步分析如下实现任意形状的ImageView和我遇到的问题.</p>
 
-<p>解耦可以说是程序设计最重要的一点，耦合性太高的代码不易维护，牵一发而动全身，修改bug或者需求很容易引起蝴蝶效应。</p>
+<p>实现任意形状ImageView</p>
 
-<p><strong>2.可测试性（单元测试）</strong></p>
+<p>分析</p>
 
-<p>项目分层明确，易进行驱动化测试，可以减少测试时间及bug的数量。</p>
+<p>为了最简化代码, 最好能够复用ImageView, 而ImageView#onDraw就是把图片画在屏幕上, 也就是说经过ImageView#onDraw方法后, 图片像素会变成DST(已经存在的像素).</p>
 
-<p><strong>3.高复用性和可适用性（减少冗余的代码）</strong></p>
+<p>所以要实现任意形状最直接的办法应该是根据形状裁剪图片像素, 即显示DST和SRC重合的部分的DST像素, 形状内的像素自然是SRC(即将要画的像素), 转化成公式应该是Sa * Dc, 查模式说明文档找到我们需要的模式DST_IN - [Sa * Da, Sa * Dc]</p>
 
-<p>代码的有效复用可以提升性能及开发效率，优雅简洁的代码才是程序员追求的品味。</p>
+<p>所以我们的核心代码应该如下</p>
 
-<p><strong>4.模块职责划分明显（分工明确，提升阅读性）</strong></p>
+<pre><code>super.onDraw(canvas);// 画图片
+mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));// 设置Xfermode模式
+canvas.drawXX();// 画多边形覆盖在图片上
+</code></pre>
 
-<p>简单明了，一目了然，可以减轻二次开发的了解成本，试想一堆臃肿的代码如果非作者，别人该如何进行二次开发。</p>
+<p>使用saveLayer</p>
 
-<p><strong>5.隐藏数据（安全性高）</strong></p>
+<p>在实际测试的时候会发现, 多边形外的像素会变成黑色(也有可能是白色), 这是因为默认情况画布只有一个图层(就是Photoshop里面的图层概念), 此时的DST不仅是图片, 还包括图片后面的背景像素, 如果清除了多边形外的像素, 当然背景也会被清除掉了, 而一般情况下我们仅需要处理图片本身, 所以实际使用中通常会使用Canvas#saveLayer来创建新的透明图层来进行图像合成的操作, 此时背景的像素就不会被纳入DST中.</p>
 
-<p>不需要暴露出的数据，都应该封装隐藏起来，对数据统一加密、销毁、管理，可大大提高软件被破解的损失。</p>
+<p>核心代码变成</p>
 
-<p><strong>6.有利于软件工程化管理（减少维护成本）</strong></p>
+<pre><code>int layerId = canvas.saveLayer(0, 0, canvas.getWidth(), canvas.getHeight(), null, Canvas.ALL_SAVE_FLAG);// 新增透明图层
+super.onDraw(canvas);// 画图片
+mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));// 设置Xfermode模式
+canvas.drawXX();// 画多边形覆盖在图片上
+canvas.restoreToCount(layerId);// 合并图层
+</code></pre>
 
-<p>一份规范的代码，可以进行工程化管理，无规矩不成方圆。</p>
+<h4>使用Bitmap</h4>
 
-<p>等等&hellip;</p>
+<p>如果我想制作圆形图片, 那么直接通过Canvas#drawCircle画圆, 实际运行就会发现结果跟预测的不同, 圆形外的像素并没有消失, 为什么?</p>
 
-<p><strong>由此可见，架构模式就是定义一个开发规范，大家彼此按照这个规范写代码。</strong></p>
+<p>这是因为直接通过Canvas#drawXX方法画图时, SRC仅是图形内的像素, 例如你画了一个圆, 那么SRC(即将要画的像素)仅是圆内的像素, 也就是说图片与圆不重叠的像素并不会有任何变化, 当然就不会消失了.
+所以要想圆形外的像素会消失, 我们要把圆形外的像素也纳入SRC并且使其透明通道值为0.</p>
 
-<h3>&mdash;&ndash;主流架构（MVC&amp;MVP)的比较 ?</h3>
+<p>所以进行"过滤"操作的时候, 例如DST_IN, 仅显示即将要画的像素一般会先创建一个Bitmap实例, 并先在Bitmap画要保留的图形, 然后再把Bitmap画在图片上, 此时SRC的像素包括了整个Bitmap而不仅仅是图形内的像素</p>
 
-<h4>MVC（ModelViewController）</h4>
+<p>.假设我们要制作的是菱形的图片, 那么代码就变成</p>
 
-<p>我们根据一张图来分析MVC所做的事情</p>
-
-<p><img src="http://i.imgur.com/i45tKyT.gif" alt="" /></p>
-
-<h4>MODEL（数据）层 ：</h4>
-
-<p><strong>• 封装应用程序状态</strong> （封装管理应用数据）</p>
-
-<p><strong>• 响应状态查询</strong> （响应VIEW层的请求操作数据）</p>
-
-<p><strong>• 暴露应用程序功能</strong> （供VIEW、CONTROLLER使用的核心业务逻辑）</p>
-
-<p><strong>• 通知更改的视图</strong> （通知VIEW层渲染最新的UI数据）</p>
-
-<p><strong>小结：</strong> 模型代表着核心的业务逻辑和数据。（不要理解成Model只是实体类）。</p>
-
-<h4>VIEW（视图）层 ：</h4>
-
-<p><strong>• 呈现模型</strong> （渲染UI、显示数据）</p>
-
-<p><strong>• 请求更新表单模型</strong> （通知MODEL层更新数据）</p>
-
-<p><strong>• 向控制器发送用户手势</strong> （响应用户的操作，通知CONTROLLER层处理相应的业务逻辑处理）</p>
-
-<p><strong>• 允许控制器选择的观点</strong> （根据CONTROLLER层返回的结果进行呈现）</p>
-
-<p><strong>小结：</strong> 视图应该关注与如何展示数据，而不应该包含任何业务逻辑（业务逻辑应写在Model中）。</p>
-
-<h4>CONTROLLER（控制器）层 ：</h4>
-
-<p><strong>• 指示应用程序行为</strong> （操作MODEL层做出相应的业务逻辑处理）</p>
-
-<p><strong>• 将用户操作映射到模型更新</strong>（根据VIEW层传来的用户手势，通知MODEL层更新状态）</p>
-
-<p><strong>• 选择视图进行响应</strong> （响应VIEW层的指令）</p>
-
-<p><strong>• 每个功能一个</strong> （一个业务逻辑的函数，是唯一的，整个项目通用）</p>
-
-<p><strong>小结：</strong> 控制器控制着程序的逻辑，并充当着视图和模型之间的协调角色。控制器从视图层接收用户输入的信息，然后使用模型来执行特定的操作，并把最终的结果回传给视图</p>
-
-<p><strong>总结：</strong> 由上可见，在 <strong>MVC模式</strong> 中，<strong> VIEW</strong> 层负责UI渲染和用户交互，<strong> MODEL</strong> 负责数据的维护及核心业务逻辑处理， <strong>CONTROLLER</strong> 负责把二者串起来，控制他们怎么工作。</p>
-
-<p>不过<strong>Android</strong>开发中，<strong>VIEW</strong> 层也是可以和 <strong>MODEL</strong> 层进行双向交互的，既然和数据交互，就难免存在一些业务逻辑处理，如果把控不好，就会造成 <strong>VIEW</strong> 层掺杂的业务逻辑代码过多，偏离了 <strong>MVC模式</strong> 的设计初衷。</p>
-
-<h4>MVP（ModelViewPresenter）</h4>
-
-<h4>为何这个模式出来后，就能被广大的Android的程序员接受呢？</h4>
-
-<p>MVP是在MVC的基础上演变而来的，这次的跳跃是从并不标准的MVC到MVP的一个转变，减少了 <strong>ACTIVITY</strong> 的职责，简化了 <strong>ACTIVITY</strong> 中的代码，将复杂的逻辑代码提取到了 <strong>PRESENTER</strong> 中进行处理。与之对应的好处就是，耦合度更低，更方便的进行测试。借用两张图，代表上述的转变：</p>
-
-<p><img src="http://i.imgur.com/28YLg9u.png" alt="" /></p>
-
-<p>转变为：</p>
-
-<p><img src="http://i.imgur.com/V2jdQQg.png" alt="" /></p>
-
-<h3>MVC 与 MVP 的区别</h3>
-
-<p>如下图：</p>
-
-<p><img src="http://i.imgur.com/GxXtsZZ.png" alt="" /></p>
-
-<p>其实最明显的区别就是，MVC中是允许Model和View进行交互的，而MVP中很明显，Model与View之间的交互由Presenter完成。还有一点就是Presenter与View之间的交互是通过接口的。</p>
-
-<p><strong>MVC 存在的问题：</strong></p>
-
-<p>在 <strong>MVC</strong> 模型里，<strong>MODEL</strong> 不依赖于 <strong>VIEW</strong>，但是 <strong>view</strong> 是依赖于 <strong>MODEL</strong> 的。不仅如此，因为有一些业务逻辑在  <strong>VIEW</strong> 里实现了，导致要更改 <strong>VIEW</strong> (视图是经常根据需求变化的) 也是比较困难的，至少那些业务逻辑是无法重用的。</p>
-
-<p><strong>把Controller和View混在一起，有什么问题？</strong></p>
-
-<p> <strong>• 难以测试</strong> 必须手动点击，使用各种自动化的测试工具。</p>
-
-<p> <strong>• 代码难以重用</strong> UI是很难重用，因为要求总是不同。所以，导致重复的代码四处都是，维护麻烦。</p>
-
-<p><strong>MVP 来解决 MVC 存在的问题：</strong></p>
-
-<p>在 <strong>MVP</strong> 里， <strong>PRESENTER</strong> 完全把 <strong>MODEL</strong> 和 <strong>VIEW</strong> 进行了分离，主要的程序逻辑在 <strong>PRESENTER</strong> 里实现。而且，<strong>PRESENTER</strong> 与具体的 <strong>VIEW </strong>是没有直接关联的，而是通过定义好的接口进行交互，从而使得在变更 <strong>VIEW</strong> 时候可以 保持<strong>PRESENTER</strong> 的不变，即重用！不仅如此，我们还可以编写测试用的 <strong>VIEW</strong> ，模拟用户的各种操作，从而实现对 <strong>PRESENTER</strong> 的测试&ndash;而不需要使用自动化的测试工具。</p>
-
-<p>我们甚至可以在 <strong>MODEL</strong> 和 <strong>VIEW</strong> 都没有完成时候，就可以通过编写 <strong>MOCK OBJECT </strong>（即实现了 <strong>MODEL</strong> 和 <strong>VIEW</strong> 的接口，但没有具体的内容的）来测试 <strong>PRESENTER</strong> 的逻辑</p>
-
-<h3>&mdash;&ndash;开发中如何选择合适的架构模式?</h3>
-
-<p>这里以 <strong>APP</strong> 开发为例，如果是一款轻量级、业务逻辑不是很复杂的 <strong>APP</strong> ，那么使用 <strong>MVC</strong> 模式足够满足需求，因为代码量不大，不至于变成臃肿的 <strong>MVC</strong> ，造成不好测试及维护问题。</p>
-
-<p>如果，开发的是一款业务逻辑复杂的 <strong>超级APP</strong> ,那么使用 <strong>MVC</strong> 模式进行开发，就会出现上面所列出的那些问题。这种情况下使用<strong>MVP</strong> 架构模式就更为妥当。有些 <strong>APP</strong> 甚至只有一个 <strong>ACTIVITY</strong>，在性能和反编译安全问题都有提升。</p>
+<pre><code>    // 创建一个跟图片一样大小的Bitmap, 并画一个旋转了45度的正方形
+private Bitmap createMask() { 
+    int maskWidth = getMeasuredWidth(); 
+    int maskHeight = getMeasuredHeight(); 
+    Bitmap mask = Bitmap.createBitmap(maskWidth, maskHeight, Bitmap.Config.ALPHA_8); 
+    Canvas canvas = new Canvas(mask); 
+    canvas.translate(maskWidth / 2, 0); 
+    canvas.rotate(45); 
+    int rectSize = (int) (maskWidth / 2 / Math.sin(Math.toRadians(45))); 
+    canvas.drawRect(0, 0, rectSize, rectSize, mPaint);
+}
+
+// 核心操作
+int layerId = canvas.saveLayer(0, 0, canvas.getWidth(), canvas.getHeight(), null, Canvas.ALL_SAVE_FLAG);// 新增透明图层
+super.onDraw(canvas);// 画图片
+mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));// 设置Xfermode模式
+canvas.drawBitmap(createMask(), 0, 0, mPaint);// 画多边形覆盖在图片上
+canvas.restoreToCount(layerId);
+</code></pre>
+
+<p>这里有个小技巧, 在创建Bitmap的时候使用了Bitmap.Config.ALPHA_8, 这是因为DST_IN的公式中仅使用了Sa, 不需要有颜色, 所以只使用ALPHA_8就足够了, 可以节省内存.</p>
+
+<p>效果图</p>
+
+<p><img src="http://i.imgur.com/WF3dwTc.png" alt="" /></p>
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Android第三方网络请求框架总结]]></title>
-    <link href="http://wentao1990.github.io/blog/2016/10/06/android-01/"/>
-    <updated>2016-10-06T22:36:35+08:00</updated>
-    <id>http://wentao1990.github.io/blog/2016/10/06/android-01</id>
-    <content type="html"><![CDATA[<h4>android-async-http （<a href="https://github.com/loopj/android-async-http">https://github.com/loopj/android-async-http</a>）</h4>
+    <title type="html"><![CDATA[浅谈App安全]]></title>
+    <link href="http://wentao1990.github.io/blog/2015/07/09/android-031/"/>
+    <updated>2015-07-09T20:52:25+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2015/07/09/android-031</id>
+    <content type="html"><![CDATA[<h5>前言：大多数开发者认为，iOS系统的封闭性使APP也更加安全，事实上，根据国外某安全服务商的最新调查显示：iOS前100名付费应用中87%均遭黑客破解。内购破解、源代码破解、本地数据窃取、本地数据窃取等手段时刻都在威胁着移动APP的安全。由于现在智能手机的普及度越来越高，APP的安全问题也越来越多的曝光在群众视野之内，仔细查阅下资料，真是与PC端程序有过之而无不及。本文楼主就以Android应用APP为例，介绍下破解和防破解的一些常用手段。</h5>
 
-<p>功能：</p>
+<p>（早在大学期间，我就和室友一起编写过一些游戏脚本兜售给玩家，以此赚取一些生活费用。那时我们用VB语言编写一些简单的游戏挂机辅助软件，就是模拟按键操作，由于当时对行业认知有限，我们编写的软件只是简单的加了个Protect外壳就投入到市场上，后来发现淘宝上有三五家商家在兜售我们的破解软件。）</p>
 
-<p>•基于HttpClient；</p>
+<!--more-->
 
-<p>•在UI线程外，异步进行http请求；</p>
 
-<p>•在匿名回调中处理请求结果，callBback使用了Android的Handler发送消息机制在创建它的线程中执行；</p>
+<h4>常用的防破解方式：</h4>
 
-<p>•自动智能请求重试；</p>
+<p><strong>• 1： 代码混淆</strong></p>
 
-<p>•持久化cookie存储，保存cookie到应用程序的SharedPreferences中；</p>
+<p>最早的应用保护当属代码混淆，谷歌官方发布的sdk中就包含ProGuard这种混淆工具。混淆工具会把你用java语言编写的代码的类名、变量名混淆为自己定义的格式，这样可以增加破解者在破解时阅读难度。如下图：</p>
 
-<p>开发者使用：</p>
+<p><strong>不足：</strong></p>
 
-<p>作者已经停止对该项目维护，在android 5.0 以后，不推荐使用HttpClient,所以不推荐使用此库。 <!--more--></p>
+<p>这种方法其实算不上防破解，只不过是增加破解者的时间成本而已，好比多穿几件衣服。。。你们懂的。</p>
 
-<h4>Volley  （<a href="https://github.com/stormzhang/AndroidVolley">https://github.com/stormzhang/AndroidVolley</a>）</h4>
+<p><strong>• 2： 自我校验</strong></p>
 
-<p>功能：</p>
+<p>通俗的讲，自我校验就是在程序中加一些对自己应用的完整性校验。我们可以借助软件的签名、计算软件的dex的md5值、利用HTTP协议从服务器上获取一段数据来完成。这种保护可以使软件在二次打包的时候不能运行，算是真正意义上的一种防破解手段，目前市面上多数软件都是采用这种方式，可以阻挡一些菜鸟级的破解者了。</p>
 
-<p>•基于HttpUrlConnection;</p>
+<p><strong>不足：</strong></p>
 
-<p>•封装了URL图片加载框架，支持图片加载；</p>
+<p>计算机在执行指令的时候是按照预先定义好的逻辑（开发者写的）去执行，然而如果破解者对开发者校验的地方近进行了修改，那么计算机也会按照新的逻辑执行。也就是说，破解者如果修改你校验数据的逻辑后，就呵呵了。。。</p>
 
-<p>•网络请求的排序，优先级处理</p>
+<p><strong>• 3： Dex文件保护</strong></p>
 
-<p>•缓存</p>
+<p>a.隐藏dex文件</p>
 
-<p>•多级别取消请求</p>
+<p>既然dex文件中包含了核心逻辑，那么把dex隐藏，再通过另外的方式加载起来，是不是就能达到保护dex的目的了呢？于是这成为些第三方加固产品保护应用的方式。他们通过加密甚至压缩（早期是不存在压缩的，只是单纯的加密）方式把dex转换为另外一个文件。而被加固后的apk里面的dex则是那些第三方加固产品用来启动和加载隐藏dex的入口，也就是壳。</p>
 
-<p>•Activity和生命周期的联动（Activity结束时同时取消所有网络请求）</p>
+<p>b.对dex文件进行变形</p>
 
-<p>性能：</p>
+<p>这里所说的变形，不同于封建社会时期提到的变形。这种办法不隐藏dex，而是让dex保留在外面，但是当破解者去分析这个dex的时候，会发现dex里面的内容是不完整的。</p>
 
-<p>可扩展性好：可支持HttpClient、HttpUrlConnection和OKHttp;</p>
+<p>c.对dex结构进行变形</p>
 
-<p>开发者使用：</p>
+<p>此类方法是比较复杂的，了解dex结构的人应该很清楚，dex结构中包含DexClassDef、ClassDataItem、DexCode，这些是dalvik虚拟机运行一个dex必不可少的部分，特别是DexCode，DexCode包含了虚拟机运行的字节码指令。</p>
 
-<p>封装性好，简单易用。</p>
+<p>部分第三方加固产品开始尝试这种方式，他们的保护方案中可能抽取了DexCode中的部分，然后对字节码指令添加nop，或者连ClassDataItem和DexCode一同抽取，或者对上面提到的三个部分都做处理。抽取完之后，还要做修正、修复等工作，总之很烦锁。因为dex运行时有很多关于dex的校验，即使校验通过还有一些偏移问题。</p>
 
-<p>应用场景：</p>
+<p><strong>不足：</strong></p>
 
-<p>• 适合简单轻量级网络交互：网络请求频繁，传输数据小；</p>
+<p>基本世面上的dex变形都可以通过baksmali来得到smali，这样破解者就可继续分析。而manifset文件格式官方有明确的规范，破解者按照规范去解析，遇到不正确字节可以推敲，最终还是可以将其还原。</p>
 
-<p>• 不能进行大数据量的网络操作（下载视频、音频等），所以不适合用来上传文件；</p>
+<p><strong>• 4： So保护</strong></p>
 
-<p>备注：Volley的request和response都是吧数据放到byte数组里，不支持输入输出流，把数据放到数组中，如果大文件多了，数组就会非常的大
-且多，消耗内存，所以不如直接返回Stream那样具备可操作性，比如下载一个大文件，不可能把整个文件都缓存到内存之后在写到文件里。</p>
+<p>a.修改Elf头、节表</p>
 
-<h4>OKHttp （<a href="https://github.com/square/okhttp">https://github.com/square/okhttp</a>）</h4>
+<p>我们知道so其实是一个ELF文件，ELF文件有着自己的格式。有些第三方加固保护是对so文件进行保护，他们的做法是稍微修改一下ELF头或者节表信息，因为这并不会影响程序的正常运行。</p>
 
-<p>功能：</p>
+<p>b.选择开源加壳工具</p>
 
-<p>• 高性能Http请求库，可以把它理解成是一个封装之后类似HttpUrlConnection的东西，属于同级并不是基于上述二者；</p>
+<p>　　
+最常用的当属UPX壳，因为它支持arm架构的ELF加固。在加壳之后再对原文件做一些处理，这样对破解者的分析工作又增加了一些难度。
+　　</p>
 
-<p>• 支持SPDY，共享同一个Socket来处理同一个服务器的所有请求；</p>
+<p>c.进程防调试、或增加调试难度</p>
 
-<p>• 支持http 2.0、websocket；</p>
-
-<p>• 支持同步、异步；</p>
-
-<p>• 封装了线程池、数据转换、参数使用、错误处理等；</p>
-
-<p>• 无缝的支持GZIP来减少数据流量；</p>
-
-<p>• 缓存响应数据来减少重复的网络请求</p>
-
-<p>• 能从很多常用的连接问题中自动恢复；</p>
-
-<p>• 解决了代理服务器问题和SSL握手失败问题；</p>
-
-<p>性能：</p>
-
-<p>基于NIO 和 Okio，所有性能更好：请求、处理速度快（IO:阻塞式； NIO：非阻塞式；Okio 是 Square 公司基于 IO 和NIO 基础上做的一个更简单、高效处理数据流的一个库）；</p>
-
-<p>开发者使用：</p>
-
-<p>• Api调用更加简单、方便；</p>
-
-<p>• 使用时需要进行多一层封装；</p>
-
-<p>应用场景：</p>
-
-<p>重量级网络交互场景：网络请求频繁、传输数据量大（其实更推荐Retrofit,反正Retrofit是基于 OKHttp的）；</p>
-
-<p>备注：</p>
-
-<p>Android 4.4 的源码中可以看到，HttpUrlConnection已经替换成OkHttp实现了，所以我们更有理由相信OkHttp的强大；</p>
-
-<h4>Retrofit （<a href="https://github.com/square/retrofit">https://github.com/square/retrofit</a>）</h4>
-
-<p>功能：</p>
-
-<p>• 基于OkHttp</p>
-
-<p>• RESTful Api 设计风格</p>
-
-<p>• 支持同步、异步；</p>
-
-<p>• 通过注解配置请求（包括请求方法、请求参数、请求头、返回值等）</p>
-
-<p>• 可以搭配多种Connverter 将获得的数据解析&amp;序列化</p>
-
-<p>• 支持Gson(默认）、Jackson 、Protobuf等</p>
-
-<p>• 支持对 RXjava 的支持；</p>
-
-<p>性能：</p>
-
-<p>• 性能最好，处理最快；</p>
-
-<p>• 扩展性差（高度封装所带来的必然后果；解析数据都是使用统一的converter，如果服务器不能给出统一的API形式，将很难进行处理。</p>
-
-<p>开发者使用：</p>
-
-<p>• 简洁易用（RestfulAPI设计风格）；</p>
-
-<p>• 代码简化（更加高度的封装和注解用法）；</p>
-
-<p>• 解耦的更彻底、职责更细分；</p>
-
-<p>• 易于其它框架联合使用（RXjava）；</p>
-
-<p>• 使用方法较多，原理复杂，存在一定门槛；</p>
-
-<p>应用场景：</p>
-
-<p>任何场景下优先选择，特别是：后台API遵循RESTful的风格&amp;项目中有使用RXjava;</p>
+<p>有时候静态分析是非常局限的，这个时候动态分析的好处就体现出来了，然而动态分析的核心就是调试，而调试一个进程首先要ptrace这个进程，如果能有效的防止进程被ptrace，就能有效的防止动态调试。当然还有其他反调试技术，或者增加调试难度等等。</p>
 
 <h4>总结：</h4>
 
-<p>网络请求库没有说哪个最好，只有最合适，只有真的了解其使用场景才能很好的选择网络请求库。</p>
+<p>理论上，没有任何一款软件可以做到100%的防破解，但是我们可以增加破解者对自己软件的破解难度。如果觉得没有必要或者没有精力去做这些，可以使用一些第三方的加固工具来为自己的软件增加一道保护壳。</p>
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Android性能优化]]></title>
-    <link href="http://wentao1990.github.io/blog/2016/08/09/android-01/"/>
-    <updated>2016-08-09T19:50:35+08:00</updated>
-    <id>http://wentao1990.github.io/blog/2016/08/09/android-01</id>
-    <content type="html"><![CDATA[<h4>网络相关优化</h4>
+    <title type="html"><![CDATA[Android Studio 之 Gradle 基础]]></title>
+    <link href="http://wentao1990.github.io/blog/2015/06/19/android-030/"/>
+    <updated>2015-06-19T19:32:55+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2015/06/19/android-030</id>
+    <content type="html"><![CDATA[<h3>● Gradle 介绍</h3>
 
-<p>1.http头信息带Cache-Control域，确定缓存过期时间，防止重复请求。</p>
+<p>Gradle是一种依赖管理工具，基于Groovy语言。主要是面向Java应用程序为主，它抛弃了基于XML的各种繁琐配置，取而代之的是一种基于Groovy的内部领域特定（DSL）语言。</p>
 
-<p>2.直接用IP直连，不用域名，策略性更新本地IP列表。-DNS解析过程耗时百毫秒左右，并且还有可能存在DNS劫持。</p>
+<h3>● Gradle 基本概念</h3>
 
-<p>3.图片、JS、CSS等静态资源，采用CDN（7牛之类的第三方服务已经搭建部署好了）</p>
+<p>下面根据Android Studio 文件目录逐一说明。</p>
 
-<p>4.全局图片处理采用漏斗模型全局掌控，所请求的图片大小依照业务大小提供（最大不超过屏幕分辨率需要），如果请求原图，也不要超过 GL10.GL_MAX_TEXTURE_SIZE。</p>
+<p><img src="http://i.imgur.com/BTNr0t8.png" alt="" /></p>
 
-<p>5.全局缩略图直接采用webp，在尽可能不损失图片质量的前提下，图片大小与png缩小30%~70%。 <!--more--></p>
+<h4>▶ 1 project # build.gradle 文件</h4>
 
-<p>6.如果列表里的缩略图服务器处理好的小图，可以考虑直接在列表数据请求中，直接以base64在列表数据中直接带上图片（国内还比较少，海外有些这种做法，好像web端比较常见）</p>
+<p>这个文件第一行有句注释： <!--more--></p>
 
-<p>7.轮询或者socket心跳采用系统 AlarmManager提供的闹钟服务来做，保证在系统休眠的时候cpu可以得到休眠，在需要唤醒时可以唤醒（持有cpu唤醒锁）</p>
-
-<p>8.可以通过将零散的网路的请求打包进行一次操作，避免过多的无线信号引起电量消耗。</p>
-
-<h4>传输数据格式选择</h4>
-
-<p>1.如果是需要全局数据的，考虑使用Protobuffers(序列化反序列化性能高于Json)，并且考虑使用 nano protocol buffer。</p>
-
-<p>2.如果传输回来的数据不需要全量读取，考虑使用 Flatbuffers (序列化反序列化几乎不耗时，耗时是在读取对象时(就这一部分如果需要优化，可以参看 Flatbuffer Use Optimize</p>
-
-<h4>输入流</h4>
-
-<p>使用具有缓存策略的输入流</p>
-
-<pre><code>   原            建议替换为
-InputStream    BufferedInputStream
-Reader         BufferedReader
+<pre><code>//Top-level build file where you can add configuration options common to all sub-projects/modules.
 </code></pre>
 
-<h4>数据结构</h4>
+<p>意思大概就是：此文件是顶级构建文件，你可以在这里配置所有需要的子模块。（是基于整个 project 的配置）</p>
 
-<p>如果已知大概需要多大，就直接给初始大小，减少扩容时额外开销。</p>
+<pre><code>// Top-level build file where you can add configuration options common to all sub-projects/modules.
 
-<p>•ArrayList :里面就一数据，内存小，有序取值快，扩容效率低。</p>
-
-<p>•LinkedList :里面就一双向链表，内存大，随机插入删除快，扩容率高。</p>
-
-<p>•HashSet :里面就HashMap,用key对外存储，目的就是不允许重复元素。</p>
-
-<p>•ConcruuenHashMap :线程安全，采用细分锁，锁颗粒更小，并发性能更优.</p>
-
-<p>•Collections.synchronizedMap : 线程安全，采用当前对象作为锁，颗粒较大，并发性能较差。</p>
-
-<p>•SparseArray、 SparseBooleanArray、 SparseIntArray: 针对Key为 Int、 Boolean进行了优化，采用二分法查找，简单数组存储。相比 HashMap而言， HashMap每添加一个数据，大约会需要申请额外的32字节的数据，因此 Sparsexxx在内存方面的开销会小很多。</p>
-
-<h4>编码习惯</h4>
-
-<p>1.尽量简化，不做没必要的操作。</p>
-
-<p>2.尽量避免分配内存（创建对象）。</p>
-
-<p>3.如果你确定不需要访问类成员，就把方法static，这样调用速度可以提升15%~20%，因为不需要切换对象状态。</p>
-
-<p>4.如果某个参数是常量，要加上static final ,这样可以让Class首次初始化的时候不用调用<clinit>来创建 static方法，而是在编译时就直接将常量替换代码中使用的位置。</p>
-
-<p>5.Android开发中，类内尽量避免通过 get/set访问成员变量，虽然这在语言的开发中是一个好的习惯，但是Android虚拟机中，对方法的调用开销远大于对变量的直接访问。在没有JIT的情况下，直接的变量访问比调用方法快3倍，在JIT下，直接的变量访问更是比调用方法快7倍!</p>
-
-<p>6.当内部类需要访问外部类的私有 方法/变量时，考虑将这些外部类的私有 方法/变量改用包可见的方式。首先在编写代码的时候，通过内部类访问外部类的私有 方法/变量是合法的，但是在编译的时候为了满足这个会将需要被内部类访问的私有 方法/变量封装一层包可见的方法，实现让内部类访问这些私有的 方法/变量，根据前面我们有提到说方法的调用开销大于变量的调用，因此这样使得性能变差，所以我们在编码的时候可以考虑直接将需要被内部类调用的外部类私有 方法/变量，改为包可见。</p>
-
-<p>7.尽量少使用 float。在很多现代设备中， double的性能与 float的性能几乎没有差别，但是从大小上面 double是 float的两倍的大小。</p>
-
-<p>8.尽量考虑使用整型而非浮点数，在较好的Android设备中，浮点数比整型慢一倍。</p>
-
-<p>9.尽量不要使用除法操作，有很多处理器有乘法器，但是没有除法器，也就是说在这些设备中需要将除法分解为其他的计算方式速度会比较慢。</p>
-
-<p>10.尽量使用系统sdk中提供的方法，而非自己去实现。如 String.indexOf()相关的API，Dalvik将会替换为内部方法； System.arraycopy()方法在Nexus One手机上，会比我们上层写的类似方法的执行速度快9倍。</p>
-
-<p>11.谨慎编写native，性能不一定更好，Native并不是用于使得性能更好，而是用于有些已经存在的库是使用native语言实现的，我们需要引入Android，这时才使用。1) 需要多出开销在维持Java-native的通信；2) 在native中创建的资源由于在native heap上面，因此需要主动的释放；3) 需要对不同的处理器架构进行支持，存在明显的兼容性问题需要解决。</p>
-
-<p>12.在没有JIT的设备中，面向接口编程的模式(如 Map map)，相比直接访问对象类(如 HashMap map)，会慢6%，但是在存在JIT的设备中，两者的速度差不多。但是内存占用方面面向接口变成会消耗更多内存，因此如果你的面向接口编程不是十分的必要的情况下可以考虑不用。</p>
-
-<p>13.在没有JIT的设备中，访问本地化变量相对与成员变量会快20%，但是在存在JIT的设备中，两者速度差不多。</p>
-
-<h4>遍历优化</h4>
-
-<p>尽量使用 Iterable而不是通过长度判断来进行遍历。</p>
-
-<pre><code>// 这种性能是最差的，JIT也无法对其优化。
-public void zero() {
-    int sum = 0;
-    for (int i = 0; i &lt; mArray.length; ++i) {
-        sum += mArray[i].mSplat;
-    }
+buildscript {
+//构建过程依赖的仓库
+repositories {
+jcenter()
 }
-// 相对zero()来说，这种写法会更快些，在存在JIT的情况下速度几乎和two()速度一样快。
-public void one() {
-    int sum = 0;
-    // 1) 通过本地化变量，减少查询，在不存在JIT的手机下，优化较明显。
-    Foo[] localArray = mArray;
-    // 2) 获取队列长度，减少每次遍历访问变量的长度，有效优化。
-    int len = localArray.length;
-    for (int i = 0; i &lt; len; ++i) {
-        sum += localArray[i].mSplat;
-    }
+//构建过程需要依赖的库
+dependencies {
+ //下面声明的是gradle插件的版本
+ classpath 'com.android.tools.build:gradle:1.1.0'
+ // NOTE: Do not place your application dependencies here; they belong
+ // in the individual module build.gradle files
 }
-// 在无JIT的设备中，是最快的遍历方式，在存在JIT的设备中，与one()差不多快。
-public void two() {
-    int sum = 0;
-    for (Foo a : mArray) {
-        sum += a.mSplat;
-    }
+}
+//这里面配置整个项目依赖的仓库,这样每个module就不用配置仓库了
+allprojects {
+     repositories {
+          jcenter()
+     }
 }
 </code></pre>
+
+<p>注：大家可能很奇怪，为什么仓库repositories需要声明两次，这其实是由于它们作用不同，buildscript中的仓库是gradle脚本自身需要的资源，而allprojects下的仓库是项目所有模块需要的资源。所以大家千万不要配错了。</p>
+
+<h4>▶ 2 module#build.gradle 文件</h4>
+
+<p>这个文件和上面的区别在于，此文件是配置使用的单个模块。（类似全局变量和局部变量的区别）
+    //声明插件 这是一个android程序；如果是一个android依赖库，就要换成com.android.library
+    apply plugin: &lsquo;com.android.application&rsquo;</p>
+
+<pre><code>android {
+    //安卓构建过程需要配置的参数
+    compileSdkVersion 21 //编译SDK的版本
+    buildToolsVersion "21.1.1"//build tools的版本（本地需要要有此版本的SDK）
+    //默认配置，会同时应用到debug和release版本上
+    defaultConfig {
+        applicationId "com.wuwentao.start"// 应用的包名
+        minSdkVersion 14 //支持最低的版本
+        targetSdkVersion 23 //目标版本
+        versionCode 1 //版本号
+        versionName "1.0" //版本名
+    }
+    buildTypes {
+         //这里面可以配置debug和release版本的一些参数，比如混淆、签名配置等
+        release {
+            minifyEnabled false //是否混淆
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro' //混淆文件位置
+        }
+    }
+}
+
+dependencies {
+    //项目使用到的依赖库和jar包
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    testCompile 'junit:junit:4.12'
+}
+</code></pre>
+
+<h4>▶ 3 gradle-wrapper.properties 文件</h4>
+
+<p>gradle wrapper task利用gradle-wrapper.properties来下载指定的gradle</p>
+
+<h4>▶ 4 proguard-rules.pro 文件</h4>
+
+<p>Android Studio 默认自带的混淆文件，可以在这里配置一些混淆参数。当然也可以自定义一个混淆文件，需要在 module#build.gradle 指明其路径。下面贴出一些混淆的参数配置：</p>
+
+<pre><code>-optimizationpasses 5          # 指定代码的压缩级别
+-dontusemixedcaseclassnames   # 是否使用大小写混合
+-dontpreverify           # 混淆时是否做预校验
+-verbose                # 混淆时是否记录日志
+
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*  # 混淆时所采用的算法
+
+-keep public class * extends android.app.Activity      # 保持哪些类不被混淆
+-keep public class * extends android.app.Application   # 保持哪些类不被混淆
+-keep public class * extends android.app.Service       # 保持哪些类不被混淆
+-keep public class * extends android.content.BroadcastReceiver  # 保持哪些类不被混淆
+-keep public class * extends android.content.ContentProvider    # 保持哪些类不被混淆
+-keep public class * extends android.app.backup.BackupAgentHelper # 保持哪些类不被混淆
+-keep public class * extends android.preference.Preference        # 保持哪些类不被混淆
+-keep public class com.android.vending.licensing.ILicensingService    # 保持哪些类不被混淆
+
+-keepclasseswithmembernames class * {  # 保持 native 方法不被混淆
+    native &lt;methods&gt;;
+}
+-keepclasseswithmembers class * {   # 保持自定义控件类不被混淆
+    public &lt;init&gt;(android.content.Context, android.util.AttributeSet);
+}
+-keepclasseswithmembers class * {# 保持自定义控件类不被混淆
+    public &lt;init&gt;(android.content.Context, android.util.AttributeSet, int);
+}
+-keepclassmembers class * extends android.app.Activity { # 保持自定义控件类不被混淆   
+    public void *(android.view.View);
+}
+-keepclassmembers enum * {     # 保持枚举 enum 类不被混淆    
+    public static **[] values();    
+    public static ** valueOf(java.lang.String);
+}
+-keep class * implements android.os.Parcelable { # 保持 Parcelable 不被混淆  
+    public static final android.os.Parcelable$Creator *;
+}
+</code></pre>
+
+<h5>注：混淆的规则</h5>
+
+<p>反射用到的类不混淆；  JNI方法不混淆； AndroidMainfest中的类不混淆；  四大组件和Application的子类和Framework层下所有的类默认不会进行混淆；  Parcelable的子类和Creator静态成员变量不混淆，否则会产生android.os.BadParcelableException异常；  使用GSON、fastjson等框架时，所写的JSON对象类不混淆，否则无法将JSON解析成对应的对象；  使用第三方开源库或者引用其他第三方的SDK包时，需要在混淆文件中加入对应的混淆规则；有用到WEBView的JS调用也需要保证写的接口方法不混淆；</p>
+
+<h4>▶ 5 gradle.properties 文件</h4>
+
+<p>是一个供 build.gradle 使用的常量配置文件，可以在这里配置签名的keystore位置，密码，keyalias等。</p>
+
+<h4>▶ 6 settings.gradle 文件</h4>
+
+<p>这个文件是用来配置多模块的，比如你的项目有两个模块module-a,module-b,那么你就需要在这个文件中进行配置</p>
+
+<pre><code>include ':module-a',':module-b'
+</code></pre>
+
+<h4>▶ 7 local.properties 文件</h4>
+
+<p>里面存放的是各插件需要的本机相关的信息, 例如Android gradle插件可能需要 SDK路径, NDK路径, 别的插件需要的可能就是其他配置信息.
+还有存放敏感数据, 例如某些插件需要 用户名, 密码, api_key 等, 与隐私相关的数据.</p>
+
+<p>例如: 在插件开发的时候, 你需要将工程打包后, publish 到远程仓库的时候, 需要 帐号, 密码, 此时, 帐号, 密码, 一般就是存放在 local.properties 里面</p>
+
+<h5>注：local.properties 在git里面是要屏蔽掉的，local.properties 只对本地, 本机有效, 团队协作, 这个文件是不共享的.</h5>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Android应用安全开发之防范无意识的数据泄露]]></title>
+    <link href="http://wentao1990.github.io/blog/2015/05/19/android-027/"/>
+    <updated>2015-05-19T22:08:15+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2015/05/19/android-027</id>
+    <content type="html"><![CDATA[<p><strong>OWASP</strong>移动安全漏洞Top 10中第4个就是无意识的数据泄漏。当应用程序存储数据的位置本身是脆弱的时，就会造成无意识的数据泄漏。这些位置可能包括剪贴板，URL缓存，浏览器的Cookies，HTML5数据存储，分析数据等等。例如，一个用户在登录银行应用的时候已经把密码复制到了剪贴板，恶意应用程序通过访问用户剪贴板数据就可以获取密码了。</p>
+
+<h3>0x01 避免缓存网络数据</h3>
+
+<p>数据可以在用户无意识的情况下被各种工具捕获。开发人员经常忽视包括log/debug输出信息，Cookies，Web历史记录，Web缓存等的一些数据存储方式存在的安全隐患。例如，通常浏览器访问页面时，会在临时文件夹下保存页面的html，js，图片等等。当页面上包含敏感信息时，这些信息也会存储在临时文件中。这就造成了安全隐患。在移动设备上尽可能不要存储/缓存敏感数据。这是避免设备上缓存的数据泄漏的最好的方式。</p>
+
+<h5>开发建议</h5>
+
+<p>● 为了防止HTTP缓存，特别是HTTPS传输数据的缓存，开发人员应该配置Android不缓存网络数据。</p>
+
+<p>● 为了避免为任何Web过程(如注册)缓存URL历史记录和页面数据，我们应该在Web服务器上配置HTTP缓存头。HTTP协议1.1版中，规定了缓存的使用。其中，Cache-Control: no-store这个应答头可以满足我们的需要。Cache-Control:no-store要求浏览器必须不存储响应或者引起响应的请求的任何内容。对于Web应用程序，HTML表单输入可以通过设置autocomplete=off让浏览器不缓存值。避免缓存应该在应用程序使用后通过对设备数据的取证进行验证。    <!--more--></p>
+
+<p>● 如果你的应用程序通过WebView访问敏感数据，你可以使用 clearCache方法来删除任何存储在本地的文件。</p>
+
+<h3>0x02 Android:避免GUI对象缓存</h3>
+
+<p>由于多任务处理的原因，整个应用程序都可以驻留在内存中，所以Android应用程序界面也会驻留在内存中。发现或者盗取了设备的攻击者可以直接查看到仍然驻留在内存中的用户之前查看过的界面，并看到仍显示在GUI上的所以数据。银行应用程序就是一个例子，一个用户查看了交易记录，然后“退出”应用程序。攻击者通过直接启动交易视图activity可以看到以前的交易被显示出来。</p>
+
+<h5>开发建议</h5>
+
+<p>● 当用户注销登录的时候退出整个app。这虽然是违反android设计原则的，但是却更加安全，因为GUI界面被销毁、回收了。</p>
+
+<p>● 在每一个activity(界面)启动的时候检测用户是否处于登录状态，如果没有则跳转到登录界面。</p>
+
+<p>● 在用户离开(切换)应用界面或者注销登录时清除gui界面的数据</p>
+
+<h3>0x03 限制用户名缓存</h3>
+
+<p>如果缓存了用户名，在运行时，用户名会在任何类型的身份验证之前加载进内存，从而允许潜在的恶意进程截获用户名。</p>
+
+<h5>开发建议</h5>
+
+<p>很难做到既便利地为用户存储用户名，同时又能避免不安全的存储或潜在的运行时拦截造成的信息泄漏。尽管用户名不像密码那样敏感，但它属于隐私数据应该得到保护。一个安全性较高的缓存用户名的可行的方法就是存储掩蔽的用户名，而不是真实的用户名，如在身份认证的时候用hash值代替用户名。这个hash值可以包含一个唯一的设备token，这个设备token是在用户注册时获取的。使用hash和设备token的好处就是真实的用户名并没有存储在本地，也不会在加载进内存后得不到保护，将这个值复制到其它设备或者在web上使用都会因获取到的设备token值不同而不能使用。攻击者必须挖掘更多的信息(明文帐号、设备特征码、密码)才能成功的窃取用户凭证。</p>
+
+<h3>0x04 留意键盘缓存</h3>
+
+<p>键盘缓存是意外的数据泄漏问题之一。安卓键盘包含一个用户字典，如果一个用户在文本框输入一些文本，输入法就可能通过用户字典缓存一些由用户输入的数据，用于以后对用户的输入进行自动纠错。而此用户字典不需要什么特殊权限就在任何应用中使用。恶意软件可以通过获取键盘缓存提取这些数据。缓存的内容超出了应用程序的管理权限,所以应用程序不能从缓存中删除数据。</p>
+
+<p>攻击示例：<a href="https://www.youtube.com/watch?v=o6SlUy5mmBQ">https://www.youtube.com/watch?v=o6SlUy5mmBQ</a></p>
+
+<h5>开发建议</h5>
+
+<p>● 对于任何敏感信息(不仅对密码字段)禁用自动纠错的功能。因为键盘缓存的敏感信息可能是可恢复的。</p>
+
+<p>● 为了提高安全性，可以考虑实现自绘键盘，它可以禁用缓存，并提供其它的保护功能，如键盘监听保护。</p>
+
+<h3>0x05 复制和粘贴</h3>
+
+<p>无论数据源是否加密，存在于剪贴板中的敏感数据都是可以被任意修改的。如果用户复制的是明文敏感数据，那么其它应用程序通过访问剪贴板就可以获取到该明文敏感数据了。</p>
+
+<h5>开发建议：</h5>
+
+<p>在适当的情况下，禁用复制/粘贴处理敏感数据。消除复制选项可以减少数据暴露的风险。在安卓系统上，可以通过任何应用程序访问剪贴板，因此，如果需要共享敏感数据，建议使用content provider。</p>
+
+<h3>0x06 敏感文件删除</h3>
+
+<p>Android通过调用file.delete是不能安全地把文件抹去。只要文件不被覆盖就可以被进行恢复。Android Data Recovery就具备这个功能。</p>
+
+<h6>开发建议</h6>
+
+<p>开发者应该假定写入设备的任何数据都可以被恢复。因此，在某些情况下，加密可以提供额外的一层保护。
+另外一种可能方法是删除一个文件，然后创建一个大文件覆盖所有的可用空间，迫使NAND闪存擦除所有未分配空间也是可能的。这种技术的缺点是损耗NAND闪存，导致应用和整个设备的响应速度变慢，显著增加功耗。对于大多数应用不建议使用此方法。理想的解决办法是尽可能不要在设备上存储敏感信息。</p>
+
+<h3>0x07 屏幕截取和录制防范</h3>
+
+<p>Android 5.0新增的屏幕录制接口，无需特殊权限，使用如下系统API即可实现屏幕录制功能：</p>
+
+<p>发起录制请求后，系统弹出如下提示框请求用户确认：</p>
+
+<p><img src="http://i.imgur.com/C61Xhg5.jpg" alt="" /></p>
+
+<p>在上图中，“AZ Screen Recorder”为需要录制屏幕的软件名称，“将开始截取您的屏幕上显示的所有内容”是系统自带的提示信息，不可更改或删除。用户点击“立即开始”便开始录制屏幕，录制完成后在指定的目录生成mp4文件。
+但其中存在着漏洞攻击者只需要给恶意程序构造一段特殊的，读起来很“合理的”应用程序名，就可以将该提示框变成一个UI陷阱，使其失去原有的“录屏授权”提示功能，并使恶意程序在用户不知情的情况下录制用户手机屏幕。</p>
+
+<h5>开发建议</h5>
+
+<p>在涉及用户隐私的Acitivity中(例如登录，支付等其他输入敏感信息的界面中)增加WindowManager.LayoutParams.FLAG_SECURE属性，该属性能防止屏幕被截图和录制。</p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[转：Android最佳性能实践——合理管理内存]]></title>
-    <link href="http://wentao1990.github.io/blog/2016/08/07/android-performs1/"/>
-    <updated>2016-08-07T13:42:26+08:00</updated>
-    <id>http://wentao1990.github.io/blog/2016/08/07/android-performs1</id>
+    <link href="http://wentao1990.github.io/blog/2015/03/07/android-029/"/>
+    <updated>2015-03-07T13:42:26+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2015/03/07/android-029</id>
     <content type="html"><![CDATA[<p>原文：<a href="http://blog.csdn.net/guolin_blog/article/details/42238627">http://blog.csdn.net/guolin_blog/article/details/42238627</a></p>
 
 <p>注意本系列文章的内容基本源于Android Doc，如果想要阅读更加详细的关于性能方面的资料，可以直接去阅读Android官方文档。</p>
@@ -568,188 +594,6 @@ class RoboWay extends RoboActivity {
 </code></pre>
 
 <p>这里指定的进程名是background，你也可以将它改成任意你喜欢的名字。需要注意的是，进程名的前面都应该加上一个冒号，表示该进程是一个当前应用程序的私有进程。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Service与 IntentService 的区别与使用场景]]></title>
-    <link href="http://wentao1990.github.io/blog/2016/05/23/android-server/"/>
-    <updated>2016-05-23T17:50:35+08:00</updated>
-    <id>http://wentao1990.github.io/blog/2016/05/23/android-server</id>
-    <content type="html"><![CDATA[<h4>1.IntentService是继承自Service的</h4>
-
-<h4>2.Service不是一个单独的进程 ，它和应用程序在同一个进程中。</h4>
-
-<h4>3.Service不是一个线程，所以我们应该避免在Service里面进行耗时的操作</h4>
-
-<h4>4.IntentService相对于Service来说，有几个非常有用的优点</h4>
-
-<p>IntentService使用队列的方式将请求的Intent加入队列，然后开启一个worker thread(线程)来处理队列中的Intent，对于异步的startService请求，IntentService会处理完成一个之后再处理第二个，每一个请求都会在一个单独的worker thread中处理，不会阻塞应用程序的主线程，这里就给我们提供了一个思路，如果有耗时的操作与其在Service里面开启新线程还不如使用IntentService来处理耗时操作。 <!--more--></p>
-
-<p>因为最大部分的service不需要同时处理多个请求(处理多个请求是一个比较危险的多线程的场景),这样在在这种情况下呢，最好使用IntentService类如果你实现你的服务。</p>
-
-<p>使用intentService与service有什么不同呢</p>
-
-<h4>a . 直接 创建一个默认的工作线程,该线程执行所有的intent传递给onStartCommand()区别于应用程序的主线程。</h4>
-
-<h4>b . 直接创建一个工作队列,将一个意图传递给你onHandleIntent()的实现,所以我们就永远不必担心多线程。</h4>
-
-<h4>c . 当请求完成后自己会调用stopSelf()，所以你就不用调用该方法了。</h4>
-
-<h4>d . 提供的默认实现onBind()返回null，所以也不需要重写这个方法。so easy啊</h4>
-
-<h4>e . 提供了一个默认实现onStartCommand(),将意图工作队列,然后发送到你onHandleIntent()实现。真是太方便了</h4>
-
-<p>我们需要做的就是实现onHandlerIntent()方法，还有一点就是经常被遗忘的，构造函数是必需的,而且必须调用超IntentService(字符串) ，因为工作线程的构造函数必须使用一个名称。如何实现呢，我们借助于谷歌官方文档来看一下吧。</p>
-
-<pre><code>public class HelloIntentService extends IntentService {  
-
-  /** 
-   * A constructor is required, and must call the super IntentService(String) 
-   * constructor with a name for the worker thread. 
-   */  
-  public HelloIntentService() {  
-      super("HelloIntentService");  
-  }  
-
-  /** 
-   * The IntentService calls this method from the default worker thread with 
-   * the intent that started the service. When this method returns, IntentService 
-   * stops the service, as appropriate. 
-   */  
-  @Override  
-  protected void onHandleIntent(Intent intent) {  
-      // Normally we would do some work here, like download a file.  
-      // For our sample, we just sleep for 5 seconds.  
-      long endTime = System.currentTimeMillis() + 5*1000;  
-      while (System.currentTimeMillis() &lt; endTime) {  
-          synchronized (this) {  
-              try {  
-                  wait(endTime - System.currentTimeMillis());  
-              } catch (Exception e) {  
-              }  
-          }  
-      }  
-  }  
-}  
-</code></pre>
-
-<p>那么它为什么不用stopself()方法呢，我们看一下自身的源代码吧</p>
-
-<pre><code>    public abstract class IntentService extends Service {  
-    private volatile Looper mServiceLooper;  
-    private volatile ServiceHandler mServiceHandler;  
-    private String mName;  
-    private boolean mRedelivery;  
-
-    private final class ServiceHandler extends Handler {  
-        public ServiceHandler(Looper looper) {  
-            super(looper);  
-        }  
-
-        @Override  
-        public void handleMessage(Message msg) {  
-            onHandleIntent((Intent)msg.obj);  
-            stopSelf(msg.arg1);  
-        }  
-    }  
-
-    /** 
-     * Creates an IntentService.  Invoked by your subclass's constructor. 
-     * 
-     * @param name Used to name the worker thread, important only for debugging. 
-     */  
-    public IntentService(String name) {  
-        super();  
-        mName = name;  
-    }  
-
-    /** 
-     * Sets intent redelivery preferences.  Usually called from the constructor 
-     * with your preferred semantics. 
-     * 
-     * &lt;p&gt;If enabled is true, 
-     * {@link #onStartCommand(Intent, int, int)} will return 
-     * {@link Service#START_REDELIVER_INTENT}, so if this process dies before 
-     * {@link #onHandleIntent(Intent)} returns, the process will be restarted 
-     * and the intent redelivered.  If multiple Intents have been sent, only 
-     * the most recent one is guaranteed to be redelivered. 
-     * 
-     * &lt;p&gt;If enabled is false (the default), 
-     * {@link #onStartCommand(Intent, int, int)} will return 
-     * {@link Service#START_NOT_STICKY}, and if the process dies, the Intent 
-     * dies along with it. 
-     */  
-    public void setIntentRedelivery(boolean enabled) {  
-        mRedelivery = enabled;  
-    }  
-
-    @Override  
-    public void onCreate() {  
-        // TODO: It would be nice to have an option to hold a partial wakelock  
-        // during processing, and to have a static startService(Context, Intent)  
-        // method that would launch the service &amp; hand off a wakelock.  
-
-        super.onCreate();  
-        HandlerThread thread = new HandlerThread("IntentService[" + mName + "]");  
-        thread.start();  
-
-        mServiceLooper = thread.getLooper();  
-        mServiceHandler = new ServiceHandler(mServiceLooper);  
-    }  
-
-    @Override  
-    public void onStart(Intent intent, int startId) {  
-        Message msg = mServiceHandler.obtainMessage();  
-        msg.arg1 = startId;  
-        msg.obj = intent;  
-        mServiceHandler.sendMessage(msg);  
-    }  
-
-    /** 
-     * You should not override this method for your IntentService. Instead, 
-     * override {@link #onHandleIntent}, which the system calls when the IntentService 
-     * receives a start request. 
-     * @see android.app.Service#onStartCommand 
-     */  
-    @Override  
-    public int onStartCommand(Intent intent, int flags, int startId) {  
-        onStart(intent, startId);  
-        return mRedelivery ? START_REDELIVER_INTENT : START_NOT_STICKY;  
-    }  
-
-    @Override  
-    public void onDestroy() {  
-        mServiceLooper.quit();  
-    }  
-
-    /** 
-     * Unless you provide binding for your service, you don't need to implement this 
-     * method, because the default implementation returns null.  
-     * @see android.app.Service#onBind 
-     */  
-    @Override  
-    public IBinder onBind(Intent intent) {  
-        return null;  
-    }  
-
-    /** 
-     * This method is invoked on the worker thread with a request to process. 
-     * Only one Intent is processed at a time, but the processing happens on a 
-     * worker thread that runs independently from other application logic. 
-     * So, if this code takes a long time, it will hold up other requests to 
-     * the same IntentService, but it will not hold up anything else. 
-     * When all requests have been handled, the IntentService stops itself, 
-     * so you should not call {@link #stopSelf}. 
-     * 
-     * @param intent The value passed to {@link 
-     *               android.content.Context#startService(Intent)}. 
-     */  
-    protected abstract void onHandleIntent(Intent intent);  
-}  
-</code></pre>
-
-<p>我们可以看到源代码里头的第15行handlerMessage方法里当处理完请求后就会调用stopself()方法了，外界就不用调用了，此外还有一点我们可以看到代码最后一行第110行，onhandleIntent()是一个抽象类，而其他类都是抽象类，所以我们就可以理解为什么只需要重写onhandleIntent()方法了吧。</p>
 ]]></content>
   </entry>
   

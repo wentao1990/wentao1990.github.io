@@ -1,0 +1,420 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Android Studio 之 Gradle 基础 - 沧笙踏歌</title>
+  <meta name="author" content="文涛">
+
+  
+  <meta name="description" content="● Gradle 介绍 Gradle是一种依赖管理工具，基于Groovy语言。主要是面向Java应用程序为主，它抛弃了基于XML的各种繁琐配置，取而代之的是一种基于Groovy的内部领域特定（DSL）语言。 ● Gradle 基本概念 下面根据Android Studio 文件目录逐一说明。 ▶ &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://wentao1990.github.io/blog/2015/06/19/android-030">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="沧笙踏歌" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><div class="header-left">
+  <hgroup>
+  <h1><a href="/">沧笙踏歌</a></h1>
+  
+  <div class="subtitle">
+    <h2>静水流深，沧笙踏歌，如花美眷，只缘敢你一回顾，使我常思朝与暮。转身后，一缕香远，逝雪浅，春意浓，笑意深。</h2>
+  </div>
+  
+  </hgroup>
+  
+</div>
+
+<div class="header-right">
+  <ul class="main-navigation">
+ <div> 
+  <li><a href="/">博文</a></li></div><div class="spacer"></div>
+     <div> 
+  <li><a href="/projects">工程</a></li></div><div class="spacer"></div>
+       <div> 
+  <li><a href="/blog/archives">档案</a></li></div><div class="spacer"></div>
+         <div> 
+  <li><a href="/aboutme">关于</a></li></div>
+</ul>
+
+
+
+
+</div>
+</header>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Android Studio 之 Gradle 基础</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-06-19T19:32:55+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3>● Gradle 介绍</h3>
+
+<p>Gradle是一种依赖管理工具，基于Groovy语言。主要是面向Java应用程序为主，它抛弃了基于XML的各种繁琐配置，取而代之的是一种基于Groovy的内部领域特定（DSL）语言。</p>
+
+<h3>● Gradle 基本概念</h3>
+
+<p>下面根据Android Studio 文件目录逐一说明。</p>
+
+<p><img src="http://i.imgur.com/BTNr0t8.png" alt="" /></p>
+
+<h4>▶ 1 project # build.gradle 文件</h4>
+
+<p>这个文件第一行有句注释： <!--more--></p>
+
+<pre><code>//Top-level build file where you can add configuration options common to all sub-projects/modules.
+</code></pre>
+
+<p>意思大概就是：此文件是顶级构建文件，你可以在这里配置所有需要的子模块。（是基于整个 project 的配置）</p>
+
+<pre><code>// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+//构建过程依赖的仓库
+repositories {
+jcenter()
+}
+//构建过程需要依赖的库
+dependencies {
+ //下面声明的是gradle插件的版本
+ classpath 'com.android.tools.build:gradle:1.1.0'
+ // NOTE: Do not place your application dependencies here; they belong
+ // in the individual module build.gradle files
+}
+}
+//这里面配置整个项目依赖的仓库,这样每个module就不用配置仓库了
+allprojects {
+     repositories {
+          jcenter()
+     }
+}
+</code></pre>
+
+<p>注：大家可能很奇怪，为什么仓库repositories需要声明两次，这其实是由于它们作用不同，buildscript中的仓库是gradle脚本自身需要的资源，而allprojects下的仓库是项目所有模块需要的资源。所以大家千万不要配错了。</p>
+
+<h4>▶ 2 module#build.gradle 文件</h4>
+
+<p>这个文件和上面的区别在于，此文件是配置使用的单个模块。（类似全局变量和局部变量的区别）
+    //声明插件 这是一个android程序；如果是一个android依赖库，就要换成com.android.library
+    apply plugin: &lsquo;com.android.application&rsquo;</p>
+
+<pre><code>android {
+    //安卓构建过程需要配置的参数
+    compileSdkVersion 21 //编译SDK的版本
+    buildToolsVersion "21.1.1"//build tools的版本（本地需要要有此版本的SDK）
+    //默认配置，会同时应用到debug和release版本上
+    defaultConfig {
+        applicationId "com.wuwentao.start"// 应用的包名
+        minSdkVersion 14 //支持最低的版本
+        targetSdkVersion 23 //目标版本
+        versionCode 1 //版本号
+        versionName "1.0" //版本名
+    }
+    buildTypes {
+         //这里面可以配置debug和release版本的一些参数，比如混淆、签名配置等
+        release {
+            minifyEnabled false //是否混淆
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro' //混淆文件位置
+        }
+    }
+}
+
+dependencies {
+    //项目使用到的依赖库和jar包
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    testCompile 'junit:junit:4.12'
+}
+</code></pre>
+
+<h4>▶ 3 gradle-wrapper.properties 文件</h4>
+
+<p>gradle wrapper task利用gradle-wrapper.properties来下载指定的gradle</p>
+
+<h4>▶ 4 proguard-rules.pro 文件</h4>
+
+<p>Android Studio 默认自带的混淆文件，可以在这里配置一些混淆参数。当然也可以自定义一个混淆文件，需要在 module#build.gradle 指明其路径。下面贴出一些混淆的参数配置：</p>
+
+<pre><code>-optimizationpasses 5          # 指定代码的压缩级别
+-dontusemixedcaseclassnames   # 是否使用大小写混合
+-dontpreverify           # 混淆时是否做预校验
+-verbose                # 混淆时是否记录日志
+
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*  # 混淆时所采用的算法
+
+-keep public class * extends android.app.Activity      # 保持哪些类不被混淆
+-keep public class * extends android.app.Application   # 保持哪些类不被混淆
+-keep public class * extends android.app.Service       # 保持哪些类不被混淆
+-keep public class * extends android.content.BroadcastReceiver  # 保持哪些类不被混淆
+-keep public class * extends android.content.ContentProvider    # 保持哪些类不被混淆
+-keep public class * extends android.app.backup.BackupAgentHelper # 保持哪些类不被混淆
+-keep public class * extends android.preference.Preference        # 保持哪些类不被混淆
+-keep public class com.android.vending.licensing.ILicensingService    # 保持哪些类不被混淆
+
+-keepclasseswithmembernames class * {  # 保持 native 方法不被混淆
+    native &lt;methods&gt;;
+}
+-keepclasseswithmembers class * {   # 保持自定义控件类不被混淆
+    public &lt;init&gt;(android.content.Context, android.util.AttributeSet);
+}
+-keepclasseswithmembers class * {# 保持自定义控件类不被混淆
+    public &lt;init&gt;(android.content.Context, android.util.AttributeSet, int);
+}
+-keepclassmembers class * extends android.app.Activity { # 保持自定义控件类不被混淆   
+    public void *(android.view.View);
+}
+-keepclassmembers enum * {     # 保持枚举 enum 类不被混淆    
+    public static **[] values();    
+    public static ** valueOf(java.lang.String);
+}
+-keep class * implements android.os.Parcelable { # 保持 Parcelable 不被混淆  
+    public static final android.os.Parcelable$Creator *;
+}
+</code></pre>
+
+<h5>注：混淆的规则</h5>
+
+<p>反射用到的类不混淆；  JNI方法不混淆； AndroidMainfest中的类不混淆；  四大组件和Application的子类和Framework层下所有的类默认不会进行混淆；  Parcelable的子类和Creator静态成员变量不混淆，否则会产生android.os.BadParcelableException异常；  使用GSON、fastjson等框架时，所写的JSON对象类不混淆，否则无法将JSON解析成对应的对象；  使用第三方开源库或者引用其他第三方的SDK包时，需要在混淆文件中加入对应的混淆规则；有用到WEBView的JS调用也需要保证写的接口方法不混淆；</p>
+
+<h4>▶ 5 gradle.properties 文件</h4>
+
+<p>是一个供 build.gradle 使用的常量配置文件，可以在这里配置签名的keystore位置，密码，keyalias等。</p>
+
+<h4>▶ 6 settings.gradle 文件</h4>
+
+<p>这个文件是用来配置多模块的，比如你的项目有两个模块module-a,module-b,那么你就需要在这个文件中进行配置</p>
+
+<pre><code>include ':module-a',':module-b'
+</code></pre>
+
+<h4>▶ 7 local.properties 文件</h4>
+
+<p>里面存放的是各插件需要的本机相关的信息, 例如Android gradle插件可能需要 SDK路径, NDK路径, 别的插件需要的可能就是其他配置信息.
+还有存放敏感数据, 例如某些插件需要 用户名, 密码, api_key 等, 与隐私相关的数据.</p>
+
+<p>例如: 在插件开发的时候, 你需要将工程打包后, publish 到远程仓库的时候, 需要 帐号, 密码, 此时, 帐号, 密码, 一般就是存放在 local.properties 里面</p>
+
+<h5>注：local.properties 在git里面是要屏蔽掉的，local.properties 只对本地, 本机有效, 团队协作, 这个文件是不共享的.</h5>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">文涛</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-06-19T19:32:55+08:00" pubdate data-updated="true"></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/android/'>android</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/05/19/android-027/" title="Previous Post: Android应用安全开发之防范无意识的数据泄露">&laquo; Android应用安全开发之防范无意识的数据泄露</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/07/05/web-021/" title="Next Post: 熟悉网络端口">熟悉网络端口 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  <section>
+  <p>Hi ,我是 <a href="https://twitter.com/martinbjeldbak">武文涛</a>!</p>
+  
+
+  <p>你可以阅读更多关于我的信息 <a href="/about/">关于</a> 
+  <p>Android开发者  产品经理 </p>
+  <div class="social-icons">
+    
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+</section>
+
+  <section>
+  <h1>最新</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/04/08/android-024/">自定义任意形状的ImageView</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/02/android-image/">Android Image</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/19/pm-032/">如何快速搭建一个完整的移动直播系统？</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/09/android-031/">浅谈App安全</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/05/web-021/">熟悉网络端口</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+    <section>
+  <h1>分类</h1>
+    <ul id="category-list"><li class='category'><a href='/blog/categories/android/'>android (26)</a></li>
+<li class='category'><a href='/blog/categories/db/'>db (1)</a></li>
+<li class='category'><a href='/blog/categories/hardware/'>hardware (1)</a></li>
+<li class='category'><a href='/blog/categories/pm/'>pm (2)</a></li>
+<li class='category'><a href='/blog/categories/unity3d/'>unity3d (1)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (2)</a></li>
+</ul>
+</section>
+<section>
+  <h1>最新</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/04/08/android-024/">自定义任意形状的ImageView</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/02/android-image/">Android Image</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/19/pm-032/">如何快速搭建一个完整的移动直播系统？</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/09/android-031/">浅谈App安全</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/05/web-021/">熟悉网络端口</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2017 - 文涛 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+<p>
+<span>Copyright &copy; 2017  文涛 -</span>
+<span class="credit">Powered by <a href="http://octopress.org">Octopress</a> using the <a href="https://github.com/fapper/classic-martinb">classic-martinb</a> theme</span>
+</p>
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

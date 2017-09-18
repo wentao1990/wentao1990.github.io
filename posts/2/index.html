@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>临渊羡鱼不如退而结网</title>
-  <meta name="author" content="武文涛">
+  <title>沧笙踏歌</title>
+  <meta name="author" content="文涛">
 
   
-  <meta name="description" content="前言：大多数开发者认为，iOS系统的封闭性使APP也更加安全，事实上，根据国外某安全服务商的最新调查显示：iOS前100名付费应用中87%均遭黑客破解。内购破解、源代码破解、本地数据窃取、本地数据窃取等手段时刻都在威胁着移动APP的安全。由于现在智能手机的普及度越来越高， &hellip;">
+  <meta name="description" content="● Gradle 介绍 Gradle是一种依赖管理工具，基于Groovy语言。主要是面向Java应用程序为主，它抛弃了基于XML的各种繁琐配置，取而代之的是一种基于Groovy的内部领域特定（DSL）语言。 ● Gradle 基本概念 下面根据Android Studio 文件目录逐一说明。 ▶ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,13 +18,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://wentao1990.github.io/posts/2/">
+  <link rel="canonical" href="http://wentao1990.github.io/posts/2">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="临渊羡鱼不如退而结网" type="application/atom+xml">
+  <link href="/atom.xml" rel="alternate" title="沧笙踏歌" type="application/atom+xml">
   <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
-  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
@@ -35,33 +35,35 @@
 </head>
 
 <body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">临渊羡鱼不如退而结网</a></h1>
+  <header role="banner"><div class="header-left">
+  <hgroup>
+  <h1><a href="/">沧笙踏歌</a></h1>
   
-    <h2>你所浪费的今天,是昨天死去的人奢望的明天;你所厌恶的现在,是未来的你回不去的曾经;</h2>
+  <div class="subtitle">
+    <h2>静水流深，沧笙踏歌，如花美眷，只缘敢你一回顾，使我常思朝与暮。转身后，一缕香远，逝雪浅，春意浓，笑意深。</h2>
+  </div>
   
-</hgroup>
+  </hgroup>
+  
+</div>
 
+<div class="header-right">
+  <ul class="main-navigation">
+ <div class="selected"> 
+  <li><a href="/">博文</a></li></div><div class="spacer"></div>
+     <div> 
+  <li><a href="/projects">工程</a></li></div><div class="spacer"></div>
+       <div> 
+  <li><a href="/blog/archives">档案</a></li></div><div class="spacer"></div>
+         <div> 
+  <li><a href="/aboutme">关于</a></li></div>
+</ul>
+
+
+
+
+</div>
 </header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-</ul>
-  
-<form action="https://www.baidu.com" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="sitesearch" value="wentao1990.github.io">
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">文章</a></li>
-  <li><a href="/blog/archives">档案</a></li>
-  <li><a href="/aboutme">关于</a></li>
-</ul>
-
-</nav>
   <div id="main">
     <div id="content">
       <div class="blog-index">
@@ -72,7 +74,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2015/07/09/android-safety/">浅谈App安全</a></h1>
+      <h1 class="entry-title"><a href="/blog/2015/06/19/android-030/">Android Studio 之 Gradle 基础</a></h1>
     
     
       <p class="meta">
@@ -81,119 +83,14 @@
 
 
 
-<time class='entry-date' datetime='2015-07-09T20:52:25+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:52 pm</span></time>
-        
-      </p>
-    
-  </header>
 
 
-  <div class="entry-content"><h5>前言：大多数开发者认为，iOS系统的封闭性使APP也更加安全，事实上，根据国外某安全服务商的最新调查显示：iOS前100名付费应用中87%均遭黑客破解。内购破解、源代码破解、本地数据窃取、本地数据窃取等手段时刻都在威胁着移动APP的安全。由于现在智能手机的普及度越来越高，APP的安全问题也越来越多的曝光在群众视野之内，仔细查阅下资料，真是与PC端程序有过之而无不及。本文楼主就以Android应用APP为例，介绍下破解和防破解的一些常用手段。</h5>
 
-<p>（早在大学期间，我就和室友一起编写过一些游戏脚本兜售给玩家，以此赚取一些生活费用。那时我们用VB语言编写一些简单的游戏挂机辅助软件，就是模拟按键操作，由于当时对行业认知有限，我们编写的软件只是简单的加了个Protect外壳就投入到市场上，后来发现淘宝上有三五家商家在兜售我们的破解软件。）</p>
 
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/07/09/android-safety/">阅读更多 &rarr;</a>
-    </footer>
   
 
 
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/07/05/network-port/">熟悉网络端口</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-07-05T22:55:10+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>10:55 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>计算机中的“端口”是英文port意译，可以认为计算机与外界通信交流的出口。其硬件领域的端口又称接口，如USB端口、串口端口，软件领域的端口一般指网络中面向连接服务和无连接服务的通信协议端口是—种抽象的软件结构，包括一些数据结构和I/O基本输入输出缓冲区，这类端口也是黑客们入侵计算机的途径之一。 在一台计算机中最多有65536个端口，我们可以按照端口号将他们划分为以下三类。</p>
-
-<h3>1、公认端口</h3>
-
-<p>从O到1023，它们紧密绑定(binding)于一服务．通常这些端口的通信明确表明了某种服务的协议，例如．80端口实际上总是月于HTTPP通信。</p>
-
-<h3>2、注册端口</h3>
-
-<p>从1024到49151，他们松散的绑定于一服务。也就是说有许多服务绑定于这些端口，这些端口同样用于许多其他目的，例如：许多系统处理动态端口从1024左右开始．</p>
-
-<h3>3、动态和/或私有端口 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/07/05/network-port/">阅读更多 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/07/03/android-unity3D/">Unity3D项目融合到Android项目中</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-07-03T19:44:10+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2015</span></span> <span class='time'>7:44 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>需求：</h2>
-
-<h3>有一个Android项目，里面要添加一个unity3D做的模块，然后把它们融合到一个项目中，这是两个独立的项目，需要把unity3D融合到Android项目中，如果是在项目设计架构之前选择一个为基点做二次开发，那就没有这么奇葩的需求了，然并卵！</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/07/03/android-unity3D/">阅读更多 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/06/19/android-gradle/">Android Studio 之 Gradle 基础</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-06-19T19:32:55+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:32 pm</span></time>
+<time datetime="2015-06-19T19:32:55+08:00" pubdate data-updated="true"></time>
         
       </p>
     
@@ -216,7 +113,7 @@
   
   
     <footer>
-      <a rel="full-article" href="/blog/2015/06/19/android-gradle/">阅读更多 &rarr;</a>
+      <a rel="full-article" href="/blog/2015/06/19/android-030/">阅读更多 &rarr;</a>
     </footer>
   
 
@@ -228,7 +125,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2015/06/08/adjust/">Activity全屏模式下设置adjustResize模式失效，输入框会被软键盘挡到</a></h1>
+      <h1 class="entry-title"><a href="/blog/2015/05/19/android-027/">Android应用安全开发之防范无意识的数据泄露</a></h1>
     
     
       <p class="meta">
@@ -237,47 +134,14 @@
 
 
 
-<time class='entry-date' datetime='2015-06-08T23:00:52+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>11:00 pm</span></time>
-        
-      </p>
-    
-  </header>
 
 
-  <div class="entry-content"><h3>下面先介绍下adjustUnspecified、adjustResize、adjustPan三种模式的区别</h3>
 
-<h5>1.adjustUnspecified ：</h5>
 
-<p>Activity在没有被指定是adjustResize模式还是adjustPan模式时，系统会根据该Activity窗口是否有滚动控件，自动的挑选这两个模式的一种。如果该Activity有滚动控件，该窗口则使用adjustResize模式，重新调整大小，通过滚动可以使窗口的所有内容在一个更小的区域全部展示出来。如果该Activity没有滚动控件，则采用adjustPan模式。</p>
-
-<h5>2.adjustResize：</h5>
-
-<p>Activity的主窗口总是调整大小，来为屏幕上的软键盘腾出空间。  </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/06/08/adjust/">阅读更多 &rarr;</a>
-    </footer>
   
 
 
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/05/19/androidDataLeak/">Android应用安全开发之防范无意识的数据泄露</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-05-19T22:08:15+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>10:08 pm</span></time>
+<time datetime="2015-05-19T22:08:15+08:00" pubdate data-updated="true"></time>
         
       </p>
     
@@ -298,7 +162,7 @@
   
   
     <footer>
-      <a rel="full-article" href="/blog/2015/05/19/androidDataLeak/">阅读更多 &rarr;</a>
+      <a rel="full-article" href="/blog/2015/05/19/android-027/">阅读更多 &rarr;</a>
     </footer>
   
 
@@ -310,7 +174,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2015/04/14/android-performs2/"><译>Android-高性能编码优化</a></h1>
+      <h1 class="entry-title"><a href="/blog/2015/03/07/android-029/">转：Android最佳性能实践——合理管理内存</a></h1>
     
     
       <p class="meta">
@@ -319,22 +183,33 @@
 
 
 
-<time class='entry-date' datetime='2015-04-14T20:16:21+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:16 pm</span></time>
+
+
+
+
+  
+
+
+<time datetime="2015-03-07T13:42:26+08:00" pubdate data-updated="true"></time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>这里先事先提醒大家一句，本篇文章中讨论的编码优化技巧都是属于一些“微优化”，也就是说即使我们都按照本篇文章的技巧来优化代码，在性能方面也是看不出有什么显著的提升的。使用合适的算法与数据结构将永远是你优化程序性能的最主要手段，但本篇文章中不会讨论这一块的内容。因此，这里我们即将学习的并不是什么灵丹妙药，而是大家应该把这些技巧当作一种好的编码规范，我们在平时写代码时就可以潜移默化地使用这些编码规范，不仅能够在微观层面提升程序一定的性能，也可以让我们的代码变得更加专业，下面就让我们来一起学习一下这些技巧。</p>
+  <div class="entry-content"><p>原文：<a href="http://blog.csdn.net/guolin_blog/article/details/42238627">http://blog.csdn.net/guolin_blog/article/details/42238627</a></p>
 
-<h3>避免创建不必要的对象</h3>
+<p>注意本系列文章的内容基本源于Android Doc，如果想要阅读更加详细的关于性能方面的资料，可以直接去阅读Android官方文档。</p>
 
-<p>创建对象从来都不应该是一件随意的事情，因为创建一个对象就意味着垃圾回收器需要回收一个对象，而这两步操作都是需要消耗时间的。虽说创建一个对象的代价确实非常小，并且Android 2.3版本当中又增加了并发垃圾回收器机制，这让GC操作时的停顿时间也变得难以察觉，但是这些理由都不足以让我们可以肆意地创建对象，需要创建的对象我们自然要创建，但是不必要的对象我们就应该尽量避免创建。  </div>
+<p>内存(RAM)对于任何一个软件开发环境都是种非常珍贵的资源，而对于移动操作系统来讲的话，则会显得更加珍贵，因为手机的硬件条件相对于PC毕竟是比较落后的。尽管Android系统的虚拟机拥有自动回收垃圾的机制，但这并不代表我们就可以忽视应该在什么时候分配和释放内存。</p>
+
+<p>为了使垃圾回收器可以正常释放程序所占用的内存，在编写代码的时候就一定要注意尽量避免出现内存泄漏的情况（通常都是由于全局成员变量持有对象引用所导致的），并且在适当的时候去释放对象引用。对于大多数的应用程序而言，后面其它的事情就可以都交给垃圾回收器去完成了，如果一个对象的引用不再被其它对象所持有，那么系统就会将这个对象所分配的内存进行回收。</p>
+
+<p>我们在开发软件的时候应当自始至终都把内存的问题充分考虑进去，这样的话才能开发出更加高性能的软件。而内存问题也并不是无规律可行的，Android系统给我们提出了很多内存优化的建议技巧，只要按照这些技巧来编写程序，就可以让我们的程序在内存性能发面表现得相当不错，下面我们就来一一学习一下这些技巧。  </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2015/04/14/android-performs2/">阅读更多 &rarr;</a>
+      <a rel="full-article" href="/blog/2015/03/07/android-029/">阅读更多 &rarr;</a>
     </footer>
   
 
@@ -346,7 +221,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2015/04/13/web-browser/">42种常见的浏览器兼容性问题</a></h1>
+      <h1 class="entry-title"><a href="/blog/2015/03/01/android-028/">Android开发之架构模式选择</a></h1>
     
     
       <p class="meta">
@@ -355,24 +230,49 @@
 
 
 
-<time class='entry-date' datetime='2015-04-13T19:33:34+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:33 pm</span></time>
+
+
+
+
+  
+
+
+<time datetime="2015-03-01T21:20:25+08:00" pubdate data-updated="true"></time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><h2>JavaScript</h2>
+  <div class="entry-content"><h3>本文将会根据以下几个问题进行讨论</h3>
 
-<h3>1.HTML对象获取问题</h3>
+<h5>• 为什么要选择架构模式开发?</h5>
 
-<p>FireFox：document.getElementById(“idName”);
-ie:document.idname或者document.getElementById(“idName”).
-解决办法：统一使用document.getElementById(“idName”);</div>
+<h5>• 架构模式做的事情?</h5>
+
+<h5>• 主流架构MVC、MVP的介绍及区别?</h5>
+
+<h5>• 开发中如何选择合适的架构模式?</h5>
+
+<h3>&mdash;&ndash;为什么要选择架构模式开发？</h3>
+
+<p>首先，让我们思考一下为什么在Android开发中如此迫切地需要一个清晰的软件架构。</p>
+
+<p><strong>Activity是上帝类</strong></p>
+
+<p>该段摘自“代码大全第二版”：</p>
+
+<blockquote><p>避免创建神类。避免创建无所不知，无所不能的上帝类。如果一个类需要花费时间从其他类中通过Get()和Set()检索数据（也说，需要深入业务并且告诉它们如何去做），所以是否应该把这些功能函数更好的组织到其它类而不是上帝类中。（Riel 1996）</p></blockquote>
+
+<p>上帝类的维护成本很高，你很难理解正在进行的操作，并且难以测试和扩展，这就是为什么要避免创建上帝类的黄金法则。</p>
+
+<p>然而，在Android开发中，如果你不考虑架构的话，Activity类往往会越来越大。这是因为，在Android中，允许View和其它线程共存于Activity内。其实最大的问题莫过于在Activity中同时存在业务逻辑和UI逻辑。这会增加测试和维护的成本。</p>
+
+<p>这是为什么需要清晰架构的原因之一。不仅会造成Activity的臃肿，还会引起其他问题，如使Activity和Fragment的生命周期变复杂，以及数据绑定等。  </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2015/04/13/web-browser/">阅读更多 &rarr;</a>
+      <a rel="full-article" href="/blog/2015/03/01/android-028/">阅读更多 &rarr;</a>
     </footer>
   
 
@@ -384,7 +284,7 @@ ie:document.idname或者document.getElementById(“idName”).
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2015/03/28/customPay/">仿支付宝&微信支付密码界面</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/05/09/android-013/">Android在Activity全屏模式下解决软键盘弹出问题</a></h1>
     
     
       <p class="meta">
@@ -393,60 +293,29 @@ ie:document.idname或者document.getElementById(“idName”).
 
 
 
-<time class='entry-date' datetime='2015-03-28T22:52:26+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>10:52 pm</span></time>
+
+
+
+
+  
+
+
+<time datetime="2014-05-09T16:22:25+08:00" pubdate data-updated="true"></time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><h4>这篇文章主要介绍下支付宝和微信支付密码样式实现。如下图：</h4>
+  <div class="entry-content"><h4>现象：由于设置Activity的 getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)（全屏模式），通常因为设置沉浸式状态栏。</h4>
 
-<p><img src="http://i.imgur.com/83WfVFz.png" alt="" /></p>
+<p>当如上设置后，会导致软键盘不能按照设置的模式弹出，首先我们先看下怎么设置软件盘的弹出模式：</p>
 
-<p>1：绘制一个完整的界面，如下图：</p>
-
-<p><img src="http://i.imgur.com/MqF5j8Y.png" alt="" /></p>
-
-<p>(这个界面可以根据自己的需要自定义）  </div>
+<p>在AndroidManifest.xml的Activity设置属性：android:windowSoftInputMode = &ldquo;"，  </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2015/03/28/customPay/">阅读更多 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/03/05/android-app/">Android应用开发浅谈</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-03-05T19:29:47+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:29 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>Android应用程序运行的移动设备受限于其运算能力，存储空间，及电池续航。由此，它必须是高效的。电池续航可能是一个促使你优化程序的原因，即使他看起来已经运行的足够快了。由于续航对用户的重要性，当电量耗损陡增时，意味这用户迟早会发现是由于你的程序。</h3>
-
-<p>虽然这份文档主要包含着细微的优化，但这些绝不能成为你软件成败的关键。选择合适的算法和数据结构永远是你最先应该考虑的事情，但这超出这份文档之外。</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/03/05/android-app/">阅读更多 &rarr;</a>
+      <a rel="full-article" href="/blog/2014/05/09/android-013/">阅读更多 &rarr;</a>
     </footer>
   
 
@@ -455,50 +324,95 @@ ie:document.idname或者document.getElementById(“idName”).
   
   <div class="pagination">
     
-      <a class="prev" href="/posts/3">&larr; Older</a>
+      <a class="prev" href="3">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
-    <a class="next" href="/index.html">Newer &rarr;</a>
+    <a class="next" href="1">Newer &rarr;</a>
     
   </div>
 </div>
 <aside class="sidebar">
+  <section>
+  <p>Hi ,我是 <a href="https://twitter.com/martinbjeldbak">武文涛</a>!</p>
   
-    <section> 
-  <h1>文章分类</h1> 
-  <ul id="categories"> 
-    <li class='category'><a href='/blog/categories/android/'>android (25)</a></li>
-<li class='category'><a href='/blog/categories/hardware/'>hardware (1)</a></li>
-<li class='category'><a href='/blog/categories/java/'>java (1)</a></li>
-<li class='category'><a href='/blog/categories/mysql/'>mysql (1)</a></li>
-<li class='category'><a href='/blog/categories/server/'>server (1)</a></li>
-<li class='category'><a href='/blog/categories/unity3d/'>unity3d (1)</a></li>
-<li class='category'><a href='/blog/categories/web/'>web (2)</a></li>
- 
-  </ul> 
-</section><section>
-  <h1>Recent Posts</h1>
+
+  <p>你可以阅读更多关于我的信息 <a href="/about/">关于</a> 
+  <p>Android开发者  产品经理 </p>
+  <div class="social-icons">
+    
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+</section>
+
+  <section>
+  <h1>最新</h1>
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2017/03/01/android-mvp/">Android开发之架构模式选择</a>
+        <a href="/blog/2016/04/08/android-024/">自定义任意形状的ImageView</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2016/10/06/android-01/">Android第三方网络请求框架总结</a>
+        <a href="/blog/2015/11/02/android-image/">Android Image</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2016/08/09/android-01/">Android性能优化</a>
+        <a href="/blog/2015/09/19/pm-032/">如何快速搭建一个完整的移动直播系统？</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2016/08/07/android-performs1/">转：Android最佳性能实践——合理管理内存</a>
+        <a href="/blog/2015/07/09/android-031/">浅谈App安全</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2016/07/19/server/">如何快速搭建一个完整的移动直播系统？</a>
+        <a href="/blog/2015/07/05/web-021/">熟悉网络端口</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+    <section>
+  <h1>分类</h1>
+    <ul id="category-list"><li class='category'><a href='/blog/categories/android/'>android (26)</a></li>
+<li class='category'><a href='/blog/categories/db/'>db (1)</a></li>
+<li class='category'><a href='/blog/categories/hardware/'>hardware (1)</a></li>
+<li class='category'><a href='/blog/categories/pm/'>pm (2)</a></li>
+<li class='category'><a href='/blog/categories/unity3d/'>unity3d (1)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (2)</a></li>
+</ul>
+</section>
+<section>
+  <h1>最新</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/04/08/android-024/">自定义任意形状的ImageView</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/02/android-image/">Android Image</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/19/pm-032/">如何快速搭建一个完整的移动直播系统？</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/09/android-031/">浅谈App安全</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/05/web-021/">熟悉网络端口</a>
       </li>
     
   </ul>
@@ -514,10 +428,14 @@ ie:document.idname或者document.getElementById(“idName”).
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2017 - 武文涛 -
+  Copyright &copy; 2017 - 文涛 -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
+<p>
+<span>Copyright &copy; 2017  文涛 -</span>
+<span class="credit">Powered by <a href="http://octopress.org">Octopress</a> using the <a href="https://github.com/fapper/classic-martinb">classic-martinb</a> theme</span>
+</p>
 </footer>
   
 

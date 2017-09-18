@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Hardware | 临渊羡鱼不如退而结网]]></title>
+  <title><![CDATA[Category: Hardware | 沧笙踏歌]]></title>
   <link href="http://wentao1990.github.io/blog/categories/hardware/atom.xml" rel="self"/>
   <link href="http://wentao1990.github.io/"/>
-  <updated>2017-03-17T23:30:37+08:00</updated>
+  <updated>2017-09-17T18:01:16+08:00</updated>
   <id>http://wentao1990.github.io/</id>
   <author>
-    <name><![CDATA[武文涛]]></name>
+    <name><![CDATA[文涛]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[电脑配置详解]]></title>
-    <link href="http://wentao1990.github.io/blog/2014/07/22/computer/"/>
-    <updated>2014-07-22T18:50:47+08:00</updated>
-    <id>http://wentao1990.github.io/blog/2014/07/22/computer</id>
+    <link href="http://wentao1990.github.io/blog/2013/05/22/android-015r/"/>
+    <updated>2013-05-22T18:50:47+08:00</updated>
+    <id>http://wentao1990.github.io/blog/2013/05/22/android-015r</id>
     <content type="html"><![CDATA[<h3>在笔记本种类繁多的今天，各种硬件配置可谓是是五花八门，这选购电脑看似难事儿，但只要记住这些硬件参数，选起电脑那自然是手到擒来。下面主要介绍五个最主要的配件的配置参数。</h3>
 
 <h3>CPU(重中之重）</h3>
